@@ -36,6 +36,9 @@ public class NoteController {
 	
 	@PostMapping
 	public ResponseEntity<NoteDTO> saveNote(@RequestBody NoteDTO noteDTO) {
+		
+		System.out.println(noteDTO);
+		
 		// TODO validation
 		Notebook nb = new Notebook();
 		nb.setNotebookId(noteDTO.getNotebookId());
@@ -50,12 +53,17 @@ public class NoteController {
 	
 	@PutMapping
 	public ResponseEntity<NoteDTO> updateNote(@RequestBody NoteDTO noteDTO) {
+		
+		
 		// TODO validation
-		//Notebook nb = new Notebook();
-		//nb.setNotebookId(noteDTO.getNotebookId());
+		Notebook nb = new Notebook();
+		nb.setNotebookId(noteDTO.getNotebookId());
 		// Save on database
 		Note n = Util.convertNoteDTOtoNote(noteDTO);
-		//n.setNotebook(nb);
+		n.setNotebook(nb);
+		
+		System.out.println(noteDTO);
+		
 		n = this.noteService.saveNote(n);
 		// Return note with the valid id generated 
 		noteDTO.setNoteId(n.getNoteId());

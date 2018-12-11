@@ -2,6 +2,7 @@ package com.restful.models;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -26,8 +27,8 @@ public class Note {
 	@Column
 	private Date lastModifiedOn;
 	
-	@ManyToOne(fetch=FetchType.EAGER)
-	@JoinColumn(referencedColumnName="notebookId", name="notebookId")
+	@ManyToOne(fetch=FetchType.EAGER, cascade = CascadeType.ALL)
+	@JoinColumn(referencedColumnName="notebookId", name="notebook_id")
 	private Notebook notebook;
 
 	public Note() {}
