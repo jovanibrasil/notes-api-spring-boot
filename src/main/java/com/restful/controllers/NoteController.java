@@ -48,6 +48,7 @@ public class NoteController {
 		n = this.noteService.saveNote(n);
 		// Return note with the valid id generated 
 		noteDTO.setNoteId(n.getNoteId());
+		noteDTO.setLastModifiedOn(n.getLastModifiedOn());
 		return ResponseEntity.ok(noteDTO);
 	}
 	
@@ -67,6 +68,7 @@ public class NoteController {
 		n = this.noteService.saveNote(n);
 		// Return note with the valid id generated 
 		noteDTO.setNoteId(n.getNoteId());
+		noteDTO.setLastModifiedOn(n.getLastModifiedOn());
 		return ResponseEntity.ok(noteDTO);
 	}
 	

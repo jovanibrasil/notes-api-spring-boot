@@ -9,8 +9,7 @@ public class Util {
 		return new Note(
 			noteDTO.getNoteId(),
 			noteDTO.getTitle(),
-			noteDTO.getText(),
-			noteDTO.getLastModifiedOn()
+			noteDTO.getText()
 		);
 	}
 	

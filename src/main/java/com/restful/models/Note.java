@@ -27,17 +27,17 @@ public class Note {
 	@Column
 	private Date lastModifiedOn;
 	
-	@ManyToOne(fetch=FetchType.EAGER, cascade = CascadeType.ALL)
+	@ManyToOne(fetch=FetchType.EAGER, cascade = CascadeType.PERSIST)
 	@JoinColumn(referencedColumnName="notebookId", name="notebook_id")
 	private Notebook notebook;
 
 	public Note() {}
 	
-	public Note(Long id, String title, String text, Date lastModifiedOn) {
+	public Note(Long id, String title, String text) {
 		this.noteId = id;
 		this.title = title;
 		this.text = text;
-		this.lastModifiedOn = lastModifiedOn;
+		this.lastModifiedOn = new Date();
 	}
 	
 	public Long getNoteId() {
