@@ -29,7 +29,7 @@ public class SecurityAuthConfiguration extends WebSecurityConfigurerAdapter {
 		http.csrf().disable()
 			.authorizeRequests()
 			.antMatchers("/login").permitAll()
-			.antMatchers("/note/*", "/notebook/*").fullyAuthenticated();
+			.antMatchers("/hello").fullyAuthenticated();
 	}
 	
 }

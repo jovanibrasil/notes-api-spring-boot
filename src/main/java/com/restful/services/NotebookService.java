@@ -1,6 +1,7 @@
 package com.restful.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -23,7 +24,7 @@ public class NotebookService {
 	
 	// delete
 	public void deleteNotebook(Long notebookId) {
-		this.notebookRepository.delete(notebookId);
+		this.notebookRepository.deleteById(notebookId);
 	}
 	
 	// post
@@ -31,8 +32,8 @@ public class NotebookService {
 		return this.notebookRepository.save(notebook);
 	}
 
-	public Notebook findNote(Long notebookId) {
-		return this.notebookRepository.findOne(notebookId);
+	public Optional<Notebook> findNote(Long notebookId) {
+		return this.notebookRepository.findById(notebookId);
 	}
 	
 }

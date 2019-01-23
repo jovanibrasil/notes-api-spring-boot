@@ -3,6 +3,7 @@ package com.restful.controllers;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -42,17 +43,23 @@ public class NotebookController {
 
 	@DeleteMapping("/{notebookId}")
 	public ResponseEntity<Notebook> deleteNotebook(@PathVariable Long notebookId) {
-//		Iterator<Notebook> iterator = notebookList.iterator();
-//		while (iterator.hasNext()) { 
-//			Notebook n = iterator.next(); 
-//			if(n.getId() == id) { 
-//				notebookList.remove(n); 
-//				return ResponseEntity.ok(n);
-//			}
-//		}
-		Notebook nb = this.notebookService.findNote(notebookId);
-		this.notebookService.deleteNotebook(notebookId);
-		return ResponseEntity.ok(nb);
+		//		Iterator<Notebook> iterator = notebookList.iterator();
+		//		while (iterator.hasNext()) { 
+		//			Notebook n = iterator.next(); 
+		//			if(n.getId() == id) { 
+		//				notebookList.remove(n); 
+		//				return ResponseEntity.ok(n);
+		//			}
+		//		}
+		Optional<Notebook> optNotebook = this.notebookService.findNote(notebookId);
+		
+		if(optNotebook.isPresent()) {
+			this.notebookService.deleteNotebook(notebookId);
+			return ResponseEntity.ok(optNotebook.get());
+		}else {
+			return null;
+		}
+		
 	}
 
 	@PostMapping()

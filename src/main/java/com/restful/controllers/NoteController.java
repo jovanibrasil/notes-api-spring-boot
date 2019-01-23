@@ -1,6 +1,7 @@
 package com.restful.controllers;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -74,9 +75,15 @@ public class NoteController {
 	
 	@DeleteMapping("/{noteId}")
 	public ResponseEntity<Note> deleteNote(@PathVariable Long noteId){
-		Note note = this.noteService.findNoteById(noteId);
-		this.noteService.deleteNote(noteId);
-		return ResponseEntity.ok(note);
+		Optional<Note> optNote = this.noteService.findNoteById(noteId);
+		if(optNote.isPresent()) {
+			this.noteService.deleteNote(noteId);
+			return ResponseEntity.ok(optNote.get());
+		}else {
+			// TODO return error
+			return null;
+		}
+		
 	}
 	
 	@GetMapping("/byNotebookId/{notebookId}")

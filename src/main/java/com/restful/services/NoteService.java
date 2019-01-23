@@ -1,6 +1,7 @@
 package com.restful.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -24,7 +25,7 @@ public class NoteService {
 	
 	// delete
 	public void deleteNote(Long noteId) {
-		this.noteRepository.delete(noteId);
+		this.noteRepository.deleteById(noteId);
 	}
 	
 	// save
@@ -33,8 +34,8 @@ public class NoteService {
 	}
 	
 	// find by note id
-	public Note findNoteById(Long noteId) {
-		return this.noteRepository.findOne(noteId);
+	public Optional<Note> findNoteById(Long noteId) {
+		return this.noteRepository.findById(noteId);
 	}
 	
 	// find by notebook id
