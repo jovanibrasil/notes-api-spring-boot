@@ -23,7 +23,7 @@ import com.restful.services.NotebookService;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
-@RequestMapping("/api/notebook")
+@RequestMapping("/notebook")
 public class NotebookController {
 
 	// Note nt1 = new Note(0L, "Logs", "Procurar por bibliotecas de logs em Python.", new Date());

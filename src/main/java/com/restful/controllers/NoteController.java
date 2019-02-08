@@ -23,7 +23,7 @@ import com.restful.services.NoteService;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
-@RequestMapping("/api/note")
+@RequestMapping("/note")
 public class NoteController {
 
 	@Autowired
