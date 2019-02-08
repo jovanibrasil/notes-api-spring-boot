@@ -5,6 +5,6 @@ USER root
 
     COPY ./target/notes-api.war /usr/local/tomcat/webapps/notes-api.war
     #COPY ./target/notes-api /usr/local/tomcat/webapps/notes-api
-    EXPOSE 8080
+    EXPOSE 8082
 
 #USER jenkins
