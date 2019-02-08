@@ -21,7 +21,7 @@ import com.restful.models.Note;
 import com.restful.models.Notebook;
 import com.restful.services.NoteService;
 
-//@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/note")
 public class NoteController {
