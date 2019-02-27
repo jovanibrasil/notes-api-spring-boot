@@ -1,7 +1,11 @@
 package com.restful.models;
 
+import org.springframework.data.annotation.Id;
+
 public class User {
 
+	@Id
+	private String userId;
 	private String userName;
 	private String password;
 	

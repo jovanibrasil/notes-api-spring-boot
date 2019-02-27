@@ -4,14 +4,14 @@ import java.util.Date;
 
 public class NoteDTO {
 
-	private Long noteId;
+	private String id;
 	private String title;
 	private String text;
-	private Long notebookId;
+	private String notebookId;
 	private Date lastModifiedOn;
 	
-	public Long getNoteId() {
-		return noteId;
+	public String getId() {
+		return id;
 	}
 	public String getTitle() {
 		return title;
@@ -19,14 +19,9 @@ public class NoteDTO {
 	public String getText() {
 		return text;
 	}
-	public Long getNotebookId() {
-		return notebookId;
-	}
-	public Date getLastModifiedOn() {
-		return lastModifiedOn;
-	}
-	public void setNoteId(Long noteId) {
-		this.noteId = noteId;
+	
+	public void setId(String noteId) {
+		this.id = noteId;
 	}
 	public void setTitle(String title) {
 		this.title = title;
@@ -34,8 +29,16 @@ public class NoteDTO {
 	public void setText(String text) {
 		this.text = text;
 	}
-	public void setNotebookId(Long notebookId) {
+	
+	public String getNotebookId() {
+		return notebookId;
+	}
+	public void setNotebookId(String notebookId) {
 		this.notebookId = notebookId;
+	}
+	
+	public Date getLastModifiedOn() {
+		return lastModifiedOn;
 	}
 	public void setLastModifiedOn(Date lastModifiedOn) {
 		this.lastModifiedOn = lastModifiedOn;
@@ -43,7 +46,7 @@ public class NoteDTO {
 
 	@Override
 	public String toString() {
-		return "NoteDTO [noteId=" + noteId + ", title=" + title + ", text=" + text + ", notebookId=" + notebookId
+		return "NoteDTO [noteId=" + id + ", title=" + title + ", text=" + text + ", notebookId=" + notebookId
 				+ ", lastModifiedOn=" + lastModifiedOn + "]";
 	}
 	

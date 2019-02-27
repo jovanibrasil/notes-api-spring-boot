@@ -5,11 +5,13 @@ import com.restful.models.Note;
 
 public class Util {
 
-	public static Note convertNoteDTOtoNote(NoteDTO noteDTO) {
+	public static Note convertNoteDTOtoNote(NoteDTO noteDTO, String userId) {
 		return new Note(
-			noteDTO.getNoteId(),
+			noteDTO.getId(),
 			noteDTO.getTitle(),
-			noteDTO.getText()
+			noteDTO.getText(),
+			noteDTO.getNotebookId(),
+			userId
 		);
 	}
 	

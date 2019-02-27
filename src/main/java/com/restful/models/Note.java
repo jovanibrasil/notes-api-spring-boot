@@ -2,46 +2,33 @@ package com.restful.models;
 
 import java.util.Date;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-@Entity
-@Table(name="notes")
+@Document(collection = "notes")
 public class Note {
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Long noteId;
-	@Column
+	private String id;
 	private String title;
-	@Column
 	private String text;
-	@Column
 	private Date lastModifiedOn;
-	
-	@ManyToOne(fetch=FetchType.EAGER, cascade = CascadeType.PERSIST)
-	@JoinColumn(referencedColumnName="notebookId", name="notebook_id")
-	private Notebook notebook;
+	private String notebookId;
+	private String userId;
 
 	public Note() {}
 	
-	public Note(Long id, String title, String text) {
-		this.noteId = id;
+	public Note(String id, String title, String text, String notebookId, String userId) {
+		this.id = id;
 		this.title = title;
 		this.text = text;
 		this.lastModifiedOn = new Date();
+		this.notebookId = notebookId;
+		this.userId = userId;
 	}
 	
-	public Long getNoteId() {
-		return noteId;
+	public String getId() {
+		return id;
 	}
 	public String getTitle() {
 		return title;
@@ -52,8 +39,8 @@ public class Note {
 	public Date getLastModifiedOn() {
 		return lastModifiedOn;
 	}
-	public void setNoteId(Long id) {
-		this.noteId = id;
+	public void setId(String id) {
+		this.id = id;
 	}
 	public void setTitle(String title) {
 		this.title = title;
@@ -64,18 +51,26 @@ public class Note {
 	public void setLastModifiedOn(Date lastModifiedOn) {
 		this.lastModifiedOn = lastModifiedOn;
 	}
-	
-	public Notebook getNotebook() {
-		return notebook;
+
+	public String getNotebookId() {
+		return notebookId;
 	}
 
-	public void setNotebook(Notebook notebook) {
-		this.notebook = notebook;
+	public void setNotebookId(String notebookId) {
+		this.notebookId = notebookId;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 
 	@Override
 	public String toString() {
-		return "Note [id=" + noteId + ", title=" + title + ", text=" + text + ", lastModifiedOn=" + lastModifiedOn + "]";
+		return "Note [id=" + id + ", title=" + title + ", text=" + text + ", lastModifiedOn=" + lastModifiedOn + "]";
 	}
 	
 }

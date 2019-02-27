@@ -1,53 +1,50 @@
 package com.restful.models;
 
-import java.util.List;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-
-@Entity
-@Table(name="notebooks")
+@Document(collection = "notebooks")
 public class Notebook {
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Long notebookId;
-	@Column
+	private String id;
 	private String name;
-	@OneToMany(cascade = CascadeType.ALL) //orphanRemoval = true)
-	private List<Note> notes;
+	private String userId;  
 	
 	public Notebook() {}
 	
-	public Notebook(Long id, String name) {
-		this.notebookId = id;
+	public Notebook(String id, String name) {
+		this.id = id;
 		this.name = name;
 	}
-	
-	public Long getNotebookId() {
-		return notebookId;
+
+	public String getId() {
+		return id;
 	}
+	
+	public void setId(String id) {
+		this.id = id;
+	}
+	
 	public String getName() {
 		return name;
-	}
-	
-	public void setNotebookId(Long id) {
-		this.notebookId = id;
 	}
 	
 	public void setName(String name) {
 		this.name = name;
 	}
 
+	public String getUserId() {
+		return userId;
+	}
+	
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}	
+
 	@Override
 	public String toString() {
-		return "Notebook [id=" + notebookId + ", name=" + name + ", notes=" + notes + "]";
+		return "Notebook [id=" + id + ", name=" + name + "]";
 	}
 		
 }

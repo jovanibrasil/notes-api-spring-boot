@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import com.restful.models.Note;
-import com.restful.models.Notebook;
 import com.restful.repositories.NoteRepository;
 
 @Service
@@ -19,12 +18,12 @@ public class NoteService {
 	private NoteRepository noteRepository;
 	
 	// findall
-	public List<Note> findAll(){
-		return this.noteRepository.findAll();
+	public List<Note> findNotesByUserId(String userId){
+		return this.noteRepository.findByUserId(userId);
 	}
 	
 	// delete
-	public void deleteNote(Long noteId) {
+	public void deleteNote(String noteId) {
 		this.noteRepository.deleteById(noteId);
 	}
 	
@@ -34,14 +33,13 @@ public class NoteService {
 	}
 	
 	// find by note id
-	public Optional<Note> findNoteById(Long noteId) {
+	public Optional<Note> findNoteById(String noteId) {
 		return this.noteRepository.findById(noteId);
 	}
 	
 	// find by notebook id
-	public List<Note> findNotesByNotebook(Long notebookId){
-		System.out.println(notebookId);
-		return this.noteRepository.getNotesByNotebook(notebookId);
+	public List<Note> findNotesByNotebookId(String notebookId){
+		return this.noteRepository.findAllByNotebookId(notebookId);
 	}
 	
 }

@@ -1,9 +1,11 @@
 package com.restful.controllers;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -12,13 +14,13 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.restful.models.Note;
+import com.restful.dtos.NotebookDTO;
 import com.restful.models.Notebook;
-import com.restful.repositories.NotebookRepository;
 import com.restful.services.NotebookService;
 
 @CrossOrigin(origins = "*")
@@ -26,36 +28,28 @@ import com.restful.services.NotebookService;
 @RequestMapping("/notebook")
 public class NotebookController {
 
-	// Note nt1 = new Note(0L, "Logs", "Procurar por bibliotecas de logs em Python.", new Date());
-	// Note nt2 = new Note(1L, "Features", "Catalogar as features encontradas na literatura.", new Date());
-	// Note nt3 = new Note(2L, "Francês", "Procurar um curso na internet.", new Date());
-
 	@Autowired
 	private NotebookService notebookService;
 	
 	@GetMapping("/all")
-	public ResponseEntity<ArrayList<Notebook>> getAllNotebooks() {
-		
-		ArrayList<Notebook> notebooks = (ArrayList<Notebook>) notebookService.findAll();
-		
-		return ResponseEntity.ok(notebooks);
+	public ResponseEntity<List<NotebookDTO>> getAllNotebooks(HttpServletRequest request) {
+		String userId = (String) request.getSession().getAttribute("userName");
+		ArrayList<Notebook> notebooks = (ArrayList<Notebook>) notebookService.findAllByUserId(userId);
+		List<NotebookDTO> res = notebooks.stream().map(notebook -> {
+			return new NotebookDTO(notebook.getId(), notebook.getName());
+		}).collect(Collectors.toList());
+		return ResponseEntity.ok(res);
 	}
 
 	@DeleteMapping("/{notebookId}")
-	public ResponseEntity<Notebook> deleteNotebook(@PathVariable Long notebookId) {
-		//		Iterator<Notebook> iterator = notebookList.iterator();
-		//		while (iterator.hasNext()) { 
-		//			Notebook n = iterator.next(); 
-		//			if(n.getId() == id) { 
-		//				notebookList.remove(n); 
-		//				return ResponseEntity.ok(n);
-		//			}
-		//		}
-		Optional<Notebook> optNotebook = this.notebookService.findNote(notebookId);
+	public ResponseEntity<NotebookDTO> deleteNotebook(@PathVariable String notebookId) {
+		
+		Optional<Notebook> optNotebook = this.notebookService.findNotebookById(notebookId);
 		
 		if(optNotebook.isPresent()) {
-			this.notebookService.deleteNotebook(notebookId);
-			return ResponseEntity.ok(optNotebook.get());
+			this.notebookService.deleteNotebookById(notebookId);
+			Notebook notebook = optNotebook.get();
+			return ResponseEntity.ok(new NotebookDTO(notebook.getId(), notebook.getName()));
 		}else {
 			return null;
 		}
@@ -63,15 +57,30 @@ public class NotebookController {
 	}
 
 	@PostMapping()
-	public ResponseEntity<Notebook> postNotebook(@RequestBody Notebook notebook) {
-		//notebook.setId(i++);
-		//notebookList.add(notebook);
-		//System.out.println("saving notebook "+notebook.toString());
-		//Notebook nb = new Notebook(0L, "Hello");
-		//otebookRepository.save(notebook);
-		Notebook nb = this.notebookService.saveNotebook(notebook);
-		System.out.println(nb);
-		return ResponseEntity.ok(nb);
+	public ResponseEntity<NotebookDTO> postNotebook(@RequestBody NotebookDTO notebookDTO, HttpServletRequest request) {
+		
+		String userId = (String) request.getSession().getAttribute("userName");
+		Notebook notebook = new Notebook();
+		notebook.setName(notebookDTO.getName());
+		notebook.setUserId(userId);
+		notebook = this.notebookService.saveNotebook(notebook);
+		
+		return ResponseEntity.ok(new NotebookDTO(notebook.getId(), notebook.getName()));
 	}
+	
+	@PutMapping()
+	public ResponseEntity<NotebookDTO> putNotebook(@RequestBody NotebookDTO notebookDTO, HttpServletRequest request) {
+		
+		String userId = (String) request.getSession().getAttribute("userName");
+		Notebook notebook = new Notebook();
+		notebook.setUserId(userId);
+		notebook.setName(notebookDTO.getName());
+		notebook.setUserId(userId);
+		notebook = this.notebookService.saveNotebook(notebook);
+		
+		return ResponseEntity.ok(new NotebookDTO(notebook.getId(), notebook.getName()));
+	}
+	
+	
 
 }

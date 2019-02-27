@@ -18,12 +18,12 @@ public class NotebookService {
 	private NotebookRepository notebookRepository;
 	
 	// findAll
-	public List<Notebook> findAll(){
-		return this.notebookRepository.findAll();
+	public List<Notebook> findAllByUserId(String userId){
+		return this.notebookRepository.findByUserId(userId);
 	}
 	
 	// delete
-	public void deleteNotebook(Long notebookId) {
+	public void deleteNotebookById(String notebookId) {
 		this.notebookRepository.deleteById(notebookId);
 	}
 	
@@ -32,7 +32,7 @@ public class NotebookService {
 		return this.notebookRepository.save(notebook);
 	}
 
-	public Optional<Notebook> findNote(Long notebookId) {
+	public Optional<Notebook> findNotebookById(String notebookId) {
 		return this.notebookRepository.findById(notebookId);
 	}
 	

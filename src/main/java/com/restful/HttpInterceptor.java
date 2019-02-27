@@ -1,6 +1,5 @@
 package com.restful;
 
-
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
@@ -12,76 +11,89 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONObject;
-import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.HandlerInterceptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-@Component
-public class HttpInterceptor implements HandlerInterceptor {
+@CrossOrigin(origins = "http://localhost:4200")
+public class HttpInterceptor extends HandlerInterceptorAdapter {
+
+	private static Logger log = LoggerFactory.getLogger(HttpInterceptor.class);
 
 	@Override
-	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+			throws Exception {
 		
-		return true;
+		// TODO if debug mode is enable, turn off the verification and set userName to an specific name
+		String authorization = request.getHeader("Authorization");
+		if(authorization == null) {
+			log.error("Invalid token (without authentication field).");
 		
-//		try {
-//			
-//			URL url = new URL("http://localhost:9000/auth/checkToken");
-//			final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-//			connection.setRequestMethod("POST");
-//			
-//			// Set request header values
-//			Collections.list(request.getHeaderNames())
-//				    .stream().forEach(name -> {
-//				    	System.out.println("Enviando requisição: ");
-//				    	System.out.println(name + ": " + request.getHeader(name));
-//				    	connection.setRequestProperty(name, request.getHeader(name));
-//				    });
-//				    
-//		    // Send post request - For post only - START
-//			connection.setDoOutput(true);
-//			DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
-//			//wr.write("userName=test".getBytes()); // append specific data
-//			wr.flush();
-//			wr.close();
-//			// For post only - END
-//
-//			// Get response code
-//			int responseCode = connection.getResponseCode();
-//			System.out.println("Response code received : " + responseCode);
-//		    
-//			if(responseCode == HttpURLConnection.HTTP_OK) {
-//				
-//				System.out.println("requisição foi aceita");
-//				
-//				BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-//				String inputLine;
-//				StringBuffer res = new StringBuffer();
-//
-//				while ((inputLine = in.readLine()) != null) { res.append(inputLine); }
-//				in.close();
-//
-//				// Transform string raw data to json data
-//				JSONObject obj = new JSONObject(res.toString());	
-//				String userName = new JSONObject(obj.getString("data")).getString("userName").toString();
-//				request.setAttribute("userName", userName);
-//				
-//				// Get response code
-//				// Response errors:
-//					// HTTP_UNAUTHORIZED (401) - request has not been applied because it lacks valid authentication credentials
-//					// HTTP_FORBIDDEN (403) - is similar to 401, but the access is permanently forbidden and re-authenticating will make no difference
-//					// HTTP_OK (200) - indicates that the request has succeeded
-//				return true;
-//			}
-//			
-//		} catch (Exception e) {
-//		    
-//			e.printStackTrace();
-//		}
-//		
-//		System.out.println("requisição foi negada");
-//		response.setStatus(HttpURLConnection.HTTP_UNAUTHORIZED);
-//		
-//	    return false;
+			// solve CORS problems setting properly response header configuration
+			response.setHeader("Access-Control-Allow-Origin", "*");
+			response.setHeader("Access-Control-Allow-Methods", "DELETE, HEAD, GET, OPTIONS, POST, PUT");
+			response.setHeader("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With, Authorization");
+	        response.setHeader("Access-Control-Max-Age", "3600");
+			
+			return false;
+		}
+		
+		try {
+			log.info("Checking request authorization.");
+			URL url = new URL("http://localhost:8083/auth/checkToken");
+			final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+			// Set request header values
+			connection.setRequestMethod("POST");
+			Collections.list(request.getHeaderNames()).stream().forEach(name -> {
+				connection.setRequestProperty(name, request.getHeader(name));
+			});
+			
+			// Send post request 
+			connection.setDoOutput(true);
+			DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
+			wr.flush();
+			wr.close();
+
+			// Get response code
+			int responseCode = connection.getResponseCode();
+			
+			if (responseCode == HttpURLConnection.HTTP_OK) { 
+				// HTTP_OK (200) - indicates that the request has succeeded
+				BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+				String inputLine;
+				StringBuffer res = new StringBuffer();
+
+				while ((inputLine = in.readLine()) != null) {
+					res.append(inputLine);
+				}
+				in.close();
+				// Transform string raw data to json data
+				System.out.println(res.toString());
+				JSONObject obj = new JSONObject(res.toString());
+				obj =  new JSONObject(obj.getString("data").toString());
+				String userName = obj.get("userName").toString();
+				request.getSession().setAttribute("userName", userName);
+				log.info("The request sended by " + request.getSession().getAttribute("userName") + " was accepted (HTTP_OK)");
+				return true;
+			} else if(responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
+				//HTTP_UNAUTHORIZED (401) - request has not been applied because it lacks valid authentication credentials
+				log.info("The request was not accepted (HTTP_UNAUTHORIZED)");
+				response.setStatus(HttpURLConnection.HTTP_UNAUTHORIZED);
+			} else if(responseCode == HttpURLConnection.HTTP_FORBIDDEN) {
+				// HTTP_FORBIDDEN (403) - is similar to 401, but the access is permanently forbidden and re-authenticating will make no difference
+				log.info("The request was not accepted (HTTP_FORBIDDEN)");
+				response.setStatus(HttpURLConnection.HTTP_FORBIDDEN);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		log.info("Invalid request (HTTP_BAD_REQUEST)");
+		response.setStatus(HttpURLConnection.HTTP_BAD_REQUEST);
+		return false;
+
 	}
 
 }
