@@ -21,16 +21,16 @@ public class NotesApiApplication extends SpringBootServletInitializer {
 		SpringApplication.run(NotesApiApplication.class, args);
 	}
 	
-	@Bean
-    public MongoDbFactory mongoDbFactory() throws Exception {
-        MongoClient mongoClient = new MongoClient("localhost", 27017);
-        return new SimpleMongoDbFactory(mongoClient, "notesdb");
-    }
- 
-    @Bean
-    public MongoTemplate mongoTemplate() throws Exception {
-        MongoTemplate mongoTemplate = new MongoTemplate(mongoDbFactory());
-        return mongoTemplate;
-    }
+//	@Bean
+//    public MongoDbFactory mongoDbFactory() throws Exception {
+//        MongoClient mongoClient = new MongoClient("localhost", 27017);
+//        return new SimpleMongoDbFactory(mongoClient, "notesdb");
+//    }
+// 
+//    @Bean
+//    public MongoTemplate mongoTemplate() throws Exception {
+//        MongoTemplate mongoTemplate = new MongoTemplate(mongoDbFactory());
+//        return mongoTemplate;
+//    }
 	
 }
