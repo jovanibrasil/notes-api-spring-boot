@@ -22,7 +22,7 @@ pipeline {
                 echo 'Cloning git ...'
                 git([url: 'https://github.com/jovanibrasil/notes-api.git', branch: 'master', credentialsId: '18a17f19-9870-4bcc-8c7b-75eec38a059a'])
                 echo 'Installing dependencies ...'
-                sh 'mvn package'
+                sh 'mvn package -Dspring.spring.data.mongodb.uri=NOTES_MONGO_URL'
                 echo 'Building ...'
                 sh 'docker build --build-arg NOTES_MONGO_URL -t notes-api ~/workspace/notes-api'
             }
