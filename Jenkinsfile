@@ -21,10 +21,10 @@ pipeline {
             steps {
                 echo 'Cloning git ...'
                 
-                sh 'echo $NOTES_MONGO_URL'
-                sh 'echo  NOTES_MONGO_URL'
-                sh 'echo NOTES_MONGO_URL_SECRET'
-                sh 'echo $NOTES_MONGO_URL_SECRET'
+                echo '$NOTES_MONGO_URL'
+                echo  'NOTES_MONGO_URL'
+                echo 'NOTES_MONGO_URL_SECRET'
+                echo '$NOTES_MONGO_URL_SECRET'
                 git([url: 'https://github.com/jovanibrasil/notes-api.git', branch: 'master', credentialsId: '18a17f19-9870-4bcc-8c7b-75eec38a059a'])
                 echo 'Installing dependencies ...'
                 sh 'mvn package'
