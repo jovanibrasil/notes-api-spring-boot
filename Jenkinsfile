@@ -2,7 +2,7 @@ pipeline {
     agent { label 'jenkins-slave' }
     
     environment {
-        NOTES_MONGO_URL_SECRET = credentials('NOTES_MONGO_URL');
+        NOTES_MONGO_URL_CREDENTIALS = credentials('NOTES_MONGO_URL');
         NOTES_MONGO_URL = "${env.NOTES_MONGO_URL_SECRET}"
     }
     
@@ -21,10 +21,6 @@ pipeline {
             steps {
                 echo 'Cloning git ...'
                 
-                echo '$NOTES_MONGO_URL'
-                echo  'NOTES_MONGO_URL'
-                echo 'NOTES_MONGO_URL_SECRET'
-                echo '$NOTES_MONGO_URL_SECRET'
                 git([url: 'https://github.com/jovanibrasil/notes-api.git', branch: 'master', credentialsId: '18a17f19-9870-4bcc-8c7b-75eec38a059a'])
                 echo 'Installing dependencies ...'
                 sh 'mvn package'
