@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins="*")
 public class HttpInterceptor extends HandlerInterceptorAdapter {
 
 	private static Logger log = LoggerFactory.getLogger(HttpInterceptor.class);
