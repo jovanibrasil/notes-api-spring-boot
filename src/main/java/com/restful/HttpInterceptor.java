@@ -41,7 +41,7 @@ public class HttpInterceptor extends HandlerInterceptorAdapter {
 		
 		try {
 			log.info("Checking request authorization.");
-			URL url = new URL("http://localhost:8083/auth/checkToken");
+			URL url = new URL("http://localhost:8083/auth-api/auth/checkToken");
 			final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 			// Set request header values
 			connection.setRequestMethod("POST");
