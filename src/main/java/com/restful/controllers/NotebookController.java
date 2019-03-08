@@ -73,6 +73,7 @@ public class NotebookController {
 		
 		String userId = (String) request.getSession().getAttribute("userName");
 		Notebook notebook = new Notebook();
+		notebook.setId(notebookDTO.getId());
 		notebook.setUserId(userId);
 		notebook.setName(notebookDTO.getName());
 		notebook.setUserId(userId);
