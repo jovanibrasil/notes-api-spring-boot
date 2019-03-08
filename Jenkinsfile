@@ -3,7 +3,7 @@ pipeline {
     
     environment {
      	NOTES_MONGO_URL_CREDENTIALS = credentials('NOTES_MONGO_URL');
-        NOTES_MONGO_URL = "${env.NOTES_MONGO_URL_CREDENTIALS_PSW}"
+        NOTES_MONGO_URL = "${env.NOTES_MONGO_URL_CREDENTIALS_SECRET}"
     }
     
     stages {
