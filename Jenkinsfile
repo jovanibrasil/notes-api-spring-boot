@@ -2,8 +2,7 @@ pipeline {
     agent { label 'jenkins-slave' }
     
     environment {
-     	NOTES_MONGO_URL_CREDENTIALS = credentials('NOTES_MONGO_URL');
-        NOTES_MONGO_URL = "${env.NOTES_MONGO_URL_CREDENTIALS_SECRET}"
+     	NOTES_MONGO_URL = credentials('NOTES_MONGO_URL');
     }
     
     stages {
