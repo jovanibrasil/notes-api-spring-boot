@@ -1,4 +1,4 @@
-package com.restful.repositories;
+package com.notes.repositories;
 
 import java.util.List;
 import java.util.Optional;
@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import com.restful.models.Note;
+import com.notes.models.Note;
 
 @Repository
 public interface NoteRepository extends MongoRepository<Note, Long> {
@@ -17,6 +17,6 @@ public interface NoteRepository extends MongoRepository<Note, Long> {
 		@Query("{ 'notebookId' : ?0 }")
 		public List<Note> findAllByNotebookId(String notebookId);
 		public void deleteById(String noteId);
-		public List<Note> findByUserId(String userId);
+		public List<Note> findByUserName(String userName);
 		
 }

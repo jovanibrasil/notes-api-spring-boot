@@ -1,4 +1,4 @@
-package com.restful.dtos;
+package com.notes.dtos;
 
 import java.util.Date;
 
@@ -9,6 +9,7 @@ public class NoteDTO {
 	private String text;
 	private String notebookId;
 	private Date lastModifiedOn;
+	private String userName;
 	
 	public String getId() {
 		return id;
@@ -20,6 +21,12 @@ public class NoteDTO {
 		return text;
 	}
 	
+	public String getUserName() {
+		return userName;
+	}
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
 	public void setId(String noteId) {
 		this.id = noteId;
 	}

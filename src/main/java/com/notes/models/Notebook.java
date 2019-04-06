@@ -1,4 +1,4 @@
-package com.restful.models;
+package com.notes.models;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -9,13 +9,14 @@ public class Notebook {
 	@Id
 	private String id;
 	private String name;
-	private String userId;  
+	private String userName;  
 	
 	public Notebook() {}
 	
-	public Notebook(String id, String name) {
+	public Notebook(String id, String name, String userName) {
 		this.id = id;
 		this.name = name;
+		this.userName = userName;
 	}
 
 	public String getId() {
@@ -34,12 +35,12 @@ public class Notebook {
 		this.name = name;
 	}
 
-	public String getUserId() {
-		return userId;
+	public String getUserName() {
+		return userName;
 	}
 	
-	public void setUserId(String userId) {
-		this.userId = userId;
+	public void setUserName(String userId) {
+		this.userName = userId;
 	}	
 
 	@Override

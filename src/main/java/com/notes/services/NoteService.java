@@ -1,4 +1,4 @@
-package com.restful.services;
+package com.notes.services;
 
 import java.util.List;
 import java.util.Optional;
@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
-import com.restful.models.Note;
-import com.restful.repositories.NoteRepository;
+import com.notes.models.Note;
+import com.notes.repositories.NoteRepository;
 
 @Service
 @Primary
@@ -18,8 +18,8 @@ public class NoteService {
 	private NoteRepository noteRepository;
 	
 	// findall
-	public List<Note> findNotesByUserId(String userId){
-		return this.noteRepository.findByUserId(userId);
+	public List<Note> findNotesByUserId(String userName){
+		return this.noteRepository.findByUserName(userName);
 	}
 	
 	// delete

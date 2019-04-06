@@ -1,15 +1,17 @@
-package com.restful.dtos;
+package com.notes.dtos;
 
 public class NotebookDTO {
 
 	private String id;
 	private String name;
+	private String userName;
 	
 	public NotebookDTO() {}
 	
-	public NotebookDTO(String id, String name) {
+	public NotebookDTO(String id, String notebookName, String userName) {
 		this.id = id;
-		this.name = name;
+		this.name = notebookName;
+		this.userName = userName;
 	}
 	
 	public String getId() {
@@ -23,6 +25,14 @@ public class NotebookDTO {
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 
 	@Override

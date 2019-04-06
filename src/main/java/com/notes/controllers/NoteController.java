@@ -1,5 +1,6 @@
-package com.restful.controllers;
+package com.notes.controllers;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Optional;
@@ -18,11 +19,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.restful.Util;
-import com.restful.dtos.NoteDTO;
-import com.restful.models.Note;
-import com.restful.models.Notebook;
-import com.restful.services.NoteService;
+import com.notes.Util;
+import com.notes.dtos.NoteDTO;
+import com.notes.models.Note;
+import com.notes.models.Notebook;
+import com.notes.services.NoteService;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -33,22 +34,22 @@ public class NoteController {
 	private NoteService noteService;
 	
 	@GetMapping("/all")
-	public ResponseEntity<ArrayList<Note>> getAllNotes(HttpServletRequest request) {
-		String userId = (String) request.getSession().getAttribute("userName");
-		ArrayList<Note> notes = (ArrayList<Note>) this.noteService.findNotesByUserId(userId);
+	public ResponseEntity<ArrayList<Note>> getAllNotes(HttpServletRequest request, Principal principal) {
+		String currentUserName = principal.getName();
+		ArrayList<Note> notes = (ArrayList<Note>) this.noteService.findNotesByUserId(currentUserName);
 		return ResponseEntity.ok(notes);
 	}
 	
 	@PostMapping
-	public ResponseEntity<NoteDTO> saveNote(@RequestBody NoteDTO noteDTO, HttpServletRequest request) {
+	public ResponseEntity<NoteDTO> saveNote(@RequestBody NoteDTO noteDTO, HttpServletRequest request, Principal principal) {
 		
-		String userId = (String) request.getSession().getAttribute("userName");
+		String currentUserName = principal.getName();
 		// TODO validation
 		Notebook nb = new Notebook();
 		nb.setId(noteDTO.getNotebookId());
-		nb.setUserId(userId);
+		nb.setUserName(currentUserName);
 		// Save on database
-		Note n = Util.convertNoteDTOtoNote(noteDTO, userId);
+		Note n = Util.convertNoteDTOtoNote(noteDTO, currentUserName);
 		n.setLastModifiedOn(new Date());
 		n = this.noteService.saveNote(n);
 		// Return note with the valid id generated 
@@ -58,17 +59,17 @@ public class NoteController {
 	}
 	
 	@PutMapping
-	public ResponseEntity<NoteDTO> updateNote(@RequestBody NoteDTO noteDTO, HttpServletRequest request) {
+	public ResponseEntity<NoteDTO> updateNote(@RequestBody NoteDTO noteDTO, HttpServletRequest request, Principal principal) {
 		
-		String userId = (String) request.getSession().getAttribute("userName");
+		String currentUserName = principal.getName();
 		// TODO validation
 		//Notebook nb = new Notebook();
 		//nb.setId(noteDTO.getNotebookId());
 		// Save on database
-		Note n = Util.convertNoteDTOtoNote(noteDTO, userId);
+		Note n = Util.convertNoteDTOtoNote(noteDTO, currentUserName);
 		// TODO n.setNotebook(nb);
 		n.setLastModifiedOn(new Date());
-		n.setUserId(userId);
+		n.setUserName(currentUserName);
 		n = this.noteService.saveNote(n);
 		// Return note with the valid id generated 
 		noteDTO.setId(n.getId());
@@ -95,6 +96,5 @@ public class NoteController {
 		ArrayList<Note> notes = (ArrayList<Note>) this.noteService.findNotesByNotebookId(notebookId);
 		return ResponseEntity.ok(notes);
 	}
-	
-	
+		
 }

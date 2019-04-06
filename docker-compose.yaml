@@ -1,0 +1,20 @@
+version: '3'
+networks:
+  net: 
+services:
+  notes-api:
+    image: notes-api # Notes API (Spring)
+    container_name: notes-api
+    ports:
+      - 8082:8080
+    networks:
+      - net
+    depends_on:
+      - auth-api
+  auth-api: # Authentication API (Spring)
+    image: auth-api
+    container_name: auth-api
+    ports:
+      - 8083:8080
+    networks:
+      - net

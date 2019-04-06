@@ -1,4 +1,4 @@
-package com.restful;
+package com.notes;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -14,23 +14,11 @@ import com.mongodb.MongoClient;
 
 
 @SpringBootApplication
-@EnableMongoRepositories({"com.restful.repositories"})
+@EnableMongoRepositories({"com.notes.repositories"})
 public class NotesApiApplication extends SpringBootServletInitializer {
 
 	public static void main(String[] args) {
 		SpringApplication.run(NotesApiApplication.class, args);
 	}
-	
-//	@Bean
-//    public MongoDbFactory mongoDbFactory() throws Exception {
-//        MongoClient mongoClient = new MongoClient("localhost", 27017);
-//        return new SimpleMongoDbFactory(mongoClient, "notesdb");
-//    }
-// 
-//    @Bean
-//    public MongoTemplate mongoTemplate() throws Exception {
-//        MongoTemplate mongoTemplate = new MongoTemplate(mongoDbFactory());
-//        return mongoTemplate;
-//    }
-	
+
 }

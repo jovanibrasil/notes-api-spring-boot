@@ -1,5 +1,6 @@
-package com.restful.controllers;
+package com.notes.controllers;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -19,9 +20,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.restful.dtos.NotebookDTO;
-import com.restful.models.Notebook;
-import com.restful.services.NotebookService;
+import com.notes.dtos.NotebookDTO;
+import com.notes.models.Notebook;
+import com.notes.services.NotebookService;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -30,26 +31,27 @@ public class NotebookController {
 
 	@Autowired
 	private NotebookService notebookService;
-	
+		
 	@GetMapping("/all")
-	public ResponseEntity<List<NotebookDTO>> getAllNotebooks(HttpServletRequest request) {
-		String userId = (String) request.getSession().getAttribute("userName");
-		ArrayList<Notebook> notebooks = (ArrayList<Notebook>) notebookService.findAllByUserId(userId);
+	public ResponseEntity<List<NotebookDTO>> getAllNotebooks(HttpServletRequest request, Principal principal) {
+		String currentUserName = principal.getName();
+		System.out.println(currentUserName);
+		ArrayList<Notebook> notebooks = (ArrayList<Notebook>) notebookService.findAllByUserId(currentUserName);
 		List<NotebookDTO> res = notebooks.stream().map(notebook -> {
-			return new NotebookDTO(notebook.getId(), notebook.getName());
+			return new NotebookDTO(notebook.getId(), notebook.getName(), currentUserName);
 		}).collect(Collectors.toList());
 		return ResponseEntity.ok(res);
 	}
 
 	@DeleteMapping("/{notebookId}")
-	public ResponseEntity<NotebookDTO> deleteNotebook(@PathVariable String notebookId) {
+	public ResponseEntity<NotebookDTO> deleteNotebook(@PathVariable String notebookId, Principal principal) {
 		
 		Optional<Notebook> optNotebook = this.notebookService.findNotebookById(notebookId);
 		
 		if(optNotebook.isPresent()) {
 			this.notebookService.deleteNotebookById(notebookId);
 			Notebook notebook = optNotebook.get();
-			return ResponseEntity.ok(new NotebookDTO(notebook.getId(), notebook.getName()));
+			return ResponseEntity.ok(new NotebookDTO(notebook.getId(), notebook.getName(), principal.getName()));
 		}else {
 			return null;
 		}
@@ -57,31 +59,29 @@ public class NotebookController {
 	}
 
 	@PostMapping()
-	public ResponseEntity<NotebookDTO> postNotebook(@RequestBody NotebookDTO notebookDTO, HttpServletRequest request) {
+	public ResponseEntity<NotebookDTO> postNotebook(@RequestBody NotebookDTO notebookDTO, HttpServletRequest request, Principal principal) {
 		
-		String userId = (String) request.getSession().getAttribute("userName");
+		String currentUserName = principal.getName();
 		Notebook notebook = new Notebook();
 		notebook.setName(notebookDTO.getName());
-		notebook.setUserId(userId);
+		notebook.setUserName(currentUserName);
 		notebook = this.notebookService.saveNotebook(notebook);
 		
-		return ResponseEntity.ok(new NotebookDTO(notebook.getId(), notebook.getName()));
+		return ResponseEntity.ok(new NotebookDTO(notebook.getId(), notebook.getName(), currentUserName));
 	}
 	
 	@PutMapping()
-	public ResponseEntity<NotebookDTO> putNotebook(@RequestBody NotebookDTO notebookDTO, HttpServletRequest request) {
+	public ResponseEntity<NotebookDTO> putNotebook(@RequestBody NotebookDTO notebookDTO, HttpServletRequest request, Principal principal) {
 		
-		String userId = (String) request.getSession().getAttribute("userName");
+		String currentUserName = principal.getName();
+		
 		Notebook notebook = new Notebook();
 		notebook.setId(notebookDTO.getId());
-		notebook.setUserId(userId);
+		notebook.setUserName(currentUserName);
 		notebook.setName(notebookDTO.getName());
-		notebook.setUserId(userId);
 		notebook = this.notebookService.saveNotebook(notebook);
 		
-		return ResponseEntity.ok(new NotebookDTO(notebook.getId(), notebook.getName()));
+		return ResponseEntity.ok(new NotebookDTO(notebook.getId(), notebook.getName(), currentUserName));
 	}
-	
-	
 
 }

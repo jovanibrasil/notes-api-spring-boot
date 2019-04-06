@@ -1,4 +1,4 @@
-package com.restful.models;
+package com.notes.models;
 
 import java.util.Date;
 
@@ -14,17 +14,17 @@ public class Note {
 	private String text;
 	private Date lastModifiedOn;
 	private String notebookId;
-	private String userId;
+	private String userName;
 
 	public Note() {}
 	
-	public Note(String id, String title, String text, String notebookId, String userId) {
+	public Note(String id, String title, String text, String notebookId, String userName) {
 		this.id = id;
 		this.title = title;
 		this.text = text;
 		this.lastModifiedOn = new Date();
 		this.notebookId = notebookId;
-		this.userId = userId;
+		this.userName = userName;
 	}
 	
 	public String getId() {
@@ -60,12 +60,12 @@ public class Note {
 		this.notebookId = notebookId;
 	}
 
-	public String getUserId() {
-		return userId;
+	public String getUserName() {
+		return userName;
 	}
 
-	public void setUserId(String userId) {
-		this.userId = userId;
+	public void setUserName(String userId) {
+		this.userName = userId;
 	}
 
 	@Override
