@@ -2,14 +2,32 @@ package com.notes.dtos;
 
 import java.util.Date;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+
+
 public class NoteDTO {
 
+	@NotBlank(message = "The id must not be null or blank.")
 	private String id;
+	@NotBlank(message = "The message must not be null or empty.")
+	@Size(min=1, max=20, message="The title must contains between 1 and 20 characters.")
 	private String title;
+	@Size(max=200, message="The text must contains between 0 and 200 characters.")
 	private String text;
+	@NotBlank(message = "The notebookId must not be null or empty.")
 	private String notebookId;
+	
 	private Date lastModifiedOn;
-	private String userName;
+	
+	public NoteDTO(String id, String title, String text, String notebookId, Date lastModifiedOn) {
+		super();
+		this.id = id;
+		this.title = title;
+		this.text = text;
+		this.notebookId = notebookId;
+		this.lastModifiedOn = lastModifiedOn;
+	}
 	
 	public String getId() {
 		return id;
@@ -21,12 +39,6 @@ public class NoteDTO {
 		return text;
 	}
 	
-	public String getUserName() {
-		return userName;
-	}
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
 	public void setId(String noteId) {
 		this.id = noteId;
 	}

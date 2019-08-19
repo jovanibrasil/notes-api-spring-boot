@@ -8,14 +8,14 @@ public class Notebook {
 
 	@Id
 	private String id;
-	private String name;
+	private String title;
 	private String userName;  
 	
 	public Notebook() {}
 	
 	public Notebook(String id, String name, String userName) {
 		this.id = id;
-		this.name = name;
+		this.title = name;
 		this.userName = userName;
 	}
 
@@ -27,12 +27,12 @@ public class Notebook {
 		this.id = id;
 	}
 	
-	public String getName() {
-		return name;
+	public String getTitle() {
+		return title;
 	}
 	
-	public void setName(String name) {
-		this.name = name;
+	public void setTitle(String name) {
+		this.title = name;
 	}
 
 	public String getUserName() {
@@ -45,7 +45,7 @@ public class Notebook {
 
 	@Override
 	public String toString() {
-		return "Notebook [id=" + id + ", name=" + name + "]";
+		return "Notebook [id=" + id + ", name=" + title + "]";
 	}
 		
 }

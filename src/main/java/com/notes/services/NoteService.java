@@ -18,7 +18,7 @@ public class NoteService {
 	private NoteRepository noteRepository;
 	
 	// findall
-	public List<Note> findNotesByUserId(String userName){
+	public List<Note> findNotesByUserName(String userName){
 		return this.noteRepository.findByUserName(userName);
 	}
 	
@@ -28,8 +28,8 @@ public class NoteService {
 	}
 	
 	// save
-	public Note saveNote(Note note) {
-		return this.noteRepository.save(note);
+	public Optional<Note> saveNote(Note note) {
+		return Optional.of(this.noteRepository.save(note));
 	}
 	
 	// find by note id

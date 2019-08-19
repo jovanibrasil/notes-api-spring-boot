@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import com.notes.models.Notebook;
 
 @Repository
-public interface NotebookRepository extends MongoRepository<Notebook, Long> {
+public interface NotebookRepository extends MongoRepository<Notebook, String> {
 
 	List<Notebook> findByUserName(String userName);
 	Optional<Notebook> findById(String notebookId);

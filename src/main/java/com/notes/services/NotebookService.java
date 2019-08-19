@@ -28,8 +28,8 @@ public class NotebookService {
 	}
 	
 	// post
-	public Notebook saveNotebook(Notebook notebook) {
-		return this.notebookRepository.save(notebook);
+	public Optional<Notebook> saveNotebook(Notebook notebook) {
+		return Optional.of(this.notebookRepository.save(notebook));
 	}
 
 	public Optional<Notebook> findNotebookById(String notebookId) {

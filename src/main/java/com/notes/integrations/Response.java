@@ -3,7 +3,7 @@ package com.notes.integrations;
 import java.util.ArrayList;
 import java.util.List;
 
-/*
+/**
  * This class encapsulates the response data and the error list.
  * 
  * @author Jovani Brasil
@@ -29,5 +29,9 @@ public class Response<T> {
 			errors = new ArrayList<>();
 		return errors;
 	}	
+	
+	public void addError(String error) {
+		getErrors().add(error);
+	}
 	
 }

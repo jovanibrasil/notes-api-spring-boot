@@ -5,8 +5,9 @@ clean: stop
 build: clean
 	mvn clean package
 	docker build --build-arg NOTES_MONGO_URL -t notes-api .
+	chmod -R ugo+rw target/
 run: clean
-	docker run -d -p 8082:8080 --name=notes-api --network net notes-api
+	docker run -d -p 8082:8080 -e "SPRING_PROFILES_ACTIVE=dev" --name=notes-api --network net notes-api
 start: stop
 	docker start notes-api
 bash:
@@ -16,5 +17,5 @@ logs:
 compose-down:
 	docker-compose down -v
 compose-up: compose-down
-	docker-compose up -d
+	docker-compose up --no-recreate -d
 	

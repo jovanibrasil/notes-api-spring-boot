@@ -3,12 +3,20 @@ package com.notes.controllers;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,82 +27,152 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.notes.Util;
 import com.notes.dtos.NoteDTO;
+import com.notes.helpers.NoteHelper;
+import com.notes.helpers.ValidationResult;
+import com.notes.integrations.Response;
 import com.notes.models.Note;
-import com.notes.models.Notebook;
+import com.notes.models.User;
 import com.notes.services.NoteService;
 
 @CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("/note")
+@RequestMapping("/notes")
 public class NoteController {
 
+	private static final Logger log = LoggerFactory.getLogger(NoteController.class);
+	
 	@Autowired
 	private NoteService noteService;
 	
-	@GetMapping("/all")
-	public ResponseEntity<ArrayList<Note>> getAllNotes(HttpServletRequest request, Principal principal) {
-		String currentUserName = principal.getName();
-		ArrayList<Note> notes = (ArrayList<Note>) this.noteService.findNotesByUserId(currentUserName);
-		return ResponseEntity.ok(notes);
+	@Autowired
+	private NoteHelper noteHelper;
+	
+	/**
+	 * Returns a collection of notes of a particular user. 
+	 * 
+	 * @param request
+	 * @param principal
+	 * @return
+	 */
+	@GetMapping
+	public ResponseEntity<Response<List<Note>>> getNotes(HttpServletRequest request, Principal principal) {
+		Response<List<Note>> response = new Response<List<Note>>(); 
+		String userName = principal.getName();
+		List<Note> notes = this.noteService.findNotesByUserName(userName);
+		response.setData(notes);
+		return ResponseEntity.ok(response);
 	}
 	
-	@PostMapping
-	public ResponseEntity<NoteDTO> saveNote(@RequestBody NoteDTO noteDTO, HttpServletRequest request, Principal principal) {
-		
-		String currentUserName = principal.getName();
-		// TODO validation
-		Notebook nb = new Notebook();
-		nb.setId(noteDTO.getNotebookId());
-		nb.setUserName(currentUserName);
-		// Save on database
-		Note n = Util.convertNoteDTOtoNote(noteDTO, currentUserName);
-		n.setLastModifiedOn(new Date());
-		n = this.noteService.saveNote(n);
-		// Return note with the valid id generated 
-		noteDTO.setId(n.getId());
-		noteDTO.setLastModifiedOn(n.getLastModifiedOn());
-		return ResponseEntity.ok(noteDTO);
-	}
-	
-	@PutMapping
-	public ResponseEntity<NoteDTO> updateNote(@RequestBody NoteDTO noteDTO, HttpServletRequest request, Principal principal) {
-		
-		String currentUserName = principal.getName();
-		// TODO validation
-		//Notebook nb = new Notebook();
-		//nb.setId(noteDTO.getNotebookId());
-		// Save on database
-		Note n = Util.convertNoteDTOtoNote(noteDTO, currentUserName);
-		// TODO n.setNotebook(nb);
-		n.setLastModifiedOn(new Date());
-		n.setUserName(currentUserName);
-		n = this.noteService.saveNote(n);
-		// Return note with the valid id generated 
-		noteDTO.setId(n.getId());
-		noteDTO.setLastModifiedOn(n.getLastModifiedOn());
-		return ResponseEntity.ok(noteDTO);
-	}
-	
+	/**
+	 * Deletes a note by a particular id.
+	 * 
+	 * @param noteId is the note id, that is the identification field
+	 * @return
+	 */
 	@DeleteMapping("/{noteId}")
-	public ResponseEntity<Note> deleteNote(@PathVariable String noteId){
+	public ResponseEntity<Response<String>> deleteNote(@PathVariable String noteId){
+		Response<String> response = new Response<String>(); 
 		Optional<Note> optNote = this.noteService.findNoteById(noteId);
 		if(optNote.isPresent()) {
 			this.noteService.deleteNote(noteId);
-			return ResponseEntity.ok(optNote.get());
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
 		}else {
-			// TODO return error
-			//System.out.println("nota não encontrada");
-			return null;
+			log.error("It was not possible delete the note {}.", noteId);
+			response.addError("It was not possible delete the note.");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
 		}
-		
 	}
 	
-	@GetMapping("/byNotebookId/{notebookId}")
-	public ResponseEntity<ArrayList<Note>> getNotesByNotebook(@PathVariable String notebookId){
-		ArrayList<Note> notes = (ArrayList<Note>) this.noteService.findNotesByNotebookId(notebookId);
-		return ResponseEntity.ok(notes);
+	/**
+	 * Saves a new note.
+	 * 
+	 * @param noteDTO
+	 * @param request
+	 * @param principal
+	 * @param bindingResult
+	 * @return
+	 */
+	@PostMapping
+	public ResponseEntity<Response<NoteDTO>> saveNote(@Valid @RequestBody NoteDTO noteDTO, HttpServletRequest request, 
+			Principal principal, BindingResult bindingResult) {
+		
+		Response<NoteDTO> response = new Response<NoteDTO>();
+		
+		if(bindingResult.hasErrors()) {
+			log.error("Validation error {}", bindingResult.getAllErrors());
+			bindingResult.getAllErrors().forEach(e -> response.addError(e.getDefaultMessage()));
+			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(response);
+		}
+		
+		String currentUserName = principal.getName();
+		
+		Note note = noteHelper.convertNoteDTOtoNote(noteDTO, currentUserName);
+		ValidationResult vr = noteHelper.validateNewNote(note, currentUserName);
+		if(vr.hasErrors()) {
+			log.error("Validation error {}",  vr.getErrors());
+			// Return bad request, invalid content.
+			vr.getErrors().forEach(e -> response.addError(e));
+			ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(response);  
+		}
+		// Save on database
+		note.setLastModifiedOn(new Date());
+		Optional<Note> optNote = this.noteService.saveNote(note);
+		if(optNote.isPresent()) {
+			// Return note with the valid id generated 
+			noteDTO.setId(optNote.get().getId());
+			noteDTO.setLastModifiedOn(optNote.get().getLastModifiedOn());
+			response.setData(noteDTO);
+			return ResponseEntity.status(HttpStatus.CREATED).body(response);
+		}else {
+			response.addError("It was not possible to save the note.");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+		}
+	}
+	
+	/**
+	 * Update an already existent note.
+	 * 
+	 * @param noteDTO
+	 * @param request
+	 * @param principal
+	 * @param bindingResult
+	 * @return
+	 */
+	@PutMapping
+	public ResponseEntity<Response<NoteDTO>> updateNote(@RequestBody @Valid NoteDTO noteDTO, HttpServletRequest request, 
+			Principal principal, BindingResult bindingResult) {
+		
+		Response<NoteDTO> response = new Response<NoteDTO>();
+		
+		if(bindingResult.hasErrors()) {
+			log.error("Validation error {}", bindingResult.getAllErrors());
+			bindingResult.getAllErrors().forEach(e -> response.addError(e.getDefaultMessage()));
+			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(response);
+		}
+		String currentUserName = principal.getName();
+		Note note = noteHelper.convertNoteDTOtoNote(noteDTO, currentUserName);
+		ValidationResult vr = noteHelper.validateExistentNote(note, currentUserName);
+		if(vr.hasErrors()) {
+			log.error("Validation error {}", vr.getErrors());
+			vr.getErrors().forEach(e -> response.addError(e));
+			ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);  
+		}
+		note.setLastModifiedOn(new Date());
+		note.setUserName(currentUserName);
+		Optional<Note> optNote = this.noteService.saveNote(note);
+		if(optNote.isPresent()) {
+			// Return note with the valid id generated 
+			note = optNote.get();
+			noteDTO.setId(note.getId());
+			noteDTO.setLastModifiedOn(note.getLastModifiedOn());
+			response.setData(noteDTO);
+			return ResponseEntity.ok(response);
+		}else {
+			log.error("It was not possible to update the note {}.", note.getId());
+			response.addError("It was not possible to update the note.");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+		}
 	}
 		
 }

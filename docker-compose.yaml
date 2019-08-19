@@ -9,8 +9,19 @@ services:
       - 8082:8080
     networks:
       - net
+    environment:
+      - "SPRING_PROFILES_ACTIVE=dev"    
     depends_on:
       - auth-api
+      - notes-database
+  notes-database: # Mongo database
+    image: mongo-database
+    container_name: mongo-database
+    ports:
+      - 27017:27017 
+      - 28017:28017
+    networks:
+      - net
   auth-api: # Authentication API (Spring)
     image: auth-api
     container_name: auth-api
@@ -18,3 +29,12 @@ services:
       - 8083:8080
     networks:
       - net
+    environment:
+      - "SPRING_PROFILES_ACTIVE=dev"
+  mysql-database:
+    image: mysql-database
+    container_name: mysql-database
+    ports:
+      - 3306:3306
+    networks:
+      - net   
