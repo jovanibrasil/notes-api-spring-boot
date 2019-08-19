@@ -13,9 +13,9 @@ public class Notebook {
 	
 	public Notebook() {}
 	
-	public Notebook(String id, String name, String userName) {
+	public Notebook(String id, String title, String userName) {
 		this.id = id;
-		this.title = name;
+		this.title = title;
 		this.userName = userName;
 	}
 

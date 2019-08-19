@@ -56,7 +56,7 @@ public class NotebookController {
 	public ResponseEntity<Response<List<NotebookDTO>>> getAllNotebooks(HttpServletRequest request, Principal principal) {
 		Response<List<NotebookDTO>> response = new Response<List<NotebookDTO>>();
 		String currentUserName = principal.getName();
-		ArrayList<Notebook> notebooks = (ArrayList<Notebook>) notebookService.findAllByUserId(currentUserName);
+		List<Notebook> notebooks = notebookService.findAllByUserId(currentUserName);
 		List<NotebookDTO> res = notebooks.stream().map(notebook -> {
 			return new NotebookDTO(notebook.getId(), notebook.getTitle(), currentUserName);
 		}).collect(Collectors.toList());
