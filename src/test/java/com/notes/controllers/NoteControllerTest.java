@@ -127,7 +127,7 @@ public class NoteControllerTest {
 		mvc.perform(MockMvcRequestBuilders.delete("/notes/noteIdX")
 				.contentType(MediaType.APPLICATION_JSON)
 				.header("Authorization", "x.x.x.x"))
-				.andExpect(status().isBadRequest())
+				.andExpect(status().isNotFound())
 				.andExpect(jsonPath("$.errors").isNotEmpty())
 				.andExpect(jsonPath("$.data").isEmpty());
 	}
@@ -136,9 +136,9 @@ public class NoteControllerTest {
 	public void testDeleteNoteWithoutAuthHeader() throws Exception {	
 		mvc.perform(MockMvcRequestBuilders.delete("/notes/noteIdY")
 				.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isUnauthorized());
-//				.andExpect(jsonPath("$.errors").isEmpty())
-//				.andExpect(jsonPath("$.data").isEmpty());
+				.andExpect(status().isUnauthorized())
+				.andExpect(jsonPath("$.errors").isEmpty())
+				.andExpect(jsonPath("$.data").isEmpty());
 	}
 	
 	@Test
@@ -147,9 +147,9 @@ public class NoteControllerTest {
 		mvc.perform(MockMvcRequestBuilders.delete("/notes")
 				.contentType(MediaType.APPLICATION_JSON)
 				.header("Authorization", "x.x.x.x"))
-				.andExpect(status().isUnauthorized());
-				//.andExpect(jsonPath("$.errors").isEmpty())
-				//.andExpect(jsonPath("$.data").isEmpty());
+				.andExpect(status().isUnauthorized())
+				.andExpect(jsonPath("$.errors").isEmpty())
+				.andExpect(jsonPath("$.data").isEmpty());
 	}
 	
 	/**
@@ -178,8 +178,8 @@ public class NoteControllerTest {
 		mvc.perform(MockMvcRequestBuilders.post("/notes")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(asJsonString((new NoteHelper()).convertNoteToNoteDTO(note2))))			
-				.andExpect(status().isUnauthorized());
-			//	.andExpect(jsonPath("$.errors").isEmpty());
+				.andExpect(status().isUnauthorized())
+				.andExpect(jsonPath("$.errors").isEmpty());
 	}
 	
 	@Test
@@ -187,9 +187,9 @@ public class NoteControllerTest {
 		BDDMockito.given(this.authClient.checkToken(Mockito.anyString())).willReturn(null);
 		mvc.perform(MockMvcRequestBuilders.post("/notes").contentType(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isUnauthorized());
-				//.andExpect(jsonPath("$.errors").isEmpty());
-			//	.andExpect(jsonPath("$.data").isEmpty());
+				.andExpect(status().isUnauthorized())
+				.andExpect(jsonPath("$.errors").isEmpty())
+				.andExpect(jsonPath("$.data").isEmpty());
 	}
 	
 	public static String asJsonString(final Object obj) {

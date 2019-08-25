@@ -17,13 +17,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	private JwtAuthenticationEntryPoint unauthorizedHandler;
-			
+	
+//	@Autowired
+//	private ExceptionHandlerFilter exceptionHandlerFilter;
+//	
+//	Autowired
+//	private CustomAccessDeniedHandler accessDeniedHandler;
+	
 	/*
 	 * Filter used when the application intercepts a requests.
 	 */
 	@Bean
 	public JwtAuthenticationTokenFilter authenticationTokenFilterBean() throws Exception {
 		return new JwtAuthenticationTokenFilter();
+	}
+	
+	@Bean
+	public ExceptionHandlerFilter exceptionHandlerFilterBean() throws Exception {
+		return new ExceptionHandlerFilter();
 	}
 	
 	/**
@@ -37,11 +48,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.cors()
 			.and()
 			.addFilterBefore(authenticationTokenFilterBean(),  BasicAuthenticationFilter.class)
+			.addFilterBefore(exceptionHandlerFilterBean(), JwtAuthenticationTokenFilter.class)
 			.exceptionHandling().authenticationEntryPoint(unauthorizedHandler) // set authentication error
+		//	.accessDeniedHandler(accessDeniedHandler)
 			.and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // set session police stateless
 			.and()
 			.authorizeRequests()
-			.antMatchers("/ping").permitAll()
+			.antMatchers("/ping", "/users").permitAll()
 			.antMatchers("/notebooks", "/notebooks/**", "/notes", "/notes/**").hasAnyRole("ADMIN", "USER");
 		
 			//http.addFilterBefore(new LoginFilter("/users/login", authenticationManager()), UsernamePasswordAuthenticationFilter.class);

@@ -12,7 +12,7 @@ import java.util.List;
 public class Response<T> {
 
 	private T data;
-	private List<String> errors;
+	private List<ErrorDetail> errors;
 	
 	public Response() {}
 
@@ -24,13 +24,13 @@ public class Response<T> {
 		this.data = data;
 	}
 
-	public List<String> getErrors() {
+	public List<ErrorDetail> getErrors() {
 		if(errors == null)
 			errors = new ArrayList<>();
 		return errors;
 	}	
 	
-	public void addError(String error) {
+	public void addError(ErrorDetail error) {
 		getErrors().add(error);
 	}
 	

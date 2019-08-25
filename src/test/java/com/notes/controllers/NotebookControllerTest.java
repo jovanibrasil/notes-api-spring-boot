@@ -93,9 +93,9 @@ public class NotebookControllerTest {
 		BDDMockito.given(this.notebookService.findAllByUserId("userName")).willReturn(Arrays.asList());
 		mvc.perform(MockMvcRequestBuilders.get("/notebooks")
 				.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isUnauthorized());
-//				.andExpect(jsonPath("$.errors").isEmpty())
-//				.andExpect(jsonPath("$.data").isEmpty());
+				.andExpect(status().isUnauthorized())
+				.andExpect(jsonPath("$.errors").isEmpty())
+				.andExpect(jsonPath("$.data").isEmpty());
 	}
 	
 	@Test
@@ -103,9 +103,9 @@ public class NotebookControllerTest {
 		BDDMockito.given(this.authClient.checkToken(Mockito.anyString())).willReturn(null);
 		mvc.perform(MockMvcRequestBuilders.get("/notebooks")
 				.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isUnauthorized());
-//				.andExpect(jsonPath("$.errors").isEmpty())
-//				.andExpect(jsonPath("$.data").isEmpty());
+				.andExpect(status().isUnauthorized())
+				.andExpect(jsonPath("$.errors").isEmpty())
+				.andExpect(jsonPath("$.data").isEmpty());
 	}
 	
 	/**
@@ -139,9 +139,9 @@ public class NotebookControllerTest {
 	public void testDeleteNotebookWithoutAuthHeader() throws Exception {	
 		mvc.perform(MockMvcRequestBuilders.delete("/notebooks/idX")
 				.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isUnauthorized());
-//				.andExpect(jsonPath("$.errors").isEmpty())
-//				.andExpect(jsonPath("$.data").isEmpty());
+				.andExpect(status().isUnauthorized())
+				.andExpect(jsonPath("$.errors").isEmpty())
+				.andExpect(jsonPath("$.data").isEmpty());
 	}
 	
 	@Test
@@ -150,9 +150,9 @@ public class NotebookControllerTest {
 		mvc.perform(MockMvcRequestBuilders.delete("/notebooks")
 				.contentType(MediaType.APPLICATION_JSON)
 				.header("Authorization", "x.x.x.x"))
-				.andExpect(status().isUnauthorized());
-				//.andExpect(jsonPath("$.errors").isEmpty())
-				//.andExpect(jsonPath("$.data").isEmpty());
+				.andExpect(status().isUnauthorized())
+				.andExpect(jsonPath("$.errors").isEmpty())
+				.andExpect(jsonPath("$.data").isEmpty());
 	}
 	
 	/**
@@ -177,8 +177,8 @@ public class NotebookControllerTest {
 		mvc.perform(MockMvcRequestBuilders.post("/notebooks")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(asJsonString(new Notebook(notebook1.getId(), notebook1.getTitle(), notebook1.getUserName()))))
-				.andExpect(status().isUnauthorized());
-			//	.andExpect(jsonPath("$.errors").isEmpty());
+				.andExpect(status().isUnauthorized())
+				.andExpect(jsonPath("$.errors").isEmpty());
 	}
 	
 	@Test
@@ -186,9 +186,9 @@ public class NotebookControllerTest {
 		BDDMockito.given(this.authClient.checkToken(Mockito.anyString())).willReturn(null);
 		mvc.perform(MockMvcRequestBuilders.post("/notebooks").contentType(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isUnauthorized());
-				//.andExpect(jsonPath("$.errors").isEmpty());
-			//	.andExpect(jsonPath("$.data").isEmpty());
+				.andExpect(status().isUnauthorized())
+				.andExpect(jsonPath("$.errors").isEmpty())
+				.andExpect(jsonPath("$.data").isEmpty());
 	}
 	
 	public static String asJsonString(final Object obj) {

@@ -1,7 +1,6 @@
 package com.notes.controllers;
 
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -14,8 +13,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,11 +25,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.notes.dtos.NoteDTO;
+import com.notes.exceptions.ResourceNotFoundException;
 import com.notes.helpers.NoteHelper;
 import com.notes.helpers.ValidationResult;
+import com.notes.integrations.ErrorDetail;
 import com.notes.integrations.Response;
 import com.notes.models.Note;
-import com.notes.models.User;
 import com.notes.services.NoteService;
 
 @CrossOrigin(origins = "*")
@@ -79,8 +77,7 @@ public class NoteController {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
 		}else {
 			log.error("It was not possible delete the note {}.", noteId);
-			response.addError("It was not possible delete the note.");
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+			throw new ResourceNotFoundException("It was not possible delete the note {}.");
 		}
 	}
 	
@@ -101,7 +98,7 @@ public class NoteController {
 		
 		if(bindingResult.hasErrors()) {
 			log.error("Validation error {}", bindingResult.getAllErrors());
-			bindingResult.getAllErrors().forEach(e -> response.addError(e.getDefaultMessage()));
+			bindingResult.getAllErrors().forEach(e -> response.addError(new ErrorDetail(e.getDefaultMessage())));
 			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(response);
 		}
 		
@@ -112,7 +109,7 @@ public class NoteController {
 		if(vr.hasErrors()) {
 			log.error("Validation error {}",  vr.getErrors());
 			// Return bad request, invalid content.
-			vr.getErrors().forEach(e -> response.addError(e));
+			vr.getErrors().forEach(e -> response.addError(new ErrorDetail(e)));
 			ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(response);  
 		}
 		// Save on database
@@ -125,7 +122,7 @@ public class NoteController {
 			response.setData(noteDTO);
 			return ResponseEntity.status(HttpStatus.CREATED).body(response);
 		}else {
-			response.addError("It was not possible to save the note.");
+			response.addError(new ErrorDetail("It was not possible to save the note."));
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
 		}
 	}
@@ -147,7 +144,7 @@ public class NoteController {
 		
 		if(bindingResult.hasErrors()) {
 			log.error("Validation error {}", bindingResult.getAllErrors());
-			bindingResult.getAllErrors().forEach(e -> response.addError(e.getDefaultMessage()));
+			bindingResult.getAllErrors().forEach(e -> response.addError(new ErrorDetail(e.getDefaultMessage())));
 			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(response);
 		}
 		String currentUserName = principal.getName();
@@ -155,7 +152,7 @@ public class NoteController {
 		ValidationResult vr = noteHelper.validateExistentNote(note, currentUserName);
 		if(vr.hasErrors()) {
 			log.error("Validation error {}", vr.getErrors());
-			vr.getErrors().forEach(e -> response.addError(e));
+			vr.getErrors().forEach(e -> response.addError(new ErrorDetail(e)));
 			ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);  
 		}
 		note.setLastModifiedOn(new Date());
@@ -170,7 +167,7 @@ public class NoteController {
 			return ResponseEntity.ok(response);
 		}else {
 			log.error("It was not possible to update the note {}.", note.getId());
-			response.addError("It was not possible to update the note.");
+			response.addError(new ErrorDetail("It was not possible to update the note."));
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
 		}
 	}

@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.notes.dtos.NotebookDTO;
+import com.notes.integrations.ErrorDetail;
 import com.notes.integrations.Response;
 import com.notes.models.Note;
 import com.notes.models.Notebook;
@@ -84,7 +85,7 @@ public class NotebookController {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
 		}else {
 			log.error("It was not possible delete the notebook {}.", notebookId);
-			response.addError("It was not possible delete the notebook.");
+			response.addError(new ErrorDetail("It was not possible delete the notebook."));
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
 		}
 	}
@@ -118,7 +119,7 @@ public class NotebookController {
 		
 		if(bindingResult.hasErrors()) {
 			log.error("Validation error {}", bindingResult.getAllErrors());
-			bindingResult.getAllErrors().forEach(e -> response.addError(e.getDefaultMessage()));
+			bindingResult.getAllErrors().forEach(e -> response.addError(new ErrorDetail(e.getDefaultMessage())));
 			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(response);
 		}
 		
@@ -147,7 +148,7 @@ public class NotebookController {
 		
 		if(bindingResult.hasErrors()) {
 			log.error("Validation error {}", bindingResult.getAllErrors());
-			bindingResult.getAllErrors().forEach(e -> response.addError(e.getDefaultMessage()));
+			bindingResult.getAllErrors().forEach(e -> response.addError(new ErrorDetail(e.getDefaultMessage())));
 			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(response);
 		}
 		
@@ -164,7 +165,7 @@ public class NotebookController {
 		}
 		
 		log.error("It was not possible update the notebook {}.", notebookDTO.getId());
-		response.addError("It was not possible update the notebook.");
+		response.addError(new ErrorDetail("It was not possible update the notebook."));
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
 		
 	}

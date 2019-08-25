@@ -3,7 +3,7 @@ stop:
 clean: stop
 	- docker rm notes-api
 build: clean
-	mvn clean package
+	mvn clean package -DskipTests
 	docker build --build-arg NOTES_MONGO_URL -t notes-api .
 	chmod -R ugo+rw target/
 run: clean

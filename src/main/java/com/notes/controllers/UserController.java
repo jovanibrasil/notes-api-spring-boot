@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.notes.dtos.UserDTO;
+import com.notes.integrations.ErrorDetail;
 import com.notes.integrations.Response;
 import com.notes.models.User;
 import com.notes.services.UserService;
@@ -51,7 +52,7 @@ public class UserController {
 		
 		if(!optUser.isPresent()) {
 			log.error("It was not possible to find the specified user.");
-			response.addError("It was not possible to find the specified user.");
+			response.addError(new ErrorDetail("It was not possible to find the specified user."));
 			return ResponseEntity.badRequest().body(response);
 		}
 		
@@ -85,14 +86,14 @@ public class UserController {
 		
 		if(bindingResult.hasErrors()) {
 			log.error("It was not possible to create the specified user. DTO binding error.");
-			bindingResult.getAllErrors().forEach(err -> response.addError(err.getDefaultMessage()));
+			bindingResult.getAllErrors().forEach(err -> response.addError(new ErrorDetail(err.getDefaultMessage())));
 			return ResponseEntity.badRequest().body(response);
 		}
 		
 		this.validateUser(userDTO, bindingResult);
 		if(bindingResult.hasErrors()) {
 			log.error("It was not possible to create the specified user. Validation Error.");
-			bindingResult.getAllErrors().forEach(err -> response.addError(err.getDefaultMessage()));
+			bindingResult.getAllErrors().forEach(err -> response.addError(new ErrorDetail(err.getDefaultMessage())));
 			return ResponseEntity.badRequest().body(response);
 		}
 		
@@ -100,7 +101,7 @@ public class UserController {
 		Optional<User> optUser = this.userService.save(user);
 		if(!optUser.isPresent()) {
 			log.error("It was not possible to create the specified user.");
-			response.addError("It was not possible to create the user.");
+			response.addError(new ErrorDetail("It was not possible to create the user."));
 			return ResponseEntity.badRequest().body(response);
 		}
 		log.info("Creating user {}", user.getUserName());

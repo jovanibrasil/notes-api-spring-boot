@@ -26,9 +26,9 @@ public class AuthClient {
 			HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
 			ResponseEntity<Response<TempUser>> responseEntity = restTemplate.exchange(uri, HttpMethod.GET, entity, 
 					new ParameterizedTypeReference<Response<TempUser>>() {} );
-			
 			return responseEntity.getBody().getData();
 		} catch (Exception e) {
+			System.out.println(e.getMessage());
 			throw new MicroServiceIntegrationException("It was not posssible to validate the user.", e);
 		}
 	}
