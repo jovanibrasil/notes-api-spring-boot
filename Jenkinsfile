@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'jenkins-slave' }
+    agent { label 'aws-agent' }
     
     environment {
      	NOTES_MONGO_URL = credentials('NOTES_MONGO_URL');
