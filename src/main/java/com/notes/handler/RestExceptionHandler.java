@@ -69,8 +69,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 		Response<?> response = new Response();
 		response.addError(error);
 		return ResponseEntity.badRequest().body(response);
-		
-		//return super.handleMethodArgumentNotValid(ex, headers, status, request);
 	}
 	
 	

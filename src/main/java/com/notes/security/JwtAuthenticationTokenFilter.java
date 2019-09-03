@@ -7,6 +7,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,15 +22,17 @@ import com.notes.models.User;
 
 /**
  * 
- * Validated the received requests.
+ * Validate the received requests.
  * 
- * @author jovani
+ * @author Jovani Brasil
  *
  */
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
 	private static final String AUTH_HEADER = "Authorization";
 
+	private static final Logger log = LoggerFactory.getLogger(JwtAuthenticationTokenFilter.class);
+	
 	@Autowired
 	private AuthClient authClient;
 
@@ -37,19 +41,27 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 			throws ServletException, IOException, UnauthorizedUserException {
 		
 		String token = request.getHeader(AUTH_HEADER);
-		if (token == null) throw new UnauthorizedUserException("Unauthorized user.");
 		try {
 			if(token != null) {
-				TempUser tempUser = authClient.checkToken(token);
+				log.info("Checking received token ...");
+				TempUser tempUser = authClient.checkUserToken(token);
+				log.info("Token checked!");
+				if (tempUser == null) {
+					log.info("The token is invalid.");
+					throw new UnauthorizedUserException("Unauthorized user.");	
+				}
 				
-				if (tempUser == null) throw new UnauthorizedUserException("Unauthorized user.");	
 				UserDetails userDetails = new User(tempUser.getName(), tempUser.getRole());
 				UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(userDetails,
 						null, userDetails.getAuthorities());
 				auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 				SecurityContextHolder.getContext().setAuthentication(auth);
+			}else {
+				log.info("Token not found. Throw exception.");
+				throw new UnauthorizedUserException("Unauthorized user.");
 			}
 		} catch (Exception e) {
+			log.info("It was not posssible to validate the user. {}", e.getMessage());
 			throw new UnauthorizedUserException("It was not posssible to validate the user.");
 		}
 

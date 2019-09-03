@@ -8,7 +8,6 @@ import javax.validation.constraints.Size;
 
 public class NoteDTO {
 
-	@NotBlank(message = "The id must not be null or blank.")
 	private String id;
 	@NotBlank(message = "The message must not be null or empty.")
 	@Size(min=1, max=20, message="The title must contains between 1 and 20 characters.")

@@ -54,11 +54,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // set session police stateless
 			.and()
 			.authorizeRequests()
-			.antMatchers("/ping", "/users").permitAll()
-			.antMatchers("/notebooks", "/notebooks/**", "/notes", "/notes/**").hasAnyRole("ADMIN", "USER");
-		
+			.antMatchers("/notebooks", "/notebooks/**", "/notes", "/notes/**").hasAnyRole("ADMIN", "USER")
+			.antMatchers("/users").hasRole("SERVICE");
 			//http.addFilterBefore(new LoginFilter("/users/login", authenticationManager()), UsernamePasswordAuthenticationFilter.class);
-					        
 			http.headers().cacheControl();
 		
 	}

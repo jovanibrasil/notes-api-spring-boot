@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import com.notes.models.Note;
 
 @Repository
-public interface NoteRepository extends MongoRepository<Note, Long> {
+public interface NoteRepository extends MongoRepository<Note, String> {
 	
 		public Note save(Note note);
 		public Optional<Note> findById(String noteId);

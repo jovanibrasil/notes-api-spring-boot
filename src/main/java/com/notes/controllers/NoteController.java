@@ -55,6 +55,7 @@ public class NoteController {
 	 */
 	@GetMapping
 	public ResponseEntity<Response<List<Note>>> getNotes(HttpServletRequest request, Principal principal) {
+		log.info("Getting all notes.");
 		Response<List<Note>> response = new Response<List<Note>>(); 
 		String userName = principal.getName();
 		List<Note> notes = this.noteService.findNotesByUserName(userName);
@@ -70,6 +71,7 @@ public class NoteController {
 	 */
 	@DeleteMapping("/{noteId}")
 	public ResponseEntity<Response<String>> deleteNote(@PathVariable String noteId){
+		log.info("Delete note {}.", noteId);
 		Response<String> response = new Response<String>(); 
 		Optional<Note> optNote = this.noteService.findNoteById(noteId);
 		if(optNote.isPresent()) {
@@ -93,7 +95,7 @@ public class NoteController {
 	@PostMapping
 	public ResponseEntity<Response<NoteDTO>> saveNote(@Valid @RequestBody NoteDTO noteDTO, HttpServletRequest request, 
 			Principal principal, BindingResult bindingResult) {
-		
+		log.info("Saving note.");
 		Response<NoteDTO> response = new Response<NoteDTO>();
 		
 		if(bindingResult.hasErrors()) {
@@ -139,7 +141,7 @@ public class NoteController {
 	@PutMapping
 	public ResponseEntity<Response<NoteDTO>> updateNote(@RequestBody @Valid NoteDTO noteDTO, HttpServletRequest request, 
 			Principal principal, BindingResult bindingResult) {
-		
+		log.info("Updating note.");
 		Response<NoteDTO> response = new Response<NoteDTO>();
 		
 		if(bindingResult.hasErrors()) {

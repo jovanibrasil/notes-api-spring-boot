@@ -60,7 +60,7 @@ public class NoteControllerTest {
 		note1 = new Note("noteId1", "noteTitle", "noteText", "notebookId1", "userName");
 		note2 = new Note("noteId2", "noteTitle", "noteText", "notebookId2", "userName");
 		BDDMockito.given(this.noteService.findNotesByUserName("userName")).willReturn(Arrays.asList(note1, note2));
-		BDDMockito.given(this.authClient.checkToken(Mockito.anyString())).willReturn(new TempUser("userName", ProfileTypeEnum.ROLE_ADMIN));
+		BDDMockito.given(this.authClient.checkUserToken(Mockito.anyString())).willReturn(new TempUser("userName", ProfileTypeEnum.ROLE_ADMIN));
 	}
 
 	/**
@@ -98,7 +98,7 @@ public class NoteControllerTest {
 	
 	@Test
 	public void testGetListNotesWithInvalidToken() throws Exception {
-		BDDMockito.given(this.authClient.checkToken(Mockito.anyString())).willReturn(null);
+		BDDMockito.given(this.authClient.checkUserToken(Mockito.anyString())).willReturn(null);
 		mvc.perform(MockMvcRequestBuilders.get("/notes")
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isUnauthorized());
@@ -143,7 +143,7 @@ public class NoteControllerTest {
 	
 	@Test
 	public void testDeleteNoteWithInvalidToken() throws Exception {
-		BDDMockito.given(this.authClient.checkToken(Mockito.anyString())).willReturn(null);
+		BDDMockito.given(this.authClient.checkUserToken(Mockito.anyString())).willReturn(null);
 		mvc.perform(MockMvcRequestBuilders.delete("/notes")
 				.contentType(MediaType.APPLICATION_JSON)
 				.header("Authorization", "x.x.x.x"))
@@ -184,7 +184,7 @@ public class NoteControllerTest {
 	
 	@Test
 	public void testPostNoteWithInvalidToken() throws Exception {
-		BDDMockito.given(this.authClient.checkToken(Mockito.anyString())).willReturn(null);
+		BDDMockito.given(this.authClient.checkUserToken(Mockito.anyString())).willReturn(null);
 		mvc.perform(MockMvcRequestBuilders.post("/notes").contentType(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isUnauthorized())

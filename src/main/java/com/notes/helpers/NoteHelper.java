@@ -42,7 +42,7 @@ public class NoteHelper {
 			// invalid note: the note doesn't exist
 			vr.addError("This note does not exist.");
 		}		
-		return null;
+		return vr;
 	}
 	
 	public Note convertNoteDTOtoNote(NoteDTO noteDTO, String userName) {

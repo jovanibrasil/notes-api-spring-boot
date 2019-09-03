@@ -1,14 +1,12 @@
 package com.notes.services;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.notes.enums.ProfileTypeEnum;
@@ -20,6 +18,8 @@ import com.notes.repositories.UserRepository;
 @Primary
 public class UserService {
     
+	private static final Logger log = LoggerFactory.getLogger(UserService.class);
+	
 	@Autowired
 	private UserRepository userRepository;
 	
@@ -42,8 +42,12 @@ public class UserService {
 	//@Override
 	public void deleteByUserName(String userName) {
 		Optional<User> optUser = this.findByUserName(userName);
+		
 		if(optUser.isPresent()) {
+			log.info("The user {} will be deleted.", userName);
 			this.userRepository.delete(optUser.get());
+		}else {
+			log.info("Delete: User not found");
 		}
 	}
 

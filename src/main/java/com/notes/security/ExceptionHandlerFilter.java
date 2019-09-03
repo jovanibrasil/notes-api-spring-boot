@@ -26,14 +26,14 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
 		try {
 			filterChain.doFilter(request, response);
 		} catch (UnauthorizedUserException e) {
-			log.info("UnauthorizedUserException");
+			log.info("UnauthorizedUserException was throwed. {}", e.getMessage());
 			Response<String> res = new Response<String>();
 			ObjectMapper mapper = new ObjectMapper();
 			PrintWriter out = response.getWriter();
 			out.print(mapper.writeValueAsString(res));
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 		} catch (Exception e) {
-			log.info("Exception");
+			log.info("Exception. {}", e.getMessage());
 		}
 	}
 

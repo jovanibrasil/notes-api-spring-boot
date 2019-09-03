@@ -60,7 +60,7 @@ public class NotebookControllerTest {
 		notebook2 = new Notebook("id2", "name2", "userName");
 		BDDMockito.given(this.notebookService.findAllByUserId("userName"))
 			.willReturn(Arrays.asList(notebook1, notebook2));
-		BDDMockito.given(this.authClient.checkToken(Mockito.anyString()))
+		BDDMockito.given(this.authClient.checkUserToken(Mockito.anyString()))
 			.willReturn(new TempUser("userName", ProfileTypeEnum.ROLE_ADMIN));
 	}
 
@@ -100,7 +100,7 @@ public class NotebookControllerTest {
 	
 	@Test
 	public void testGetListNotebooksWithInvalidToken() throws Exception {
-		BDDMockito.given(this.authClient.checkToken(Mockito.anyString())).willReturn(null);
+		BDDMockito.given(this.authClient.checkUserToken(Mockito.anyString())).willReturn(null);
 		mvc.perform(MockMvcRequestBuilders.get("/notebooks")
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isUnauthorized())
@@ -146,7 +146,7 @@ public class NotebookControllerTest {
 	
 	@Test
 	public void testDeleteNotebookWithInvalidToken() throws Exception {
-		BDDMockito.given(this.authClient.checkToken(Mockito.anyString())).willReturn(null);
+		BDDMockito.given(this.authClient.checkUserToken(Mockito.anyString())).willReturn(null);
 		mvc.perform(MockMvcRequestBuilders.delete("/notebooks")
 				.contentType(MediaType.APPLICATION_JSON)
 				.header("Authorization", "x.x.x.x"))
@@ -183,7 +183,7 @@ public class NotebookControllerTest {
 	
 	@Test
 	public void testPostNotebookWithInvalidToken() throws Exception {
-		BDDMockito.given(this.authClient.checkToken(Mockito.anyString())).willReturn(null);
+		BDDMockito.given(this.authClient.checkUserToken(Mockito.anyString())).willReturn(null);
 		mvc.perform(MockMvcRequestBuilders.post("/notebooks").contentType(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isUnauthorized())

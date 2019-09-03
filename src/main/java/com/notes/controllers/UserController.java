@@ -26,7 +26,6 @@ import com.notes.integrations.Response;
 import com.notes.models.User;
 import com.notes.services.UserService;
 
-
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/users")
@@ -66,6 +65,7 @@ public class UserController {
 	 */
 	@DeleteMapping("/{userName}")
 	public ResponseEntity<Response<String>> deleteUser(@PathVariable("userName") String userName){
+		log.info("Deleting user {}.", userName);
 		Response<String> response = new Response<String>();
 		this.userService.deleteByUserName(userName);
  		return ResponseEntity.ok(response);
@@ -83,31 +83,37 @@ public class UserController {
 	@PostMapping
 	public ResponseEntity<Response<UserDTO>> saveUser(@Valid @RequestBody UserDTO userDTO, BindingResult bindingResult){
 		Response<UserDTO> response = new Response<UserDTO>();
-		
-		if(bindingResult.hasErrors()) {
-			log.error("It was not possible to create the specified user. DTO binding error.");
-			bindingResult.getAllErrors().forEach(err -> response.addError(new ErrorDetail(err.getDefaultMessage())));
-			return ResponseEntity.badRequest().body(response);
-		}
-		
-		this.validateUser(userDTO, bindingResult);
-		if(bindingResult.hasErrors()) {
-			log.error("It was not possible to create the specified user. Validation Error.");
-			bindingResult.getAllErrors().forEach(err -> response.addError(new ErrorDetail(err.getDefaultMessage())));
-			return ResponseEntity.badRequest().body(response);
-		}
-		
-		User user = this.userDTOtoUser(userDTO);
-		Optional<User> optUser = this.userService.save(user);
-		if(!optUser.isPresent()) {
+		try {
+			log.info("Creating user {}", userDTO.getUserName());
+			if(bindingResult.hasErrors()) {
+				log.error("It was not possible to create the specified user. DTO binding error.");
+				bindingResult.getAllErrors().forEach(err -> response.addError(new ErrorDetail(err.getDefaultMessage())));
+				return ResponseEntity.badRequest().body(response);
+			}
+			
+			this.validateUser(userDTO, bindingResult);
+			if(bindingResult.hasErrors()) {
+				log.error("It was not possible to create the specified user. Validation Error.");
+				bindingResult.getAllErrors().forEach(err -> response.addError(new ErrorDetail(err.getDefaultMessage())));
+				return ResponseEntity.badRequest().body(response);
+			}
+			
+			User user = this.userDTOtoUser(userDTO);
+			Optional<User> optUser = this.userService.save(user);
+			if(!optUser.isPresent()) {
+				log.error("It was not possible to create the specified user.");
+				response.addError(new ErrorDetail("It was not possible to create the user."));
+				return ResponseEntity.badRequest().body(response);
+			}
+			log.info("Creating user {}", user.getUserName());
+			userDTO = this.userToUserDTO(user);
+			response.setData(userDTO);
+			return ResponseEntity.status(HttpStatus.CREATED).body(response);
+		} catch (Exception e) {
 			log.error("It was not possible to create the specified user.");
-			response.addError(new ErrorDetail("It was not possible to create the user."));
+			bindingResult.getAllErrors().forEach(err -> response.addError(new ErrorDetail(err.getDefaultMessage())));
 			return ResponseEntity.badRequest().body(response);
 		}
-		log.info("Creating user {}", user.getUserName());
-		userDTO = this.userToUserDTO(user);
-		response.setData(userDTO);
-		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
 		
 	/**
