@@ -42,8 +42,9 @@ pipeline {
         stage("Deploy"){
             steps {
                 // sh 'docker stop notes-api'
-                // sh 'docker rm notes-api'                
-                sh 'docker run -p 8082:8080 --network net --name=notes-api -d notes-api'
+                // sh 'docker rm notes-api'               
+		sh 'make clean' 
+                sh 'docker run -p 8082:8080 --network net --name=notes-api -e "SPRING_PROFILES_ACTIVE=prod" -d notes-api'
             }
         }
 
