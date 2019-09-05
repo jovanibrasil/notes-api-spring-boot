@@ -4,7 +4,7 @@ clean: stop
 	- docker rm notes-api
 build: clean
 	mvn clean package -DskipTests
-	docker build --build-arg NOTES_MONGO_URL -t notes-api .
+	docker build --build-arg NOTES_MONGO_URL --build-arg ENVIRONMENT=dev -t notes-api .
 	chmod -R ugo+rw target/
 run: clean
 	docker run -d -p 8082:8080 -e "SPRING_PROFILES_ACTIVE=dev" --name=notes-api --network net notes-api

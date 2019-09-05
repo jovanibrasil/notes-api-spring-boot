@@ -23,7 +23,7 @@ pipeline {
                 echo 'Installing dependencies ...'
                 sh 'mvn package -Dspring.spring.data.mongodb.uri=NOTES_MONGO_URL -Dmaven.test.skip=true'
                 echo 'Building ...'
-                sh 'docker build --build-arg NOTES_MONGO_URL -t notes-api ~/workspace/notes-api'
+                sh 'docker build --build-arg NOTES_MONGO_URL --build-arg ENVIRONMENT=prod -t notes-api ~/workspace/notes-api'
             }
         }
 
