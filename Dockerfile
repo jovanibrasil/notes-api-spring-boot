@@ -14,7 +14,6 @@ USER root
     	else cp ./scripts/startup-prod.sh /startup.sh;\
     	fi
     RUN rm ./scripts -rf
-    COPY ./scripts/startup.sh /
     EXPOSE 8082
 
 	CMD ["/bin/bash", "/startup.sh"]
