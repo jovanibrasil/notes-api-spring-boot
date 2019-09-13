@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import com.notes.controllers.NotebookController;
 import com.notes.exceptions.ResourceNotFoundException;
 import com.notes.exceptions.UnauthorizedUserException;
 import com.notes.integrations.ErrorDetail;
@@ -29,7 +28,7 @@ import com.notes.integrations.ValidationError;
 @RestControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 	
-	private static final Logger log = LoggerFactory.getLogger(ResponseEntityExceptionHandler.class);
+	private static final Logger log = LoggerFactory.getLogger(RestExceptionHandler.class);
 
 	@ExceptionHandler(ResourceNotFoundException.class)
 	public ResponseEntity<Response<?>> handleResourceNotFound(ResourceNotFoundException rnfException){
@@ -52,6 +51,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 		response.addError(errorDetail);
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
 	}
+	
+	// AccessDeniedException.class
 	
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
