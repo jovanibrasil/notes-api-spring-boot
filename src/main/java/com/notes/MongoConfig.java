@@ -42,7 +42,7 @@ public class MongoConfig {
 	 * @throws Exception 
 	 */
 	@Bean
-	public MongoTemplate getMongoTemplate(MongoDbFactory mongoDbFactory,
+	public MongoTemplate mongoTemplate(MongoDbFactory mongoDbFactory,
             MongoMappingContext context) throws Exception {
 		log.info("Generating mongo template ...");
 		MongoTemplate mongoTemplate = new MongoTemplate(mongoDbFactory());
