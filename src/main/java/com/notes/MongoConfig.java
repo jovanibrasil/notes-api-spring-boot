@@ -4,17 +4,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 import com.mongodb.MongoClientURI;
 
-@Profile("prod")
+//@Profile("prod")
 @Configuration
+@ComponentScan(basePackages = "com.notes")
+@EnableMongoRepositories("com.notes.repositories")
 @EnableConfigurationProperties(NotesProperties.class)
 public class MongoConfig {
 
@@ -23,6 +27,7 @@ public class MongoConfig {
 	private final NotesProperties configuration;
 
 	public MongoConfig(NotesProperties configuration) {
+		log.info(configuration.getUrl());
 		this.configuration = configuration;
 	}
 	
@@ -41,7 +46,7 @@ public class MongoConfig {
 	 * @return
 	 * @throws Exception 
 	 */
-	@Bean
+	@Bean(name = "mongoTemplate")
 	public MongoTemplate mongoTemplate(MongoDbFactory mongoDbFactory,
             MongoMappingContext context) throws Exception {
 		log.info("Generating mongo template ...");
