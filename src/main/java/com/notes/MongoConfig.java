@@ -6,23 +6,32 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
+import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
 
-import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
 
-//@Profile("prod")
+@Profile("prod")
 @Configuration
 @EnableConfigurationProperties(NotesProperties.class)
 public class MongoConfig {
 
 	private static final Logger log = LoggerFactory.getLogger(MongoConfig.class);
-	
+
 	private final NotesProperties configuration;
 
 	public MongoConfig(NotesProperties configuration) {
 		this.configuration = configuration;
 	}
+	
+	@Bean
+    public MongoDbFactory mongoDbFactory() throws Exception {
+        log.info("Creating mongo factory ...");
+		MongoClientURI clientURI = new MongoClientURI(this.configuration.getUrl());
+        return new SimpleMongoDbFactory(clientURI);
+    }
 	
 	/**
 	 * 
@@ -30,11 +39,14 @@ public class MongoConfig {
 	 * 
 	 * 
 	 * @return
+	 * @throws Exception 
 	 */
 	@Bean
-	public MongoTemplate getMongoTemplate() {
-		MongoClient mongoClient = new MongoClient(this.configuration.getUrl());
-		return new MongoTemplate(mongoClient, "notesdb");
-	}	
+	public MongoTemplate getMongoTemplate(MongoDbFactory mongoDbFactory,
+            MongoMappingContext context) throws Exception {
+		log.info("Generating mongo template ...");
+		MongoTemplate mongoTemplate = new MongoTemplate(mongoDbFactory());
+        return mongoTemplate;
+	}
 
 }
