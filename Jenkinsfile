@@ -20,10 +20,6 @@ pipeline {
             steps {
                 echo 'Cloning git ...'
                 git([url: 'https://github.com/jovanibrasil/notes-api.git', branch: 'master', credentialsId: '9bae9c61-0a29-483c-a07f-47273c351555'])
-                echo 'Installing dependencies ...'
-                sh 'mvn package -Dspring.spring.data.mongodb.uri=NOTES_MONGO_URL -Dmaven.test.skip=true'
-                echo 'Building ...'
-                sh 'docker build --build-arg NOTES_MONGO_URL --build-arg ENVIRONMENT=prod -t notes-api ~/workspace/notes-api'
             }
         }
 
@@ -43,8 +39,7 @@ pipeline {
             steps {
                 // sh 'docker stop notes-api'
                 // sh 'docker rm notes-api'               
-		sh 'make clean' 
-                sh 'docker run -p 8082:8080 -m 128m --memory-swap 256m --network net --name=notes-api -e "SPRING_PROFILES_ACTIVE=prod" -d notes-api'
+				sh 'make deploy-production VAULT_TOKEN=${VAULT_TOKEN} PROFILE=prod'
             }
         }
 
