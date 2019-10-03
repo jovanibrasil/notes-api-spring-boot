@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 
 import com.mongodb.MongoClient;
 
-@Profile("prod")
+//@Profile("prod")
 @Configuration
 @EnableConfigurationProperties(NotesProperties.class)
 public class MongoConfig {
