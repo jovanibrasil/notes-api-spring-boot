@@ -13,7 +13,6 @@ import com.mongodb.MongoClient;
 
 @Profile("prod")
 @Configuration
-@EnableMongoRepositories
 @EnableConfigurationProperties(NotesProperties.class)
 public class MongoConfig {
 
