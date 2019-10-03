@@ -18,6 +18,14 @@ public class ErrorDetail {
     public ErrorDetail(String message) {
     	this.message = message;
 	}
+
+    private ErrorDetail(Builder builder) {
+		this.message = builder.message;
+		this.code = builder.code;
+		this.status = builder.status;
+		this.objectName = builder.objectName;
+		this.errors = builder.errors;
+	}
     
 	public String getMessage() {
 		return message;
@@ -75,12 +83,4 @@ public class ErrorDetail {
 		
 	}
 	
-	private ErrorDetail(Builder builder) {
-		this.message = builder.message;
-		this.code = builder.code;
-		this.status = builder.status;
-		this.objectName = builder.objectName;
-		this.errors = builder.errors;
-	}
-
 }

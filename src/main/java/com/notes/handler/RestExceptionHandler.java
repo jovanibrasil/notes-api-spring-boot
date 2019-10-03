@@ -67,7 +67,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 				.status(status.getReasonPhrase())
 				.objectName(ex.getBindingResult().getObjectName())
 				.errors(errors).build();
-		Response<?> response = new Response();
+		Response<Object> response = new Response<Object>();
 		response.addError(error);
 		return ResponseEntity.badRequest().body(response);
 	}
