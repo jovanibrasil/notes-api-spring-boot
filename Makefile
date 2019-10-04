@@ -4,10 +4,12 @@ clean: stop
 	- docker rm notes-api
 build: clean
 	mvn clean package -DskipTests
-	docker build --build-arg NOTES_MONGO_URL --build-arg ENVIRONMENT=dev -t notes-api .
+	FILE_NAME=notes-api\#\#$(shell find target/*.war -type f | grep -Eo '[0-9]+)
+	docker build --build-arg NOTES_MONGO_URL --build-arg FILE_NAME --build-arg ENVIRONMENT=dev -t notes-api .
 	chmod -R ugo+rw target/
 run: clean
-	docker run -d -p 8082:8080 -m 128m --memory-swap 256m -e "SPRING_PROFILES_ACTIVE=dev" --name=notes-api --network net notes-api
+	docker run -d -p 8082:8080 -m 128m --memory-swap 256m -e "SPRING_PROFILES_ACTIVE=dev" \
+		-e VAULT_TOKEN=${VAULT_TOKEN} --name=notes-api --network net notes-api
 start: stop
 	docker start notes-api
 bash:
