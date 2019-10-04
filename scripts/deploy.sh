@@ -26,7 +26,7 @@ if [ "$(systemctl is-active docker)" = "active" ];
 		fi
 
 		echo "BUILDING APP ..."
-		mvn clean package -Pdev -Dmaven.test.skip=true
+		mvn clean package -Pprod -Dmaven.test.skip=true
 		find target/*.war -type f -execdir cp "{}" ../ ";"
 		FILENAME=$(find *.war -type f)
 		REVISION=$(find *.war -type f | grep -Eo '[0-9]+')
