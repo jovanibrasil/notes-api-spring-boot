@@ -3,6 +3,7 @@ pipeline {
     
     environment {
      	NOTES_MONGO_URL = credentials('NOTES_MONGO_URL');
+     	VAULT_TOKEN = credentials('VAULT_TOKEN');
     }
     
     stages {
