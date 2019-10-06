@@ -62,11 +62,12 @@ public class AuthClient {
 			ResponseEntity<Response<TokenObj>> responseEntity = restTemplate.exchange(createTokenUri, 
 					HttpMethod.POST, request, new ParameterizedTypeReference<Response<TokenObj>>() {
 					});
+			
+			log.info("Response code: {}", responseEntity.getStatusCode());
 			return responseEntity.getBody().getData().getToken();
 		} catch (Exception e) {
-			e.printStackTrace();
-			throw new MicroServiceIntegrationException("It was not posssible to get " + "a token. " + e.getMessage(),
-					e);
+			log.info("It was not posssible to get the service auth token.");
+			throw new MicroServiceIntegrationException("It was not posssible to get the service auth token. " + e.getMessage(), e);
 		}
 	}
 
