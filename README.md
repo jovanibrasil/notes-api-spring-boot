@@ -2,8 +2,7 @@
 
 # API para um aplicativo de notas/lembretes
 
-Esta API permite operações básicas para uma aplicação de lembretes/notes. Operação como criar, atualizar, deletar, e buscar 
-lembretes estão disponíveis nesta API. 
+Esta API permite operações básicas para uma aplicação de lembretes/notes. Operações como criar, atualizar, deletar, e buscar lembretes estão disponíveis nesta API. O aplicativo web [notes.jovanibrasil.com](https://notes.jovanibrasil.com) (limitações dos recursos de hardware do servidor podem tornar o blog lento ou indisponível) é um exemplo da utilização desta API.
 
 ## Executando
 

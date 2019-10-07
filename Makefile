@@ -1,3 +1,6 @@
+run-tests:
+	mvn clean test -Ptest
+
 stop:
 	- docker stop notes-api
 clean: stop

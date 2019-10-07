@@ -17,7 +17,7 @@ pipeline {
             }
         }
 
-        stage("Build") {
+        stage("Clone from git") {
             steps {
                 echo 'Cloning git ...'
                 git([url: 'https://github.com/jovanibrasil/notes-api.git', branch: 'master', credentialsId: '9bae9c61-0a29-483c-a07f-47273c351555'])
@@ -26,7 +26,8 @@ pipeline {
 
         stage("Test"){
             steps {
-                echo 'Todo'
+                echo 'Running unit tests ...'
+                sh 'make run-tests'
             }
         }
 
