@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'aws-agent' }
+    agent { label 'digital-ocean-agent' }
     
     environment {
      	NOTES_MONGO_URL = credentials('NOTES_MONGO_URL');
