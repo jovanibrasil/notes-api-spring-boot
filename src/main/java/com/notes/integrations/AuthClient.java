@@ -23,8 +23,8 @@ public class AuthClient {
 	@Value("${urls.auth.check-token}")
 	private String checkTokenUri;
 
-	// @Value("${urls.auth.create-token}")
-	private String createTokenUri = "http://auth-api:8080/auth-api/token/create";
+	@Value("${urls.auth.create-token}")
+	private String createTokenUri;
 
 	private static final Logger log = LoggerFactory.getLogger(AuthClient.class);
 
@@ -41,8 +41,7 @@ public class AuthClient {
 			log.info("Token verificado com sucesso");
 			return responseEntity.getBody().getData();
 		} catch (Exception e) {
-			log.info("Houve um erro ao verificar o token. {}", e.getMessage());
-			///log.info("It was not possible to validate the token. {}", e.getMessage());
+			log.info("It was not possible to validate the token. {}", e.getMessage());
 			throw new MicroServiceIntegrationException("It was not posssible to validate the token. ", e);
 		}
 	}
