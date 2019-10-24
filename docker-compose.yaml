@@ -10,7 +10,8 @@ services:
     networks:
       - net
     environment:
-      - "SPRING_PROFILES_ACTIVE=dev"    
+      - "SPRING_PROFILES_ACTIVE=dev"
+      - "VAULT_TOKEN=s8ynaMrJvQPVq2BEPRxgceHcG"   
     depends_on:
       - auth-api
       - notes-database
@@ -32,6 +33,7 @@ services:
       - net
     environment:
       - "SPRING_PROFILES_ACTIVE=dev"
+      - "VAULT_TOKEN=s8ynaMrJvQPVq2BEPRxgceHcG"
   mysql-database:
     image: mysql-database
     container_name: mysql-database
