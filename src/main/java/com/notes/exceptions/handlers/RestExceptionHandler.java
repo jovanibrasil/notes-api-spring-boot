@@ -1,4 +1,4 @@
-package com.notes.handler;
+package com.notes.exceptions.handlers;
 
 import java.util.List;
 import java.util.stream.Collectors;
