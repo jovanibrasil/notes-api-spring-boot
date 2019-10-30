@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -114,14 +113,8 @@ public class NotebookController {
 	 */
 	@PostMapping
 	public ResponseEntity<Response<NotebookDTO>> postNotebook(@RequestBody @Valid NotebookDTO notebookDTO, 
-			HttpServletRequest request, Principal principal, BindingResult bindingResult) {
+			HttpServletRequest request, Principal principal) {
 		Response<NotebookDTO> response = new Response<NotebookDTO>();
-		
-		if(bindingResult.hasErrors()) {
-			log.error("Validation error {}", bindingResult.getAllErrors());
-			bindingResult.getAllErrors().forEach(e -> response.addError(new ErrorDetail(e.getDefaultMessage())));
-			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(response);
-		}
 		
 		String currentUserName = principal.getName();
 		Notebook notebook = new Notebook();
@@ -143,14 +136,8 @@ public class NotebookController {
 	 */
 	@PutMapping
 	public ResponseEntity<Response<NotebookDTO>> putNotebook(@RequestBody @Valid NotebookDTO notebookDTO, 
-			HttpServletRequest request, Principal principal, BindingResult bindingResult) {
+			HttpServletRequest request, Principal principal) {
 		Response<NotebookDTO> response = new Response<NotebookDTO>();
-		
-		if(bindingResult.hasErrors()) {
-			log.error("Validation error {}", bindingResult.getAllErrors());
-			bindingResult.getAllErrors().forEach(e -> response.addError(new ErrorDetail(e.getDefaultMessage())));
-			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(response);
-		}
 		
 		Optional<Notebook> nt = notebookService.findNotebookById(notebookDTO.getId());
 		

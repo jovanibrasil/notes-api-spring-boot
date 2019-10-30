@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -93,19 +92,12 @@ public class NoteController {
 	 * @return
 	 */
 	@PostMapping
-	public ResponseEntity<Response<NoteDTO>> saveNote(@Valid @RequestBody NoteDTO noteDTO, HttpServletRequest request, 
-			Principal principal, BindingResult bindingResult) {
+	public ResponseEntity<Response<NoteDTO>> saveNote(@Valid @RequestBody NoteDTO noteDTO, 
+			HttpServletRequest request, Principal principal) {
 		log.info("Saving note.");
 		Response<NoteDTO> response = new Response<NoteDTO>();
 		
-		if(bindingResult.hasErrors()) {
-			log.error("Validation error {}", bindingResult.getAllErrors());
-			bindingResult.getAllErrors().forEach(e -> response.addError(new ErrorDetail(e.getDefaultMessage())));
-			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(response);
-		}
-		
 		String currentUserName = principal.getName();
-		
 		Note note = noteHelper.convertNoteDTOtoNote(noteDTO, currentUserName);
 		ValidationResult vr = noteHelper.validateNewNote(note, currentUserName);
 		if(vr.hasErrors()) {
@@ -130,7 +122,7 @@ public class NoteController {
 	}
 	
 	/**
-	 * Update an already existent note.
+	 * Updates an already existent note.
 	 * 
 	 * @param noteDTO
 	 * @param request
@@ -139,16 +131,11 @@ public class NoteController {
 	 * @return
 	 */
 	@PutMapping
-	public ResponseEntity<Response<NoteDTO>> updateNote(@RequestBody @Valid NoteDTO noteDTO, HttpServletRequest request, 
-			Principal principal, BindingResult bindingResult) {
+	public ResponseEntity<Response<NoteDTO>> updateNote(@RequestBody @Valid NoteDTO noteDTO, 
+			HttpServletRequest request, Principal principal) {
 		log.info("Updating note.");
 		Response<NoteDTO> response = new Response<NoteDTO>();
 		
-		if(bindingResult.hasErrors()) {
-			log.error("Validation error {}", bindingResult.getAllErrors());
-			bindingResult.getAllErrors().forEach(e -> response.addError(new ErrorDetail(e.getDefaultMessage())));
-			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(response);
-		}
 		String currentUserName = principal.getName();
 		Note note = noteHelper.convertNoteDTOtoNote(noteDTO, currentUserName);
 		ValidationResult vr = noteHelper.validateExistentNote(note, currentUserName);
