@@ -57,8 +57,8 @@ public class NoteControllerTest {
 	
 	@Before
 	public void setUp() {
-		note1 = new Note("noteId1", "noteTitle", "noteText", "notebookId1", "userName");
-		note2 = new Note("noteId2", "noteTitle", "noteText", "notebookId2", "userName");
+		note1 = new Note("noteId1", "noteTitle", "noteText", "notebookId1", "userName", "rgba(251, 243, 129, 0.74)");
+		note2 = new Note("noteId2", "noteTitle", "noteText", "notebookId2", "userName", "rgba(251, 243, 129, 0.74)");
 		BDDMockito.given(this.noteService.findNotesByUserName("userName")).willReturn(Arrays.asList(note1, note2));
 		BDDMockito.given(this.authClient.checkUserToken(Mockito.anyString())).willReturn(new TempUser("userName", ProfileTypeEnum.ROLE_ADMIN));
 	}

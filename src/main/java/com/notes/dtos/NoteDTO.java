@@ -16,16 +16,20 @@ public class NoteDTO {
 	private String text;
 	@NotBlank(message = "The notebookId must not be null or empty.")
 	private String notebookId;
+	@NotBlank(message = "The color must not be null or empty")
+	private String backgroundColor; // Example: rgba(251, 243, 129, 0.74)
 	
 	private Date lastModifiedOn;
 	
-	public NoteDTO(String id, String title, String text, String notebookId, Date lastModifiedOn) {
+	public NoteDTO(String id, String title, String text, String notebookId, 
+			Date lastModifiedOn, String backgroundColor) {
 		super();
 		this.id = id;
 		this.title = title;
 		this.text = text;
 		this.notebookId = notebookId;
 		this.lastModifiedOn = lastModifiedOn;
+		this.backgroundColor = backgroundColor;
 	}
 	
 	public String getId() {
@@ -60,6 +64,14 @@ public class NoteDTO {
 	}
 	public void setLastModifiedOn(Date lastModifiedOn) {
 		this.lastModifiedOn = lastModifiedOn;
+	}
+	
+	public String getBackgroundColor() {
+		return backgroundColor;
+	}
+
+	public void setBackgroundColor(String backgroundColor) {
+		this.backgroundColor = backgroundColor;
 	}
 
 	@Override

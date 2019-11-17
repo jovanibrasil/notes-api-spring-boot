@@ -51,7 +51,8 @@ public class NoteHelper {
 			noteDTO.getTitle(),
 			noteDTO.getText(),
 			noteDTO.getNotebookId(),
-			userName
+			userName,
+			noteDTO.getBackgroundColor()
 		);
 	}
 	
@@ -61,7 +62,8 @@ public class NoteHelper {
 			note.getTitle(), 
 			note.getText(), 
 			note.getNotebookId(), 
-			note.getLastModifiedOn());
+			note.getLastModifiedOn(),
+			note.getBackgroundColor());
 	}
 	
 }

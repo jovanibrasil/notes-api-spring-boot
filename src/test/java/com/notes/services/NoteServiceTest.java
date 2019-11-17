@@ -37,8 +37,8 @@ public class NoteServiceTest {
 	@Before
 	public void setUp() {
 		
-		note1 = new Note("note1", "title1", "text1", "notebookId", "userName");
-		note2 = new Note("note2", "title2", "text2", "notebookId", "userName");
+		note1 = new Note("note1", "title1", "text1", "notebookId", "userName", "rgba(251, 243, 129, 0.74)");
+		note2 = new Note("note2", "title2", "text2", "notebookId", "userName", "rgba(251, 243, 129, 0.74)");
 		
 		BDDMockito.given(noteRepository.findByUserName("userName"))
 			.willReturn(Arrays.asList(note1, note2));

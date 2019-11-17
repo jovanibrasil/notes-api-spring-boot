@@ -15,16 +15,19 @@ public class Note {
 	private Date lastModifiedOn;
 	private String notebookId;
 	private String userName;
-
+	private String backgroundColor;
+	
 	public Note() {}
 	
-	public Note(String id, String title, String text, String notebookId, String userName) {
+	public Note(String id, String title, String text, String notebookId, 
+			String userName, String backgroundColor) {
 		this.id = id;
 		this.title = title;
 		this.text = text;
 		this.lastModifiedOn = new Date();
 		this.notebookId = notebookId;
 		this.userName = userName;
+		this.backgroundColor = backgroundColor;
 	}
 	
 	public String getId() {
@@ -66,6 +69,14 @@ public class Note {
 
 	public void setUserName(String userId) {
 		this.userName = userId;
+	}
+
+	public String getBackgroundColor() {
+		return backgroundColor;
+	}
+
+	public void setBackgroundColor(String backgroundColor) {
+		this.backgroundColor = backgroundColor;
 	}
 
 	@Override
