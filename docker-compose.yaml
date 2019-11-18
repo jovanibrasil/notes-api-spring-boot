@@ -1,4 +1,4 @@
-version: '3'
+version: "3.3"
 networks:
   net: 
 services:
@@ -12,6 +12,11 @@ services:
     environment:
       - "SPRING_PROFILES_ACTIVE=dev"
       - "VAULT_TOKEN=s8ynaMrJvQPVq2BEPRxgceHcG"   
+      - CATALINA_OPTS=-Xmx206M -Xms128M -XX:MaxPermSize=50M
+    deploy:
+      resources:
+        limits:
+          memory: 384M
     depends_on:
       - auth-api
       - notes-database
@@ -24,6 +29,12 @@ services:
       - 28017:28017
     networks:
       - net
+    environment:
+      - CATALINA_OPTS=-Xmx206M -Xms128M -XX:MaxPermSize=50M
+    deploy:
+      resources:
+        limits:
+          memory: 256M
   auth-api: # Authentication API (Spring)
     image: auth-api
     container_name: auth-api
@@ -34,6 +45,11 @@ services:
     environment:
       - "SPRING_PROFILES_ACTIVE=dev"
       - "VAULT_TOKEN=s8ynaMrJvQPVq2BEPRxgceHcG"
+      - CATALINA_OPTS=-Xmx206M -Xms128M -XX:MaxPermSize=50M
+    deploy:
+      resources:
+        limits:
+          memory: 384M
   mysql-database:
     image: mysql-database
     container_name: mysql-database
@@ -41,10 +57,24 @@ services:
       - 3306:3306
     networks:
       - net
+    environment:
+      - CATALINA_OPTS=-Xmx206M -Xms128M -XX:MaxPermSize=50M
+    deploy:
+      resources:
+        limits:
+          memory: 256M
   email-api:
     image: email-api
     container_name: email-api
     ports:
       - 8084:8082
     networks:
-      - net   
+      - net
+    environment:
+      - CATALINA_OPTS=-Xmx106M -Xms64M -XX:MaxPermSize=50M
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+
+
