@@ -61,9 +61,9 @@ public class NoteHelper {
 			note.getId(), 
 			note.getTitle(), 
 			note.getText(), 
-			note.getNotebookId(), 
-			note.getLastModifiedOn(),
-			note.getBackgroundColor());
+			note.getNotebookId(),
+			note.getBackgroundColor(),
+			note.getLastModifiedOn());
 	}
 	
 }

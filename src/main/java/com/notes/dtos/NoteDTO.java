@@ -1,12 +1,16 @@
 package com.notes.dtos;
 
+import lombok.*;
+
 import java.time.LocalDateTime;
 import java.util.Date;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-
+@Getter @Setter
+@NoArgsConstructor @AllArgsConstructor
+@ToString
 public class NoteDTO {
 
 	private String id;
@@ -19,66 +23,6 @@ public class NoteDTO {
 	private String notebookId;
 	@NotBlank(message = "The color must not be null or empty")
 	private String backgroundColor; // Example: rgba(251, 243, 129, 0.74)
-	
 	private LocalDateTime lastModifiedOn;
-	
-	public NoteDTO(String id, String title, String text, String notebookId,
-				   LocalDateTime lastModifiedOn, String backgroundColor) {
-		super();
-		this.id = id;
-		this.title = title;
-		this.text = text;
-		this.notebookId = notebookId;
-		this.lastModifiedOn = lastModifiedOn;
-		this.backgroundColor = backgroundColor;
-	}
-	
-	public String getId() {
-		return id;
-	}
-	public String getTitle() {
-		return title;
-	}
-	public String getText() {
-		return text;
-	}
-	
-	public void setId(String noteId) {
-		this.id = noteId;
-	}
-	public void setTitle(String title) {
-		this.title = title;
-	}
-	public void setText(String text) {
-		this.text = text;
-	}
-	
-	public String getNotebookId() {
-		return notebookId;
-	}
-	public void setNotebookId(String notebookId) {
-		this.notebookId = notebookId;
-	}
-	
-	public LocalDateTime getLastModifiedOn() {
-		return lastModifiedOn;
-	}
-	public void setLastModifiedOn(LocalDateTime lastModifiedOn) {
-		this.lastModifiedOn = lastModifiedOn;
-	}
-	
-	public String getBackgroundColor() {
-		return backgroundColor;
-	}
 
-	public void setBackgroundColor(String backgroundColor) {
-		this.backgroundColor = backgroundColor;
-	}
-
-	@Override
-	public String toString() {
-		return "NoteDTO [noteId=" + id + ", title=" + title + ", text=" + text + ", notebookId=" + notebookId
-				+ ", lastModifiedOn=" + lastModifiedOn + "]";
-	}
-	
 }

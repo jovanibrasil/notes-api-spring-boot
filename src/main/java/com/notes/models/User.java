@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -12,6 +16,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.notes.enums.ProfileTypeEnum;
 
+@Getter @Setter
+@NoArgsConstructor
+@ToString
 @Document(collection = "users")
 public class User implements UserDetails {
 
@@ -24,41 +31,10 @@ public class User implements UserDetails {
 	private String password;
 	@Transient
 	private ProfileTypeEnum profileType;
-	
-	public User() {}
-	
+
 	public User(String userName, ProfileTypeEnum profileType) {
 		this.userName = userName;
 		this.profileType = profileType;
-	}
-	
-	public String getUserName() {
-		return userName;
-	}
-	public void setUserName(String name) {
-		this.userName = name;
-	}
-	public String getPassword() {
-		return password;
-	}
-	public void setPassword(String password) {
-		this.password = password;
-	}
-	
-	public ProfileTypeEnum getProfileType() {
-		return profileType;
-	}
-
-	public void setProfileType(ProfileTypeEnum profileType) {
-		this.profileType = profileType;
-	}
-
-	public String getUserId() {
-		return userId;
-	}
-
-	public void setUserId(String userId) {
-		this.userId = userId;
 	}
 
 	@Override
@@ -91,10 +67,4 @@ public class User implements UserDetails {
 		return false;
 	}
 
-	@Override
-	public String toString() {
-		return "User [userId=" + userId + ", userName=" + userName + ", password=" + password + ", profileType="
-				+ profileType + "]";
-	}
-	
 }

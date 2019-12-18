@@ -38,7 +38,7 @@ import com.notes.services.NotebookService;
 public class NotebookController {
 
 	private static final Logger log = LoggerFactory.getLogger(NotebookController.class);
-	
+
 	@Autowired
 	private NotebookService notebookService;
 	
