@@ -37,7 +37,6 @@ public class AuthClient {
 		this.serviceProperties = serviceProperties;
 	}
 
-
 	public TempUser checkUserToken(String token) {
 		try {
 			log.info("Checking received token");
