@@ -4,7 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Profile;
 
 @Profile("prod")
-@ConfigurationProperties("blog-service")
+@ConfigurationProperties("notes-service")
 public class ServiceProperties {
 
     private String username;

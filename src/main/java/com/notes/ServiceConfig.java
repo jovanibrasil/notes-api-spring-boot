@@ -1,4 +1,4 @@
-package com.blog.config;
+package com.notes;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -6,12 +6,13 @@ import org.springframework.context.annotation.Profile;
 
 @Profile("dev")
 @Configuration
-public class BlogServiceConfig {
+public class ServiceConfig {
 
     @Bean
-    public BlogServiceProperties blogServiceProperties(){
-        BlogServiceProperties config = new BlogServiceProperties();
-        config.setUsername("BLOG");
+    public ServiceProperties blogServiceProperties(){
+        ServiceProperties config = new ServiceProperties();
+        // Service authentication information
+        config.setUsername("NOTES");
         config.setPassword("123456");
         return config;
     }

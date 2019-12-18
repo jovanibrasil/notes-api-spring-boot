@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Profile;
 
 @Profile("prod")
 @ConfigurationProperties("notes-cred")
-public class NotesProperties {
+public class NotesMongoProperties {
 
 	private String url;
 

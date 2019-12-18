@@ -15,14 +15,14 @@ import com.mongodb.MongoClientURI;
 
 @Profile("prod")
 @Configuration
-@EnableConfigurationProperties(NotesProperties.class)
+@EnableConfigurationProperties(NotesMongoProperties.class)
 public class MongoConfig {
 
 	private static final Logger log = LoggerFactory.getLogger(MongoConfig.class);
 
-	private final NotesProperties configuration;
+	private final NotesMongoProperties configuration;
 
-	public MongoConfig(NotesProperties configuration) {
+	public MongoConfig(NotesMongoProperties configuration) {
 		log.info(configuration.getUrl());
 		this.configuration = configuration;
 	}

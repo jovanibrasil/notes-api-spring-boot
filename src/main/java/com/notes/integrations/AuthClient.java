@@ -1,8 +1,10 @@
 package com.notes.integrations;
 
+import com.notes.ServiceProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -18,6 +20,7 @@ import com.notes.exceptions.MicroServiceIntegrationException;
 import com.notes.security.TempUser;
 
 @Component
+@EnableConfigurationProperties(ServiceProperties.class)
 public class AuthClient {
 
 	@Value("${urls.auth.check-token}")
@@ -28,9 +31,16 @@ public class AuthClient {
 
 	private static final Logger log = LoggerFactory.getLogger(AuthClient.class);
 
+	private ServiceProperties serviceProperties;
+
+	public AuthClient(ServiceProperties serviceProperties){
+		this.serviceProperties = serviceProperties;
+	}
+
+
 	public TempUser checkUserToken(String token) {
 		try {
-			log.info("Verificando toke no servidor de autenticação");
+			log.info("Checking received token");
 			RestTemplate restTemplate = new RestTemplate();
 			HttpHeaders headers = new HttpHeaders();
 			headers.set("Authorization", token);
@@ -38,7 +48,7 @@ public class AuthClient {
 			ResponseEntity<Response<TempUser>> responseEntity = restTemplate.exchange(checkTokenUri, HttpMethod.GET,
 					entity, new ParameterizedTypeReference<Response<TempUser>>() {
 					});
-			log.info("Token verificado com sucesso");
+			log.info("Token successfully verified");
 			return responseEntity.getBody().getData();
 		} catch (Exception e) {
 			log.info("It was not possible to validate the token. {}", e.getMessage());
@@ -54,8 +64,8 @@ public class AuthClient {
 			headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			JwtAuthenticationDto authDTO = new JwtAuthenticationDto();
-			authDTO.setUserName("NOTES");
-			authDTO.setPassword("123456");
+			authDTO.setUserName(this.serviceProperties.getUsername());
+			authDTO.setPassword(this.serviceProperties.getPassword());
 			authDTO.setApplication(ApplicationType.NOTES_APP);
 			HttpEntity<JwtAuthenticationDto> request = new HttpEntity<>(authDTO, headers);
 			ResponseEntity<Response<TokenObj>> responseEntity = restTemplate.exchange(createTokenUri, 

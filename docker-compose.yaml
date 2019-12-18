@@ -1,6 +1,7 @@
 version: "3.3"
 networks:
-  net: 
+  net:
+    external: true
 services:
   notes-api:
     image: notes-api # Notes API (Spring)
@@ -45,6 +46,7 @@ services:
     environment:
       - "SPRING_PROFILES_ACTIVE=dev"
       - "VAULT_TOKEN=s8ynaMrJvQPVq2BEPRxgceHcG"
+      - "DATASOURCE_URL=jdbc:mysql://mysql-database:3306/usersdb"
       - CATALINA_OPTS=-Xmx206M -Xms128M -XX:MaxPermSize=50M
     deploy:
       resources:
@@ -67,7 +69,7 @@ services:
     image: email-api
     container_name: email-api
     ports:
-      - 8084:8082
+      - 8084:8080
     networks:
       - net
     environment:
