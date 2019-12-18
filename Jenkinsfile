@@ -5,7 +5,11 @@ pipeline {
      	NOTES_MONGO_URL = credentials('NOTES_MONGO_URL');
      	VAULT_TOKEN = credentials('VAULT_TOKEN');
     }
-    
+
+    parameters {
+        string(name: 'TASK', defaultValue: 'BUILD')
+    }
+
     stages {
  
         stage("Environment configuration") {
@@ -24,23 +28,22 @@ pipeline {
             }
         }
 
-        stage("Test"){
+        stage("Build"){
+            when{
+               expression { return params.TASK == 'BUILD' }
+            }
             steps {
                 echo 'Running unit tests ...'
                 sh 'make run-tests'
-            }
-        }
-
-        stage("Registry image"){
-            steps {
-                echo 'TODO'
+                //"Registry image or war" TODO
             }
         }
 
         stage("Deploy"){
+            when{
+               expression { return params.TASK == 'DEPLOY' }
+            }
             steps {
-                // sh 'docker stop notes-api'
-                // sh 'docker rm notes-api'               
 				sh 'make deploy-production VAULT_TOKEN=${VAULT_TOKEN} PROFILE=prod'
             }
         }
