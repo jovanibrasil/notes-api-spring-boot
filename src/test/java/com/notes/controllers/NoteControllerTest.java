@@ -7,6 +7,7 @@ import java.security.Principal;
 import java.util.Arrays;
 import java.util.Optional;
 
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -195,6 +196,7 @@ public class NoteControllerTest {
 	public static String asJsonString(final Object obj) {
 		try {
 			final ObjectMapper mapper = new ObjectMapper();
+			mapper.registerModule(new JavaTimeModule());
 			final String jsonContent = mapper.writeValueAsString(obj);
 			return jsonContent;
 		} catch (Exception e) {

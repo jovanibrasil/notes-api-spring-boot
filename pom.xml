@@ -25,22 +25,28 @@
 	
 	<profiles>
 		<profile>
-			<id>prod</id>
+			<id>dev</id>
 			<activation>
 				<activeByDefault>true</activeByDefault>
 			</activation>
+			<properties>
+				<activatedProperties>dev</activatedProperties>
+				<maven.test.skip>true</maven.test.skip>
+				<enableVault>false</enableVault>
+			</properties>
 		</profile>
 		<profile>
-			<id>dev</id>
+			<id>prod</id>
 			<properties>
-				<activeProfile>dev</activeProfile>
-				<maven.test.skip>true</maven.test.skip>
+				<activatedProperties>prod</activatedProperties>
+				<enableVault>true</enableVault>
 			</properties>
 		</profile>
 		<profile>
 			<id>test</id>
 			<properties>
-				<activeProfile>test</activeProfile>
+				<activatedProperties>test</activatedProperties>
+				<enableVault>false</enableVault>
 			</properties>
 		</profile>
 	</profiles>
@@ -152,6 +158,12 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
 	</build>
 
 </project>

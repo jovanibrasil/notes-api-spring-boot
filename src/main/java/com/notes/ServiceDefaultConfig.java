@@ -2,14 +2,15 @@ package com.notes;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 
-@Profile("dev")
+@Profile({"default", "dev", "test"})
 @Configuration
-public class ServiceConfig {
+public class ServiceDefaultConfig {
 
-    @Bean
-    public ServiceProperties blogServiceProperties(){
+    @Bean(name = "ServiceProperties")
+    public ServiceProperties notesServiceProperties(){
         ServiceProperties config = new ServiceProperties();
         // Service authentication information
         config.setUsername("NOTES");

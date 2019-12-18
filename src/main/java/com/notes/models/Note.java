@@ -1,5 +1,6 @@
 package com.notes.models;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import org.springframework.data.annotation.Id;
@@ -12,7 +13,7 @@ public class Note {
 	private String id;
 	private String title;
 	private String text;
-	private Date lastModifiedOn;
+	private LocalDateTime lastModifiedOn;
 	private String notebookId;
 	private String userName;
 	private String backgroundColor;
@@ -24,7 +25,7 @@ public class Note {
 		this.id = id;
 		this.title = title;
 		this.text = text;
-		this.lastModifiedOn = new Date();
+		this.lastModifiedOn = LocalDateTime.now();
 		this.notebookId = notebookId;
 		this.userName = userName;
 		this.backgroundColor = backgroundColor;
@@ -39,7 +40,7 @@ public class Note {
 	public String getText() {
 		return text;
 	}
-	public Date getLastModifiedOn() {
+	public LocalDateTime getLastModifiedOn() {
 		return lastModifiedOn;
 	}
 	public void setId(String id) {
@@ -51,7 +52,7 @@ public class Note {
 	public void setText(String text) {
 		this.text = text;
 	}
-	public void setLastModifiedOn(Date lastModifiedOn) {
+	public void setLastModifiedOn(LocalDateTime lastModifiedOn) {
 		this.lastModifiedOn = lastModifiedOn;
 	}
 

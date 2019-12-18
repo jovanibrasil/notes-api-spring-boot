@@ -3,6 +3,7 @@ package com.notes.repositories;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Optional;
 
@@ -30,7 +31,7 @@ public class NoteRepositoryTest {
 	@Before
 	public void setUp() {
 		note = new Note();
-		note.setLastModifiedOn(new Date());
+		note.setLastModifiedOn(LocalDateTime.now());
 		note.setNotebookId("nt0");
 		note.setText("text");
 		note.setTitle("title");

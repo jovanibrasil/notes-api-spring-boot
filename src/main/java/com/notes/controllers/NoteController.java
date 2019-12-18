@@ -1,6 +1,7 @@
 package com.notes.controllers;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -107,7 +108,7 @@ public class NoteController {
 			ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(response);  
 		}
 		// Save on database
-		note.setLastModifiedOn(new Date());
+		note.setLastModifiedOn(LocalDateTime.now());
 		Optional<Note> optNote = this.noteService.saveNote(note);
 		if(optNote.isPresent()) {
 			// Return note with the valid id generated 
@@ -144,7 +145,7 @@ public class NoteController {
 			vr.getErrors().forEach(e -> response.addError(new ErrorDetail(e)));
 			ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);  
 		}
-		note.setLastModifiedOn(new Date());
+		note.setLastModifiedOn(LocalDateTime.now());
 		note.setUserName(currentUserName);
 		Optional<Note> optNote = this.noteService.saveNote(note);
 		if(optNote.isPresent()) {

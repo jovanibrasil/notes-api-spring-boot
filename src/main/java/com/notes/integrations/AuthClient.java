@@ -20,7 +20,6 @@ import com.notes.exceptions.MicroServiceIntegrationException;
 import com.notes.security.TempUser;
 
 @Component
-@EnableConfigurationProperties(ServiceProperties.class)
 public class AuthClient {
 
 	@Value("${urls.auth.check-token}")

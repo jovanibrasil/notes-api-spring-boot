@@ -1,5 +1,6 @@
 package com.notes.dtos;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import javax.validation.constraints.NotBlank;
@@ -19,10 +20,10 @@ public class NoteDTO {
 	@NotBlank(message = "The color must not be null or empty")
 	private String backgroundColor; // Example: rgba(251, 243, 129, 0.74)
 	
-	private Date lastModifiedOn;
+	private LocalDateTime lastModifiedOn;
 	
-	public NoteDTO(String id, String title, String text, String notebookId, 
-			Date lastModifiedOn, String backgroundColor) {
+	public NoteDTO(String id, String title, String text, String notebookId,
+				   LocalDateTime lastModifiedOn, String backgroundColor) {
 		super();
 		this.id = id;
 		this.title = title;
@@ -59,10 +60,10 @@ public class NoteDTO {
 		this.notebookId = notebookId;
 	}
 	
-	public Date getLastModifiedOn() {
+	public LocalDateTime getLastModifiedOn() {
 		return lastModifiedOn;
 	}
-	public void setLastModifiedOn(Date lastModifiedOn) {
+	public void setLastModifiedOn(LocalDateTime lastModifiedOn) {
 		this.lastModifiedOn = lastModifiedOn;
 	}
 	
