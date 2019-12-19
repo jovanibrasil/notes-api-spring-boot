@@ -13,8 +13,8 @@ public class UserDTO {
 	
 	@NonNull
 	private String userId;
-	@Length(min=4, max=30, message="The user name must contains between 4 and 30 characters.")
-    @NotBlank(message="The user name must not be empty.")
+	@Length(min=4, max=30, message="{error.user.name.size}")
+    @NotBlank(message="{error.user.name.notblank}")
 	private String userName;
 
 }

@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import com.notes.exceptions.CustomMessageSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,12 +40,16 @@ public class NotebookController {
 
 	private static final Logger log = LoggerFactory.getLogger(NotebookController.class);
 
-	@Autowired
 	private NotebookService notebookService;
-	
-	@Autowired
 	private NoteService noteService;
-	
+	private CustomMessageSource msgSrc;
+
+	public NotebookController(NotebookService notebookService, NoteService noteService, CustomMessageSource msgSrc) {
+		this.notebookService = notebookService;
+		this.noteService = noteService;
+		this.msgSrc = msgSrc;
+	}
+
 	/**
 	 * Returns a collection of notebooks of a particular user.
 	 * 
@@ -84,7 +89,7 @@ public class NotebookController {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
 		}else {
 			log.error("It was not possible delete the notebook {}.", notebookId);
-			response.addError(new ErrorDetail("It was not possible delete the notebook."));
+			response.addError(new ErrorDetail(msgSrc.getMessage("error.notebook.delete")));
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
 		}
 	}
@@ -152,7 +157,7 @@ public class NotebookController {
 		}
 		
 		log.error("It was not possible update the notebook {}.", notebookDTO.getId());
-		response.addError(new ErrorDetail("It was not possible update the notebook."));
+		response.addError(new ErrorDetail(msgSrc.getMessage("error.notebook.update")));
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
 		
 	}

@@ -14,14 +14,14 @@ import javax.validation.constraints.Size;
 public class NoteDTO {
 
 	private String id;
-	@NotBlank(message = "The message must not be null or empty.")
-	@Size(min=1, max=20, message="The title must contains between 1 and 20 characters.")
+	@NotBlank(message = "{error.note.title.notblank}")
+	@Size(min=1, max=20, message="{error.note.title.size}")
 	private String title;
-	@Size(max=200, message="The text must contains between 0 and 200 characters.")
+	@Size(max=200, message="{error.note.text.size}")
 	private String text;
-	@NotBlank(message = "The notebookId must not be null or empty.")
+	@NotBlank(message = "{error.note.notebookid.notblank}")
 	private String notebookId;
-	@NotBlank(message = "The color must not be null or empty")
+	@NotBlank(message = "{error.note.backgroundcolor.notblank}")
 	private String backgroundColor; // Example: rgba(251, 243, 129, 0.74)
 	private LocalDateTime lastModifiedOn;
 

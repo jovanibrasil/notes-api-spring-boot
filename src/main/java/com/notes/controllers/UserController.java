@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
+import com.notes.exceptions.CustomMessageSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,10 +33,15 @@ import com.notes.services.UserService;
 public class UserController {
 
 	private static final Logger log = LoggerFactory.getLogger(UserController.class);
-	
-	@Autowired
+
 	private UserService userService;	
-	
+	private CustomMessageSource msgSrc;
+
+	public UserController(UserService userService, CustomMessageSource msgSrc) {
+		this.userService = userService;
+		this.msgSrc = msgSrc;
+	}
+
 	/**
 	 * Retrieve a UserDTO by a given user name.
 	 * 
@@ -51,7 +57,7 @@ public class UserController {
 		
 		if(!optUser.isPresent()) {
 			log.error("It was not possible to find the specified user.");
-			response.addError(new ErrorDetail("It was not possible to find the specified user."));
+			response.addError(new ErrorDetail(msgSrc.getMessage("error.user.find")));
 			return ResponseEntity.badRequest().body(response);
 		}
 		
@@ -102,7 +108,7 @@ public class UserController {
 			Optional<User> optUser = this.userService.save(user);
 			if(!optUser.isPresent()) {
 				log.error("It was not possible to create the specified user.");
-				response.addError(new ErrorDetail("It was not possible to create the user."));
+				response.addError(new ErrorDetail(msgSrc.getMessage("error.user.create")));
 				return ResponseEntity.badRequest().body(response);
 			}
 			log.info("Creating user {}", user.getUsername());
@@ -128,7 +134,7 @@ public class UserController {
 	 */
 	private void validateUser(UserDTO userDTO, BindingResult result) {
 		userService.findByUserName(userDTO.getUserName()).ifPresent(u -> 
-			result.addError(new ObjectError("User", "Username already exists.")));
+			result.addError(new ObjectError("User", msgSrc.getMessage("error.user.name.unique"))));
 	}
 	
 	/**

@@ -9,6 +9,7 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import com.notes.exceptions.CustomMessageSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,12 +41,16 @@ public class NoteController {
 
 	private static final Logger log = LoggerFactory.getLogger(NoteController.class);
 	
-	@Autowired
 	private NoteService noteService;
-	
-	@Autowired
 	private NoteHelper noteHelper;
-	
+	private CustomMessageSource msgSrc;
+
+	public NoteController(NoteService noteService, NoteHelper noteHelper, CustomMessageSource msgSrc) {
+		this.noteService = noteService;
+		this.noteHelper = noteHelper;
+		this.msgSrc = msgSrc;
+	}
+
 	/**
 	 * Returns a collection of notes of a particular user. 
 	 * 
@@ -79,7 +84,7 @@ public class NoteController {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
 		}else {
 			log.error("It was not possible delete the note {}.", noteId);
-			throw new ResourceNotFoundException("It was not possible delete the note {}.");
+			throw new ResourceNotFoundException(msgSrc.getMessage("error.note.delete"));
 		}
 	}
 	
@@ -117,7 +122,7 @@ public class NoteController {
 			response.setData(noteDTO);
 			return ResponseEntity.status(HttpStatus.CREATED).body(response);
 		}else {
-			response.addError(new ErrorDetail("It was not possible to save the note."));
+			response.addError(new ErrorDetail(msgSrc.getMessage("error.note.create")));
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
 		}
 	}
@@ -157,7 +162,7 @@ public class NoteController {
 			return ResponseEntity.ok(response);
 		}else {
 			log.error("It was not possible to update the note {}.", note.getId());
-			response.addError(new ErrorDetail("It was not possible to update the note."));
+			response.addError(new ErrorDetail(msgSrc.getMessage("error.note.update")));
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
 		}
 	}
