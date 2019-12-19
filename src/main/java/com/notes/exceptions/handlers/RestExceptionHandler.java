@@ -30,30 +30,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 	
 	private static final Logger log = LoggerFactory.getLogger(RestExceptionHandler.class);
 
-	@ExceptionHandler(ResourceNotFoundException.class)
-	public ResponseEntity<Response<?>> handleResourceNotFound(ResourceNotFoundException rnfException){
-		log.info("handleResourceNotFound");
-		Response<String> response = new Response<String>();
-		ErrorDetail errorDetail = new ErrorDetail.Builder()
-				.message(rnfException.getMessage())
-				.build();
-		response.addError(errorDetail);
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-	}
-	
-	@ExceptionHandler(UnauthorizedUserException.class)
-	public ResponseEntity<Response<?>> UnauthorizedUserException(UnauthorizedUserException rnfException){
-		log.info("UnauthorizedUserException");
-		Response<String> response = new Response<String>();
-		ErrorDetail errorDetail = new ErrorDetail.Builder()
-				.message(rnfException.getMessage())
-				.build();
-		response.addError(errorDetail);
-		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
-	}
-	
-	// AccessDeniedException.class
-	
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
@@ -71,7 +47,38 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 		response.addError(error);
 		return ResponseEntity.badRequest().body(response);
 	}
-	
-	
-	
+
+	@ExceptionHandler(UnauthorizedUserException.class)
+	public ResponseEntity<Response<?>> UnauthorizedUserException(UnauthorizedUserException rnfException){
+		log.info("UnauthorizedUserException");
+		Response<String> response = new Response<String>();
+		ErrorDetail errorDetail = new ErrorDetail.Builder()
+				.message(rnfException.getMessage())
+				.build();
+		response.addError(errorDetail);
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+	}
+
+	@ExceptionHandler(ResourceNotFoundException.class)
+	public ResponseEntity<Response<?>> handleResourceNotFound(ResourceNotFoundException rnfException){
+		log.info("handleResourceNotFound");
+		Response<String> response = new Response<>();
+		ErrorDetail errorDetail = new ErrorDetail.Builder()
+				.message(rnfException.getMessage())
+				.build();
+		response.addError(errorDetail);
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+	}
+
+	@ExceptionHandler(value = {Exception.class, RuntimeException.class})
+	public ResponseEntity<Object> exception(Exception ex) {
+		log.info("The server cannot process the received request. {}", ex.getMessage());
+		Response<String> response = new Response<>();
+		ErrorDetail errorDetail = new ErrorDetail.Builder()
+				.message("The server cannot process the request.")
+				.build();
+		response.addError(errorDetail);
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+	}
+
 }
