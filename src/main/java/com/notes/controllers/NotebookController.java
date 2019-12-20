@@ -15,6 +15,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -52,15 +54,13 @@ public class NotebookController {
 
 	/**
 	 * Returns a collection of notebooks of a particular user.
-	 * 
-	 * @param request
-	 * @param principal
+	 *
 	 * @return
 	 */
 	@GetMapping
-	public ResponseEntity<Response<List<NotebookDTO>>> getAllNotebooks(HttpServletRequest request, Principal principal) {
+	public ResponseEntity<Response<List<NotebookDTO>>> getAllNotebooks() {
 		Response<List<NotebookDTO>> response = new Response<List<NotebookDTO>>();
-		String currentUserName = principal.getName();
+		String currentUserName = SecurityContextHolder.getContext().getAuthentication().getName();
 		List<Notebook> notebooks = notebookService.findAllByUserId(currentUserName);
 		List<NotebookDTO> res = notebooks.stream().map(notebook -> {
 			return new NotebookDTO(notebook.getId(), notebook.getTitle(), currentUserName);
@@ -73,11 +73,10 @@ public class NotebookController {
 	 * Deletes a notebook by a particular id.
 	 * 
 	 * @param notebookId
-	 * @param principal
 	 * @return
 	 */
 	@DeleteMapping("/{notebookId}")
-	public ResponseEntity<Response<NotebookDTO>> deleteNotebook(@PathVariable String notebookId, Principal principal) {
+	public ResponseEntity<Response<NotebookDTO>> deleteNotebook(@PathVariable String notebookId) {
 		Response<NotebookDTO> response = new Response<NotebookDTO>();
 		Optional<Notebook> optNotebook = this.notebookService.findNotebookById(notebookId);
 		if(optNotebook.isPresent()) {
@@ -112,16 +111,13 @@ public class NotebookController {
 	 * Saves a new notebook.
 	 * 
 	 * @param notebookDTO
-	 * @param request
-	 * @param principal
 	 * @return
 	 */
 	@PostMapping
-	public ResponseEntity<Response<NotebookDTO>> postNotebook(@RequestBody @Valid NotebookDTO notebookDTO, 
-			HttpServletRequest request, Principal principal) {
+	public ResponseEntity<Response<NotebookDTO>> postNotebook(@RequestBody @Valid NotebookDTO notebookDTO) {
 		Response<NotebookDTO> response = new Response<NotebookDTO>();
 		
-		String currentUserName = principal.getName();
+		String currentUserName = SecurityContextHolder.getContext().getAuthentication().getName();
 		Notebook notebook = new Notebook();
 		notebook.setTitle(notebookDTO.getName());
 		notebook.setUserName(currentUserName);
@@ -135,19 +131,16 @@ public class NotebookController {
 	 * Updated an existent notebook.
 	 * 
 	 * @param notebookDTO
-	 * @param request
-	 * @param principal
 	 * @return
 	 */
 	@PutMapping
-	public ResponseEntity<Response<NotebookDTO>> putNotebook(@RequestBody @Valid NotebookDTO notebookDTO, 
-			HttpServletRequest request, Principal principal) {
+	public ResponseEntity<Response<NotebookDTO>> putNotebook(@RequestBody @Valid NotebookDTO notebookDTO) {
 		Response<NotebookDTO> response = new Response<NotebookDTO>();
 		
 		Optional<Notebook> nt = notebookService.findNotebookById(notebookDTO.getId());
 		
 		if(nt.isPresent()) {
-			String currentUserName = principal.getName();
+			String currentUserName = SecurityContextHolder.getContext().getAuthentication().getName();;
 			Notebook notebook = nt.get();
 			notebook.setTitle(notebookDTO.getName());
 			Optional<Notebook> optNotebook = this.notebookService.saveNotebook(notebook);

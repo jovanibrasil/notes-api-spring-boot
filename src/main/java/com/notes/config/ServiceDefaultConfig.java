@@ -1,11 +1,10 @@
-package com.notes;
+package com.notes.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 
-@Profile({"default", "dev", "test"})
+@Profile({"default", "dev", "stage", "test"})
 @Configuration
 public class ServiceDefaultConfig {
 

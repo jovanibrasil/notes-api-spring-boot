@@ -1,0 +1,24 @@
+version: "3.3"
+networks:
+  net:
+    external: true
+services:
+  notes-api:
+    image: notes-api # Notes API (Spring)
+    container_name: notes-api
+    ports:
+      - 8082:8080
+    networks:
+      - net
+    environment:
+      - "SPRING_PROFILES_ACTIVE=stage"
+      - "VAULT_TOKEN=s8ynaMrJvQPVq2BEPRxgceHcG"
+      - CATALINA_OPTS=-Xmx206M -Xms128M -XX:MaxPermSize=50M
+    deploy:
+      resources:
+        limits:
+          memory: 384M
+    depends_on:
+      - auth-api
+      - notes-database
+      - email-api

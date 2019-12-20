@@ -36,6 +36,14 @@
 			</properties>
 		</profile>
 		<profile>
+			<id>stage</id>
+			<properties>
+				<activatedProperties>stage</activatedProperties>
+				<maven.test.skip>true</maven.test.skip>
+				<enableVault>false</enableVault>
+			</properties>
+		</profile>
+		<profile>
 			<id>prod</id>
 			<properties>
 				<activatedProperties>prod</activatedProperties>
@@ -114,6 +122,11 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
 			<optional>true</optional>
 		</dependency>
 	</dependencies>

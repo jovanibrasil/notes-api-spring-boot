@@ -72,7 +72,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler(value = {Exception.class, RuntimeException.class})
 	public ResponseEntity<Object> exception(Exception ex) {
-		log.info("The server cannot process the received request. {}", ex.getMessage());
+		log.info("The server cannot process the received request. {}", ex.getStackTrace());
 		Response<String> response = new Response<>();
 		ErrorDetail errorDetail = new ErrorDetail.Builder()
 				.message("The server cannot process the request.")

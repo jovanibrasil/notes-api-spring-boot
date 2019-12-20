@@ -1,5 +1,6 @@
 package com.notes.security;
 
+import com.notes.config.NotesMongoProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,6 +9,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+
+import javax.servlet.Filter;
 
 //@EnableGlobalMethodSecurity(prePostEnabled=true)
 @EnableWebSecurity
@@ -36,7 +39,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	public ExceptionHandlerFilter exceptionHandlerFilterBean() throws Exception {
 		return new ExceptionHandlerFilter();
 	}
-	
+
 	/**
 	 * Configure request authorization
 	 */
