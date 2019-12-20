@@ -7,6 +7,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,17 +30,20 @@ import com.notes.models.User;
  *
  */
 @Slf4j
+@NoArgsConstructor
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
 	private static final String AUTH_HEADER = "Authorization";
 
-	@Autowired
 	private AuthClient authClient;
+
+	public JwtAuthenticationTokenFilter(AuthClient authClient) {
+		this.authClient = authClient;
+	}
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException, UnauthorizedUserException {
-		log.info("Running JwtAuthenticationTokenFilter ...");
 		String token = request.getHeader(AUTH_HEADER);
 		try {
 			if(token != null) {
@@ -61,8 +65,8 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 				throw new UnauthorizedUserException("Unauthorized user.");
 			}
 		} catch (Exception e) {
-			log.info("It was not posssible to validate the user. {}", e.getMessage());
-			throw new UnauthorizedUserException("It was not posssible to validate the user.");
+			log.info("It was not possible to validate the user. {}", e.getMessage());
+			throw new UnauthorizedUserException("It was not possible to validate the user.");
 		}
 
 		filterChain.doFilter(request, response);

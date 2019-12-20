@@ -1,7 +1,6 @@
 package com.notes.models;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

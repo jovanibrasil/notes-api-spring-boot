@@ -2,7 +2,6 @@ package com.notes.controllers;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,9 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import com.notes.exceptions.CustomMessageSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -37,10 +34,9 @@ import com.notes.services.NoteService;
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/notes")
+@Slf4j
 public class NoteController {
 
-	private static final Logger log = LoggerFactory.getLogger(NoteController.class);
-	
 	private NoteService noteService;
 	private NoteHelper noteHelper;
 	private CustomMessageSource msgSrc;
@@ -94,7 +90,6 @@ public class NoteController {
 	 * @param noteDTO
 	 * @param request
 	 * @param principal
-	 * @param bindingResult
 	 * @return
 	 */
 	@PostMapping
@@ -133,7 +128,6 @@ public class NoteController {
 	 * @param noteDTO
 	 * @param request
 	 * @param principal
-	 * @param bindingResult
 	 * @return
 	 */
 	@PutMapping

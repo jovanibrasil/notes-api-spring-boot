@@ -5,6 +5,7 @@ import java.util.Optional;
 import javax.validation.Valid;
 
 import com.notes.exceptions.CustomMessageSource;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,9 +31,8 @@ import com.notes.services.UserService;
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/users")
+@Slf4j
 public class UserController {
-
-	private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
 	private UserService userService;	
 	private CustomMessageSource msgSrc;

@@ -8,6 +8,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -16,17 +17,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.notes.exceptions.UnauthorizedUserException;
 import com.notes.integrations.Response;
 
+@Slf4j
 public class ExceptionHandlerFilter extends OncePerRequestFilter {
 
-	private static final Logger log = LoggerFactory.getLogger(ExceptionHandlerFilter.class);
-	
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
 		try {
 			filterChain.doFilter(request, response);
 		} catch (UnauthorizedUserException e) {
-			log.info("UnauthorizedUserException was throwed. {}", e.getMessage());
+			log.info("UnauthorizedUserException was thrown. {}", e.getMessage());
 			Response<String> res = new Response<String>();
 			ObjectMapper mapper = new ObjectMapper();
 			PrintWriter out = response.getWriter();

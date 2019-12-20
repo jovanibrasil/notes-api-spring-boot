@@ -14,20 +14,20 @@ import com.notes.repositories.NotebookRepository;
 @Primary
 public class NotebookService {
 
-	@Autowired
 	private NotebookRepository notebookRepository;
-	
-	// findAll
+
+	public NotebookService(NotebookRepository notebookRepository) {
+		this.notebookRepository = notebookRepository;
+	}
+
 	public List<Notebook> findAllByUserId(String userName){
 		return this.notebookRepository.findByUserName(userName);
 	}
 	
-	// delete
 	public void deleteNotebookById(String notebookId) {
 		this.notebookRepository.deleteById(notebookId);
 	}
-	
-	// post
+
 	public Optional<Notebook> saveNotebook(Notebook notebook) {
 		return Optional.of(this.notebookRepository.save(notebook));
 	}

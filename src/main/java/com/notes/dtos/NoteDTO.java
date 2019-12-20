@@ -3,7 +3,6 @@ package com.notes.dtos;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;

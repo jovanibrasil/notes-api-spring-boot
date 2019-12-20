@@ -1,6 +1,5 @@
 package com.notes.security;
 
-import com.notes.config.NotesMongoProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,24 +9,14 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
-import javax.servlet.Filter;
-
-//@EnableGlobalMethodSecurity(prePostEnabled=true)
 @EnableWebSecurity
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-	
 
 	@Autowired
 	private JwtAuthenticationEntryPoint unauthorizedHandler;
-	
-//	@Autowired
-//	private ExceptionHandlerFilter exceptionHandlerFilter;
-//	
-//	Autowired
-//	private CustomAccessDeniedHandler accessDeniedHandler;
-	
-	/*
+
+	/**
 	 * Filter used when the application intercepts a requests.
 	 */
 	@Bean
@@ -53,13 +42,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.addFilterBefore(authenticationTokenFilterBean(),  BasicAuthenticationFilter.class)
 			.addFilterBefore(exceptionHandlerFilterBean(), JwtAuthenticationTokenFilter.class)
 			.exceptionHandling().authenticationEntryPoint(unauthorizedHandler) // set authentication error
-		//	.accessDeniedHandler(accessDeniedHandler)
 			.and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // set session police stateless
 			.and()
 			.authorizeRequests()
 			.antMatchers("/notebooks", "/notebooks/**", "/notes", "/notes/**").hasAnyRole("ADMIN", "USER")
 			.antMatchers("/users").hasRole("SERVICE");
-			//http.addFilterBefore(new LoginFilter("/users/login", authenticationManager()), UsernamePasswordAuthenticationFilter.class);
 			http.headers().cacheControl();
 		
 	}
