@@ -1,5 +1,6 @@
 package com.notes.security;
 
+import com.notes.integrations.AuthClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,15 +14,20 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-	@Autowired
-	private JwtAuthenticationEntryPoint unauthorizedHandler;
+	private final JwtAuthenticationEntryPoint unauthorizedHandler;
+	private final AuthClient authClient;
+
+	public SecurityConfig(JwtAuthenticationEntryPoint unauthorizedHandler, AuthClient authClient) {
+		this.unauthorizedHandler = unauthorizedHandler;
+		this.authClient = authClient;
+	}
 
 	/**
 	 * Filter used when the application intercepts a requests.
 	 */
 	@Bean
 	public JwtAuthenticationTokenFilter authenticationTokenFilterBean() throws Exception {
-		return new JwtAuthenticationTokenFilter();
+		return new JwtAuthenticationTokenFilter(this.authClient);
 	}
 	
 	@Bean

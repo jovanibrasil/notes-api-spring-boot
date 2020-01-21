@@ -7,10 +7,13 @@ services:
     image: notes-api # Notes API (Spring)
     container_name: notes-api
     ports:
-      - 8082:8080
-    networks:
-      - net
+      - 8082:8082
+    network_mode: net
     environment:
+      - "DBSERVICENAME=mongo-database"
+      - "DBSERVICEPORT=27017"
+      - "AUTHSERVICENAME=auth-api"
+      - "AUTHSERVICEPORT=8083"
       - "SPRING_PROFILES_ACTIVE=stage"
       - "VAULT_TOKEN=s8ynaMrJvQPVq2BEPRxgceHcG"
       - CATALINA_OPTS=-Xmx206M -Xms128M -XX:MaxPermSize=50M
@@ -22,3 +25,16 @@ services:
       - auth-api
       - notes-database
       - email-api
+  notes-database:
+    network_mode: net
+  auth-api:
+    network_mode: net
+    environment:
+      - "DBSERVICEPORT=3306"
+      - "DBSERVICENAME=mysql-database"
+      - "PORT=8080"
+  mysql-database:
+    network_mode: net
+  email-api:
+    network_mode: net
+

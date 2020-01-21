@@ -12,7 +12,7 @@ import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
 
 import com.mongodb.MongoClientURI;
 
-@Profile("prod")
+@Profile({"prod", "stage"})
 @Configuration
 @Slf4j
 @EnableConfigurationProperties(NotesMongoProperties.class)
@@ -21,7 +21,6 @@ public class MongoConfig {
 	private final NotesMongoProperties configuration;
 
 	public MongoConfig(NotesMongoProperties configuration) {
-		log.info(configuration.getUrl());
 		this.configuration = configuration;
 	}
 	

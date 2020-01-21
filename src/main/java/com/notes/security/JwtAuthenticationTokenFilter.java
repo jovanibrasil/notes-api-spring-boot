@@ -30,12 +30,10 @@ import com.notes.models.User;
  *
  */
 @Slf4j
-@NoArgsConstructor
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
 	private static final String AUTH_HEADER = "Authorization";
-
-	private AuthClient authClient;
+	private final AuthClient authClient;
 
 	public JwtAuthenticationTokenFilter(AuthClient authClient) {
 		this.authClient = authClient;

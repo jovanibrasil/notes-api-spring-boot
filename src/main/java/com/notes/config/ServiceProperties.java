@@ -6,7 +6,7 @@ import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Profile;
 
-@Profile("prod")
+@Profile({"prod", "stage"})
 @ConfigurationProperties("notes-service")
 @Getter @Setter
 @NoArgsConstructor

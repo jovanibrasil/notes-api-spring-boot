@@ -1,7 +1,4 @@
 version: "3.3"
-networks:
-  net:
-    external: true
 services:
   notes-database: # Mongo database
     image: mongo-database
@@ -9,8 +6,7 @@ services:
     ports:
       - 27017:27017 
       - 28017:28017
-    networks:
-      - net
+    network_mode: host
     environment:
       - CATALINA_OPTS=-Xmx206M -Xms128M -XX:MaxPermSize=50M
     deploy:
@@ -21,13 +17,14 @@ services:
     image: auth-api
     container_name: auth-api
     ports:
-      - 8083:8080
-    networks:
-      - net
+      - 8083:8083
+    network_mode: host
     environment:
-      - "SPRING_PROFILES_ACTIVE=dev"
+      - "DBSERVICEPORT=3306"
+      - "DBSERVICENAME=127.0.0.1"
+      - "PORT=8083"
+      - "SPRING_PROFILES_ACTIVE=${PROFILE}"
       - "VAULT_TOKEN=s8ynaMrJvQPVq2BEPRxgceHcG"
-      - "DATASOURCE_URL=jdbc:mysql://mysql-database:3306/usersdb"
       - CATALINA_OPTS=-Xmx206M -Xms128M -XX:MaxPermSize=50M
     deploy:
       resources:
@@ -38,8 +35,7 @@ services:
     container_name: mysql-database
     ports:
       - 3306:3306
-    networks:
-      - net
+    network_mode: host
     environment:
       - CATALINA_OPTS=-Xmx206M -Xms128M -XX:MaxPermSize=50M
     deploy:
@@ -50,14 +46,11 @@ services:
     image: email-api
     container_name: email-api
     ports:
-      - 8084:8080
-    networks:
-      - net
+      - 8084:8084
+    network_mode: host
     environment:
       - CATALINA_OPTS=-Xmx106M -Xms64M -XX:MaxPermSize=50M
     deploy:
       resources:
         limits:
           memory: 256M
-
-

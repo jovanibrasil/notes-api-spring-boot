@@ -1,4 +1,4 @@
-while (! nc -z mongo-database 27017) & (! nc -z auth-api 8080);
+while (! nc -z $1  $2) & (! nc -z $3 $4);
         do
           echo sleeping;
           sleep 1;

@@ -25,10 +25,14 @@ compose-down:
 	docker-compose down -v --remove-orphans
 
 compose-up-dev: compose-down
+	echo "PROFILE=dev" > .env
 	docker-compose -f docker-compose.yml --compatibility up -d --no-recreate
+	rm .env
 
 compose-up-stage: compose-down
+	echo "PROFILE=stage" > .env
 	docker-compose -f docker-compose.yml -f docker-compose.stage.yml --compatibility up -d --no-recreate
+	rm .env
 
 deploy-production:
 	/bin/sh scripts/deploy.sh VAULT_TOKEN=${VAULT_TOKEN} SPRING_PROFILES_ACTIVE=${PROFILE}

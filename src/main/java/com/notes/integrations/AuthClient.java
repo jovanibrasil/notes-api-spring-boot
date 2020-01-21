@@ -3,6 +3,7 @@ package com.notes.integrations;
 import com.notes.config.ServiceProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -31,7 +32,7 @@ public class AuthClient {
 
 	private ServiceProperties serviceProperties;
 
-	public AuthClient(ServiceProperties serviceProperties){
+	public AuthClient(@Qualifier("ServiceProperties") ServiceProperties serviceProperties){
 		this.serviceProperties = serviceProperties;
 	}
 
@@ -48,8 +49,8 @@ public class AuthClient {
 			log.info("Token successfully verified");
 			return responseEntity.getBody().getData();
 		} catch (Exception e) {
-			log.info("It was not possible to validate the token. {}", e.getMessage());
-			throw new MicroServiceIntegrationException("It was not posssible to validate the token. ", e);
+			log.info("It was not possible to validate the token: {}. {}", token, e.getMessage());
+			throw new MicroServiceIntegrationException("It was not possible to validate the token. ", e);
 		}
 	}
 
@@ -72,8 +73,8 @@ public class AuthClient {
 			log.info("Response code: {}", responseEntity.getStatusCode());
 			return responseEntity.getBody().getData().getToken();
 		} catch (Exception e) {
-			log.info("It was not posssible to get the service auth token.");
-			throw new MicroServiceIntegrationException("It was not posssible to get the service auth token. " + e.getMessage(), e);
+			log.info("It was not possible to get the service auth token.");
+			throw new MicroServiceIntegrationException("It was not possible to get the service auth token. " + e.getMessage(), e);
 		}
 	}
 

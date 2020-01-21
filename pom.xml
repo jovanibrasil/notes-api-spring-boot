@@ -31,23 +31,30 @@
 			</activation>
 			<properties>
 				<activatedProperties>dev</activatedProperties>
+				<spring.profiles.active>dev</spring.profiles.active>
 				<maven.test.skip>true</maven.test.skip>
 				<enableVault>false</enableVault>
+				<vaultHost>127.0.0.1</vaultHost>
 			</properties>
 		</profile>
 		<profile>
 			<id>stage</id>
 			<properties>
 				<activatedProperties>stage</activatedProperties>
+				<spring.profiles.active>stage</spring.profiles.active>
 				<maven.test.skip>true</maven.test.skip>
-				<enableVault>false</enableVault>
+				<enableVault>true</enableVault>
+				<vaultHost>127.0.0.1</vaultHost>
 			</properties>
 		</profile>
 		<profile>
 			<id>prod</id>
 			<properties>
 				<activatedProperties>prod</activatedProperties>
+				<spring.profiles.active>prod</spring.profiles.active>
 				<enableVault>true</enableVault>
+<!--				<vaultHost>127.0.0.1</vaultHost>-->
+				<vaultHost>vault-server</vaultHost>
 			</properties>
 		</profile>
 		<profile>
