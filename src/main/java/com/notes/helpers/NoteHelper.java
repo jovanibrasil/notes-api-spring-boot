@@ -3,6 +3,7 @@ package com.notes.helpers;
 import java.util.Optional;
 
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -12,17 +13,12 @@ import com.notes.models.Notebook;
 import com.notes.services.NoteService;
 import com.notes.services.NotebookService;
 
+@RequiredArgsConstructor
 @Component
-@NoArgsConstructor
 public class NoteHelper {
 
-	private NotebookService notebookService;
-	private NoteService noteService;
-
-	public NoteHelper(NotebookService notebookService, NoteService noteService) {
-		this.notebookService = notebookService;
-		this.noteService = noteService;
-	}
+	private final NotebookService notebookService;
+	private final NoteService noteService;
 
 	public ValidationResult validateNewNote(Note note, String userName) {
 		ValidationResult vr = new ValidationResult();
