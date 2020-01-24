@@ -1,17 +1,15 @@
 package com.notes.controllers;
 
-import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import com.notes.exceptions.CustomMessageSource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -49,17 +47,15 @@ public class NoteController {
 
 	/**
 	 * Returns a collection of notes of a particular user. 
-	 * 
-	 * @param request
-	 * @param principal
+	 *
 	 * @return
 	 */
 	@GetMapping
-	public ResponseEntity<Response<List<Note>>> getNotes(HttpServletRequest request, Principal principal) {
+	public ResponseEntity<Response<List<Note>>> getNotes() {
 		log.info("Getting all notes.");
-		Response<List<Note>> response = new Response<List<Note>>(); 
-		String userName = principal.getName();
-		List<Note> notes = this.noteService.findNotesByUserName(userName);
+		Response<List<Note>> response = new Response<List<Note>>();
+		String currentUserName = SecurityContextHolder.getContext().getAuthentication().getName();
+		List<Note> notes = this.noteService.findNotesByUserName(currentUserName);
 		response.setData(notes);
 		return ResponseEntity.ok(response);
 	}
@@ -88,17 +84,14 @@ public class NoteController {
 	 * Saves a new note.
 	 * 
 	 * @param noteDTO
-	 * @param request
-	 * @param principal
 	 * @return
 	 */
 	@PostMapping
-	public ResponseEntity<Response<NoteDTO>> saveNote(@Valid @RequestBody NoteDTO noteDTO, 
-			HttpServletRequest request, Principal principal) {
+	public ResponseEntity<Response<NoteDTO>> saveNote(@Valid @RequestBody NoteDTO noteDTO) {
 		log.info("Saving note.");
 		Response<NoteDTO> response = new Response<NoteDTO>();
-		
-		String currentUserName = principal.getName();
+
+		String currentUserName = SecurityContextHolder.getContext().getAuthentication().getName();
 		Note note = noteHelper.convertNoteDTOtoNote(noteDTO, currentUserName);
 		ValidationResult vr = noteHelper.validateNewNote(note, currentUserName);
 		if(vr.hasErrors()) {
@@ -126,17 +119,14 @@ public class NoteController {
 	 * Updates an already existent note.
 	 * 
 	 * @param noteDTO
-	 * @param request
-	 * @param principal
 	 * @return
 	 */
 	@PutMapping
-	public ResponseEntity<Response<NoteDTO>> updateNote(@RequestBody @Valid NoteDTO noteDTO, 
-			HttpServletRequest request, Principal principal) {
+	public ResponseEntity<Response<NoteDTO>> updateNote(@RequestBody @Valid NoteDTO noteDTO) {
 		log.info("Updating note.");
 		Response<NoteDTO> response = new Response<NoteDTO>();
-		
-		String currentUserName = principal.getName();
+
+		String currentUserName = SecurityContextHolder.getContext().getAuthentication().getName();
 		Note note = noteHelper.convertNoteDTOtoNote(noteDTO, currentUserName);
 		ValidationResult vr = noteHelper.validateExistentNote(note, currentUserName);
 		if(vr.hasErrors()) {
