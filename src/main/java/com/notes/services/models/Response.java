@@ -1,4 +1,6 @@
-package com.notes.integrations;
+package com.notes.services.models;
+
+import com.notes.services.models.ErrorDetail;
 
 import java.util.ArrayList;
 import java.util.List;

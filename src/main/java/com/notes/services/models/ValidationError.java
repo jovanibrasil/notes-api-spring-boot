@@ -1,4 +1,4 @@
-package com.notes.integrations;
+package com.notes.services.models;
 
 /**
  * 

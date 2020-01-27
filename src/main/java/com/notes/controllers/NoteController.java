@@ -24,8 +24,8 @@ import com.notes.dtos.NoteDTO;
 import com.notes.exceptions.ResourceNotFoundException;
 import com.notes.helpers.NoteHelper;
 import com.notes.helpers.ValidationResult;
-import com.notes.integrations.ErrorDetail;
-import com.notes.integrations.Response;
+import com.notes.services.models.ErrorDetail;
+import com.notes.services.models.Response;
 import com.notes.models.Note;
 import com.notes.services.NoteService;
 

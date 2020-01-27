@@ -26,7 +26,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.notes.enums.ProfileTypeEnum;
 import com.notes.helpers.NoteHelper;
-import com.notes.integrations.AuthClient;
+import com.notes.services.AuthServiceImpl;
 import com.notes.models.Notebook;
 import com.notes.security.TempUser;
 import com.notes.services.NotebookService;
@@ -44,7 +44,7 @@ public class NotebookControllerTest {
 	private NotebookService notebookService;
 
 	@MockBean
-	private AuthClient authClient;
+	private AuthServiceImpl authClient;
 
 	@Mock
 	private Principal principal;

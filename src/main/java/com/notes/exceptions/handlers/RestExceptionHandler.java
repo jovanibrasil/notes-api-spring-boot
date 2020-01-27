@@ -16,9 +16,9 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import com.notes.exceptions.ResourceNotFoundException;
 import com.notes.exceptions.UnauthorizedUserException;
-import com.notes.integrations.ErrorDetail;
-import com.notes.integrations.Response;
-import com.notes.integrations.ValidationError;
+import com.notes.services.models.ErrorDetail;
+import com.notes.services.models.Response;
+import com.notes.services.models.ValidationError;
 
 /**
  * 

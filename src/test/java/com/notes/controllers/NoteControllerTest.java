@@ -28,7 +28,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.notes.enums.ProfileTypeEnum;
 import com.notes.helpers.NoteHelper;
 import com.notes.helpers.ValidationResult;
-import com.notes.integrations.AuthClient;
+import com.notes.services.AuthServiceImpl;
 import com.notes.models.Note;
 import com.notes.security.TempUser;
 import com.notes.services.NoteService;
@@ -46,7 +46,7 @@ public class NoteControllerTest {
 	private NoteService noteService;
 
 	@MockBean
-	private AuthClient authClient;
+	private AuthServiceImpl authClient;
 
 	@Mock
 	private Principal principal;
@@ -168,7 +168,7 @@ public class NoteControllerTest {
 		mvc.perform(MockMvcRequestBuilders.post("/notes")
 				.contentType(MediaType.APPLICATION_JSON)
 				.header("Authorization", "x.x.x.x")
-				.content(asJsonString((new NoteHelper()).convertNoteToNoteDTO(note1))))			
+				.content(asJsonString((new NoteHelper(null, null)).convertNoteToNoteDTO(note1))))
 				.andExpect(status().isCreated())
 				.andExpect(jsonPath("$.errors").isEmpty());
 	}
@@ -178,7 +178,7 @@ public class NoteControllerTest {
 		BDDMockito.given(this.noteService.findNoteById("noteIdY")).willReturn(Optional.empty());
 		mvc.perform(MockMvcRequestBuilders.post("/notes")
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(asJsonString((new NoteHelper()).convertNoteToNoteDTO(note2))))			
+				.content(asJsonString((new NoteHelper(null, null)).convertNoteToNoteDTO(note2))))
 				.andExpect(status().isUnauthorized())
 				.andExpect(jsonPath("$.errors").isEmpty());
 	}

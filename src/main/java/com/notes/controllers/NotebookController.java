@@ -1,21 +1,17 @@
 package com.notes.controllers;
 
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import com.notes.exceptions.CustomMessageSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,8 +24,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.notes.dtos.NotebookDTO;
-import com.notes.integrations.ErrorDetail;
-import com.notes.integrations.Response;
+import com.notes.services.models.ErrorDetail;
+import com.notes.services.models.Response;
 import com.notes.models.Note;
 import com.notes.models.Notebook;
 import com.notes.services.NoteService;
