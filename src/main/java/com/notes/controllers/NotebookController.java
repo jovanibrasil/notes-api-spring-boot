@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import com.notes.exceptions.CustomMessageSource;
+import com.notes.services.NoteService;
+import com.notes.services.NotebookService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -28,8 +30,6 @@ import com.notes.services.models.ErrorDetail;
 import com.notes.services.models.Response;
 import com.notes.models.Note;
 import com.notes.models.Notebook;
-import com.notes.services.NoteService;
-import com.notes.services.NotebookService;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -57,7 +57,7 @@ public class NotebookController {
 	public ResponseEntity<Response<List<NotebookDTO>>> getAllNotebooks() {
 		Response<List<NotebookDTO>> response = new Response<List<NotebookDTO>>();
 		String currentUserName = SecurityContextHolder.getContext().getAuthentication().getName();
-		List<Notebook> notebooks = notebookService.findAllByUserId(currentUserName);
+		List<Notebook> notebooks = notebookService.findAllByUserName(currentUserName);
 		List<NotebookDTO> res = notebooks.stream().map(notebook -> {
 			return new NotebookDTO(notebook.getId(), notebook.getTitle(), currentUserName);
 		}).collect(Collectors.toList());
@@ -74,13 +74,13 @@ public class NotebookController {
 	@DeleteMapping("/{notebookId}")
 	public ResponseEntity<Response<NotebookDTO>> deleteNotebook(@PathVariable String notebookId) {
 		Response<NotebookDTO> response = new Response<NotebookDTO>();
-		Optional<Notebook> optNotebook = this.notebookService.findNotebookById(notebookId);
+		Optional<Notebook> optNotebook = this.notebookService.findById(notebookId);
 		if(optNotebook.isPresent()) {
 			// delete all notebook notes
 			List<Note> notes = noteService.findNotesByNotebookId(notebookId);
 			notes.forEach(n -> { noteService.deleteNote(n.getId()); });
 			// then delete the notebook
-			this.notebookService.deleteNotebookById(notebookId);
+			this.notebookService.deleteById(notebookId);
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
 		}else {
 			log.error("It was not possible delete the notebook {}.", notebookId);
@@ -133,7 +133,7 @@ public class NotebookController {
 	public ResponseEntity<Response<NotebookDTO>> putNotebook(@RequestBody @Valid NotebookDTO notebookDTO) {
 		Response<NotebookDTO> response = new Response<NotebookDTO>();
 		
-		Optional<Notebook> nt = notebookService.findNotebookById(notebookDTO.getId());
+		Optional<Notebook> nt = notebookService.findById(notebookDTO.getId());
 		
 		if(nt.isPresent()) {
 			String currentUserName = SecurityContextHolder.getContext().getAuthentication().getName();;

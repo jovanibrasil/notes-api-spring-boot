@@ -55,13 +55,13 @@ public class NotebookServiceTest {
 
 	@Test
 	public void testFindNotebookByValidId() {
-		Optional<Notebook> notebook = notebookService.findNotebookById(("notebook1"));
+		Optional<Notebook> notebook = notebookService.findById(("notebook1"));
 		assertEquals(true, notebook.isPresent());
 	}
 	
 	@Test
 	public void testFindNotebookByUnknownId() {
-		Optional<Notebook> note = notebookService.findNotebookById("notebook3");
+		Optional<Notebook> note = notebookService.findById("notebook3");
 		assertEquals(false, note.isPresent());
 	}
 	
@@ -74,8 +74,8 @@ public class NotebookServiceTest {
 	@Test
 	public void testDeleteNotebook() {
 		notebookService.saveNotebook(notebook1);
-		notebookService.deleteNotebookById(notebook1.getId());
-		Optional<Notebook> notebook = notebookService.findNotebookById(notebook1.getId());
+		notebookService.deleteById(notebook1.getId());
+		Optional<Notebook> notebook = notebookService.findById(notebook1.getId());
 		assertEquals(true, notebook.isPresent());
 	}
 	

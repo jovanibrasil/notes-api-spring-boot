@@ -7,6 +7,8 @@ import java.security.Principal;
 import java.util.Arrays;
 import java.util.Optional;
 
+import com.notes.services.AuthService;
+import com.notes.services.NotebookService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,10 +28,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.notes.enums.ProfileTypeEnum;
 import com.notes.helpers.NoteHelper;
-import com.notes.services.AuthServiceImpl;
 import com.notes.models.Notebook;
 import com.notes.security.TempUser;
-import com.notes.services.NotebookService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -44,7 +44,7 @@ public class NotebookControllerTest {
 	private NotebookService notebookService;
 
 	@MockBean
-	private AuthServiceImpl authClient;
+	private AuthService authClient;
 
 	@Mock
 	private Principal principal;
@@ -58,7 +58,7 @@ public class NotebookControllerTest {
 	public void setUp() {
 		notebook1 = new Notebook("id1", "name1", "userName");
 		notebook2 = new Notebook("id2", "name2", "userName");
-		BDDMockito.given(this.notebookService.findAllByUserId("userName"))
+		BDDMockito.given(this.notebookService.findAllByUserName("userName"))
 			.willReturn(Arrays.asList(notebook1, notebook2));
 		BDDMockito.given(this.authClient.checkUserToken(Mockito.anyString()))
 			.willReturn(new TempUser("userName", ProfileTypeEnum.ROLE_ADMIN));
@@ -79,7 +79,7 @@ public class NotebookControllerTest {
 	
 	@Test
 	public void testGetEmptyListNotebooks() throws Exception {
-		BDDMockito.given(this.notebookService.findAllByUserId("userName")).willReturn(Arrays.asList());
+		BDDMockito.given(this.notebookService.findAllByUserName("userName")).willReturn(Arrays.asList());
 		mvc.perform(MockMvcRequestBuilders.get("/notebooks")
 				.contentType(MediaType.APPLICATION_JSON)
 				.header("Authorization", "x.x.x.x"))
@@ -90,7 +90,7 @@ public class NotebookControllerTest {
 	
 	@Test
 	public void testGetListNotebooksWithoutAuthHeader() throws Exception {
-		BDDMockito.given(this.notebookService.findAllByUserId("userName")).willReturn(Arrays.asList());
+		BDDMockito.given(this.notebookService.findAllByUserName("userName")).willReturn(Arrays.asList());
 		mvc.perform(MockMvcRequestBuilders.get("/notebooks")
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isUnauthorized())
@@ -115,7 +115,7 @@ public class NotebookControllerTest {
 	
 	@Test
 	public void testDeleteNotebook() throws Exception {	
-		BDDMockito.given(this.notebookService.findNotebookById("id1")).willReturn(Optional.of(notebook1));
+		BDDMockito.given(this.notebookService.findById("id1")).willReturn(Optional.of(notebook1));
 		mvc.perform(MockMvcRequestBuilders.delete("/notebooks/id1")
 				.contentType(MediaType.APPLICATION_JSON)
 				.header("Authorization", "x.x.x.x"))
@@ -126,7 +126,7 @@ public class NotebookControllerTest {
 	
 	@Test
 	public void testDeleteNotebookExistentNote() throws Exception {	
-		BDDMockito.given(this.notebookService.findNotebookById("noteIdX")).willReturn(Optional.empty());
+		BDDMockito.given(this.notebookService.findById("noteIdX")).willReturn(Optional.empty());
 		mvc.perform(MockMvcRequestBuilders.delete("/notebooks/idX")
 				.contentType(MediaType.APPLICATION_JSON)
 				.header("Authorization", "x.x.x.x"))
@@ -173,7 +173,7 @@ public class NotebookControllerTest {
 	
 	@Test
 	public void testSaveNotebookWithoutAuthHeader() throws Exception {
-		BDDMockito.given(this.notebookService.findNotebookById(notebook1.getId())).willReturn(Optional.of(notebook1));
+		BDDMockito.given(this.notebookService.findById(notebook1.getId())).willReturn(Optional.of(notebook1));
 		mvc.perform(MockMvcRequestBuilders.post("/notebooks")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(asJsonString(new Notebook(notebook1.getId(), notebook1.getTitle(), notebook1.getUserName()))))

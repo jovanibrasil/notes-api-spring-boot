@@ -8,6 +8,8 @@ import java.util.Arrays;
 import java.util.Optional;
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.notes.services.AuthService;
+import com.notes.services.NoteService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,10 +30,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.notes.enums.ProfileTypeEnum;
 import com.notes.helpers.NoteHelper;
 import com.notes.helpers.ValidationResult;
-import com.notes.services.AuthServiceImpl;
 import com.notes.models.Note;
 import com.notes.security.TempUser;
-import com.notes.services.NoteService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -46,7 +46,7 @@ public class NoteControllerTest {
 	private NoteService noteService;
 
 	@MockBean
-	private AuthServiceImpl authClient;
+	private AuthService authClient;
 
 	@Mock
 	private Principal principal;

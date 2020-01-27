@@ -1,6 +1,6 @@
 package com.notes.security;
 
-import com.notes.services.AuthServiceImpl;
+import com.notes.services.AuthService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,9 +14,9 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private final JwtAuthenticationEntryPoint unauthorizedHandler;
-	private final AuthServiceImpl authClient;
+	private final AuthService authClient;
 
-	public SecurityConfig(JwtAuthenticationEntryPoint unauthorizedHandler, AuthServiceImpl authClient) {
+	public SecurityConfig(JwtAuthenticationEntryPoint unauthorizedHandler, AuthService authClient) {
 		this.unauthorizedHandler = unauthorizedHandler;
 		this.authClient = authClient;
 	}

@@ -2,16 +2,14 @@ package com.notes.helpers;
 
 import java.util.Optional;
 
-import lombok.NoArgsConstructor;
+import com.notes.services.NoteService;
+import com.notes.services.NotebookService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.notes.dtos.NoteDTO;
 import com.notes.models.Note;
 import com.notes.models.Notebook;
-import com.notes.services.NoteService;
-import com.notes.services.NotebookService;
 
 @RequiredArgsConstructor
 @Component
@@ -22,7 +20,7 @@ public class NoteHelper {
 
 	public ValidationResult validateNewNote(Note note, String userName) {
 		ValidationResult vr = new ValidationResult();
-		Optional<Notebook> nb = notebookService.findNotebookById(note.getNotebookId());
+		Optional<Notebook> nb = notebookService.findById(note.getNotebookId());
 		if(nb.isPresent()) {
 			// invalid user reference
 			if(!nb.get().getUserName().equals(userName)) {

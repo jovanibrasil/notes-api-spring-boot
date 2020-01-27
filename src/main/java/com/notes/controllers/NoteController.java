@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.validation.Valid;
 
 import com.notes.exceptions.CustomMessageSource;
+import com.notes.services.NoteService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +28,6 @@ import com.notes.helpers.ValidationResult;
 import com.notes.services.models.ErrorDetail;
 import com.notes.services.models.Response;
 import com.notes.models.Note;
-import com.notes.services.NoteService;
 
 @CrossOrigin(origins = "*")
 @RestController

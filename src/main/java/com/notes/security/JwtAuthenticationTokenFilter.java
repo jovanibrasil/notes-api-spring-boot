@@ -7,6 +7,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.notes.services.AuthService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,7 +16,6 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.notes.exceptions.UnauthorizedUserException;
-import com.notes.services.AuthServiceImpl;
 import com.notes.models.User;
 
 /**
@@ -29,9 +29,9 @@ import com.notes.models.User;
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
 	private static final String AUTH_HEADER = "Authorization";
-	private final AuthServiceImpl authClient;
+	private final AuthService authClient;
 
-	public JwtAuthenticationTokenFilter(AuthServiceImpl authClient) {
+	public JwtAuthenticationTokenFilter(AuthService authClient) {
 		this.authClient = authClient;
 	}
 

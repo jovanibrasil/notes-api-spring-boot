@@ -5,6 +5,7 @@ import java.util.Optional;
 import javax.validation.Valid;
 
 import com.notes.exceptions.CustomMessageSource;
+import com.notes.services.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,6 @@ import com.notes.dtos.UserDTO;
 import com.notes.services.models.ErrorDetail;
 import com.notes.services.models.Response;
 import com.notes.models.User;
-import com.notes.services.UserService;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -31,7 +31,7 @@ import com.notes.services.UserService;
 @Slf4j
 public class UserController {
 
-	private UserService userService;	
+	private UserService userService;
 	private CustomMessageSource msgSrc;
 
 	public UserController(UserService userService, CustomMessageSource msgSrc) {
