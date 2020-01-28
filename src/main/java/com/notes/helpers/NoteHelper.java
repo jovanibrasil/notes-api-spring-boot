@@ -18,12 +18,12 @@ public class NoteHelper {
 	private final NotebookService notebookService;
 	private final NoteService noteService;
 
-	public ValidationResult validateNewNote(Note note, String userName) {
+	public ValidationResult validateNewNote(Note note) {
 		ValidationResult vr = new ValidationResult();
 		Optional<Notebook> nb = notebookService.findById(note.getNotebookId());
 		if(nb.isPresent()) {
 			// invalid user reference
-			if(!nb.get().getUserName().equals(userName)) {
+			if(!nb.get().getUserName().equals(note.getUserName())) {
 				vr.addError("The referenced user does not exist.");
 			}
 		}else {
@@ -33,7 +33,7 @@ public class NoteHelper {
 		return vr;
 	}
 	
-	public ValidationResult validateExistentNote(Note note, String userName) {
+	public ValidationResult validateExistentNote(Note note) {
 		ValidationResult vr = new ValidationResult();
 		Optional<Note> nt = noteService.findNoteById(note.getId());
 		if(!nt.isPresent()) {
@@ -42,26 +42,5 @@ public class NoteHelper {
 		}		
 		return vr;
 	}
-	
-	public Note convertNoteDTOtoNote(NoteDTO noteDTO, String userName) {
-		return new Note(
-			noteDTO.getId(),
-			noteDTO.getTitle(),
-			noteDTO.getText(),
-			noteDTO.getNotebookId(),
-			userName,
-			noteDTO.getBackgroundColor()
-		);
-	}
-	
-	public NoteDTO convertNoteToNoteDTO(Note note) {
-		return new NoteDTO(
-			note.getId(), 
-			note.getTitle(), 
-			note.getText(), 
-			note.getNotebookId(),
-			note.getBackgroundColor(),
-			note.getLastModifiedOn());
-	}
-	
+
 }

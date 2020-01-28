@@ -8,6 +8,8 @@ import java.util.Arrays;
 import java.util.Optional;
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.notes.dtos.NoteDTO;
+import com.notes.mappers.NoteMapper;
 import com.notes.services.AuthService;
 import com.notes.services.NoteService;
 import org.junit.Before;
@@ -52,14 +54,24 @@ public class NoteControllerTest {
 	private Principal principal;
 
 	private Note note1, note2;
+	private NoteDTO noteDto1, noteDto2;
+
+	@Autowired
+	private NoteMapper noteMapper;
 
 	@MockBean
 	private NoteHelper noteHelper;
-	
+
 	@Before
 	public void setUp() {
-		note1 = new Note("noteId1", "noteTitle", "noteText", "notebookId1", "userName", "rgba(251, 243, 129, 0.74)");
-		note2 = new Note("noteId2", "noteTitle", "noteText", "notebookId2", "userName", "rgba(251, 243, 129, 0.74)");
+		note1 = new Note("noteId1", "noteTitle", "noteText",
+				"notebookId1", "userName", "rgba(251, 243, 129, 0.74)");
+		note2 = new Note("noteId2", "noteTitle", "noteText",
+				"notebookId2", "userName", "rgba(251, 243, 129, 0.74)");
+
+		noteDto1 = this.noteMapper.noteToNoteDto(note1);
+		noteDto1 = this.noteMapper.noteToNoteDto(note2);
+
 		BDDMockito.given(this.noteService.findNotesByUserName("userName")).willReturn(Arrays.asList(note1, note2));
 		BDDMockito.given(this.authClient.checkUserToken(Mockito.anyString())).willReturn(new TempUser("userName", ProfileTypeEnum.ROLE_ADMIN));
 	}
@@ -161,14 +173,11 @@ public class NoteControllerTest {
 	@Test
 	public void testSaveNote() throws Exception {
 		BDDMockito.given(this.noteService.saveNote(Mockito.any())).willReturn(Optional.of(note1));
-		BDDMockito.given(this.noteHelper.convertNoteDTOtoNote(Mockito.any(), 
-				Mockito.any())).willReturn(note1);
-		BDDMockito.given(noteHelper.validateNewNote(Mockito.any(), Mockito.any()))
-		.willReturn(new ValidationResult());
+		BDDMockito.given(this.noteHelper.validateNewNote(Mockito.any())).willReturn(new ValidationResult());
 		mvc.perform(MockMvcRequestBuilders.post("/notes")
 				.contentType(MediaType.APPLICATION_JSON)
 				.header("Authorization", "x.x.x.x")
-				.content(asJsonString((new NoteHelper(null, null)).convertNoteToNoteDTO(note1))))
+				.content(asJsonString(this.noteDto1)))
 				.andExpect(status().isCreated())
 				.andExpect(jsonPath("$.errors").isEmpty());
 	}
@@ -178,7 +187,7 @@ public class NoteControllerTest {
 		BDDMockito.given(this.noteService.findNoteById("noteIdY")).willReturn(Optional.empty());
 		mvc.perform(MockMvcRequestBuilders.post("/notes")
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(asJsonString((new NoteHelper(null, null)).convertNoteToNoteDTO(note2))))
+				.content(asJsonString(this.noteDto2)))
 				.andExpect(status().isUnauthorized())
 				.andExpect(jsonPath("$.errors").isEmpty());
 	}

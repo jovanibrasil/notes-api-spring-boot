@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import com.notes.exceptions.CustomMessageSource;
+import com.notes.mappers.NotebookMapper;
 import com.notes.services.NoteService;
 import com.notes.services.NotebookService;
 import org.slf4j.Logger;
@@ -41,11 +42,14 @@ public class NotebookController {
 	private NotebookService notebookService;
 	private NoteService noteService;
 	private CustomMessageSource msgSrc;
+	private final NotebookMapper notebookMapper;
 
-	public NotebookController(NotebookService notebookService, NoteService noteService, CustomMessageSource msgSrc) {
+	public NotebookController(NotebookService notebookService, NoteService noteService,
+							  CustomMessageSource msgSrc, NotebookMapper notebookMapper) {
 		this.notebookService = notebookService;
 		this.noteService = noteService;
 		this.msgSrc = msgSrc;
+		this.notebookMapper = notebookMapper;
 	}
 
 	/**
@@ -58,9 +62,8 @@ public class NotebookController {
 		Response<List<NotebookDTO>> response = new Response<List<NotebookDTO>>();
 		String currentUserName = SecurityContextHolder.getContext().getAuthentication().getName();
 		List<Notebook> notebooks = notebookService.findAllByUserName(currentUserName);
-		List<NotebookDTO> res = notebooks.stream().map(notebook -> {
-			return new NotebookDTO(notebook.getId(), notebook.getTitle(), currentUserName);
-		}).collect(Collectors.toList());
+		List<NotebookDTO> res = notebooks.stream().map(notebookMapper::notebookToNotebookDto)
+				.collect(Collectors.toList());
 		response.setData(res);
 		return ResponseEntity.ok(response);
 	}
@@ -110,16 +113,13 @@ public class NotebookController {
 	 * @return
 	 */
 	@PostMapping
-	public ResponseEntity<Response<NotebookDTO>> postNotebook(@RequestBody @Valid NotebookDTO notebookDTO) {
+	public ResponseEntity<Response<NotebookDTO>> createNotebook(@RequestBody @Valid NotebookDTO notebookDTO) {
 		Response<NotebookDTO> response = new Response<NotebookDTO>();
 		
-		String currentUserName = SecurityContextHolder.getContext().getAuthentication().getName();
-		Notebook notebook = new Notebook();
-		notebook.setTitle(notebookDTO.getName());
-		notebook.setUserName(currentUserName);
+		Notebook notebook = this.notebookMapper.notebookDtoToNotebook(notebookDTO);
 		Optional<Notebook> optNotebook = this.notebookService.saveNotebook(notebook);
 		notebook = optNotebook.get();
-		response.setData(new NotebookDTO(notebook.getId(), notebook.getTitle(), currentUserName));
+		response.setData(this.notebookMapper.notebookToNotebookDto(notebook));
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
 	
@@ -130,7 +130,7 @@ public class NotebookController {
 	 * @return
 	 */
 	@PutMapping
-	public ResponseEntity<Response<NotebookDTO>> putNotebook(@RequestBody @Valid NotebookDTO notebookDTO) {
+	public ResponseEntity<Response<NotebookDTO>> updateNotebook(@RequestBody @Valid NotebookDTO notebookDTO) {
 		Response<NotebookDTO> response = new Response<NotebookDTO>();
 		
 		Optional<Notebook> nt = notebookService.findById(notebookDTO.getId());
@@ -139,9 +139,10 @@ public class NotebookController {
 			String currentUserName = SecurityContextHolder.getContext().getAuthentication().getName();;
 			Notebook notebook = nt.get();
 			notebook.setTitle(notebookDTO.getName());
+
 			Optional<Notebook> optNotebook = this.notebookService.saveNotebook(notebook);
 			notebook = optNotebook.get();
-			response.setData(new NotebookDTO(notebook.getId(), notebook.getTitle(), currentUserName));
+			response.setData(this.notebookMapper.notebookToNotebookDto(notebook));
 			return ResponseEntity.ok(response);
 		}
 		

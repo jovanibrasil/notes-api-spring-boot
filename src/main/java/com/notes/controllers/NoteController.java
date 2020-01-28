@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.validation.Valid;
 
 import com.notes.exceptions.CustomMessageSource;
+import com.notes.mappers.NoteMapper;
 import com.notes.services.NoteService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -38,11 +39,13 @@ public class NoteController {
 	private NoteService noteService;
 	private NoteHelper noteHelper;
 	private CustomMessageSource msgSrc;
+	private final NoteMapper noteMapper;
 
-	public NoteController(NoteService noteService, NoteHelper noteHelper, CustomMessageSource msgSrc) {
+	public NoteController(NoteService noteService, NoteHelper noteHelper, CustomMessageSource msgSrc, NoteMapper noteMapper) {
 		this.noteService = noteService;
 		this.noteHelper = noteHelper;
 		this.msgSrc = msgSrc;
+		this.noteMapper = noteMapper;
 	}
 
 	/**
@@ -91,9 +94,8 @@ public class NoteController {
 		log.info("Saving note.");
 		Response<NoteDTO> response = new Response<NoteDTO>();
 
-		String currentUserName = SecurityContextHolder.getContext().getAuthentication().getName();
-		Note note = noteHelper.convertNoteDTOtoNote(noteDTO, currentUserName);
-		ValidationResult vr = noteHelper.validateNewNote(note, currentUserName);
+		Note note = noteMapper.noteDtoToNote(noteDTO);
+		ValidationResult vr = noteHelper.validateNewNote(note);
 		if(vr.hasErrors()) {
 			log.error("Validation error {}",  vr.getErrors());
 			// Return bad request, invalid content.
@@ -126,16 +128,14 @@ public class NoteController {
 		log.info("Updating note.");
 		Response<NoteDTO> response = new Response<NoteDTO>();
 
-		String currentUserName = SecurityContextHolder.getContext().getAuthentication().getName();
-		Note note = noteHelper.convertNoteDTOtoNote(noteDTO, currentUserName);
-		ValidationResult vr = noteHelper.validateExistentNote(note, currentUserName);
+		Note note = noteMapper.noteDtoToNote(noteDTO);
+		ValidationResult vr = noteHelper.validateExistentNote(note);
 		if(vr.hasErrors()) {
 			log.error("Validation error {}", vr.getErrors());
 			vr.getErrors().forEach(e -> response.addError(new ErrorDetail(e)));
 			ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);  
 		}
 		note.setLastModifiedOn(LocalDateTime.now());
-		note.setUserName(currentUserName);
 		Optional<Note> optNote = this.noteService.saveNote(note);
 		if(optNote.isPresent()) {
 			// Return note with the valid id generated 
