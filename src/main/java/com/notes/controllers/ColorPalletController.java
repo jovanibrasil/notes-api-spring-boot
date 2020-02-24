@@ -25,7 +25,7 @@ public class ColorPalletController {
     public ResponseEntity<Response<List<String>>> getColorPallet(){
         ColorPallet colorPallet = colorPalletService.getColorPalletByCurrentUserName();
         Response response = new Response<>();
-        response.setData(colorPallet);
+        response.setData(colorPallet.getColors());
         return ResponseEntity.ok(response);
     }
 
