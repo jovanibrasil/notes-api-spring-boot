@@ -18,5 +18,5 @@ public interface NoteRepository extends MongoRepository<Note, String> {
 		public List<Note> findAllByNotebookId(String notebookId);
 		public void deleteById(String noteId);
 		public List<Note> findByUserName(String userName);
-		
+
 }
