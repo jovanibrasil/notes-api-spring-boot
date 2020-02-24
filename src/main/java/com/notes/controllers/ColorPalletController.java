@@ -30,7 +30,7 @@ public class ColorPalletController {
     }
 
     @PostMapping
-    public ResponseEntity<Response<?>> saveColorPallet(@Valid @NotNull @NotEmpty List<String> colors){
+    public ResponseEntity<Response<?>> saveColorPallet(@RequestBody List<String> colors){
         ColorPallet colorPallet = new ColorPallet();
         colorPallet.setColors(colors);
         colorPalletService.saveColorPallet(colorPallet);
