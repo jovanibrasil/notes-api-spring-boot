@@ -6,6 +6,8 @@ import javax.validation.Valid;
 
 import com.notes.exceptions.CustomMessageSource;
 import com.notes.mappers.UserMapper;
+import com.notes.models.ColorPallet;
+import com.notes.services.ColorPalletService;
 import com.notes.services.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -35,11 +37,13 @@ public class UserController {
 	private UserService userService;
 	private CustomMessageSource msgSrc;
 	private final UserMapper userMapper;
+	private final ColorPalletService palletService;
 
-	public UserController(UserService userService, CustomMessageSource msgSrc, UserMapper userMapper) {
+	public UserController(UserService userService, CustomMessageSource msgSrc, UserMapper userMapper, ColorPalletService palletService) {
 		this.userService = userService;
 		this.msgSrc = msgSrc;
 		this.userMapper = userMapper;
+		this.palletService = palletService;
 	}
 
 	/**
@@ -111,6 +115,10 @@ public class UserController {
 				response.addError(new ErrorDetail(msgSrc.getMessage("error.user.create")));
 				return ResponseEntity.badRequest().body(response);
 			}
+			ColorPallet colorPallet = new ColorPallet();
+			colorPallet.setUserName(user.getUsername());
+			colorPallet.setColors(new String[]{});
+			palletService.saveColorPallet(colorPallet);
 			log.info("Creating user {}", user.getUsername());
 			userDTO = userMapper.userToUserDto(user);
 			response.setData(userDTO);
