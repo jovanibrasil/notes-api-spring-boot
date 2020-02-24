@@ -44,30 +44,30 @@ public class UserController {
 
 	/**
 	 * Retrieve a UserDTO by a given user name.
-	 * 
+	 *
 	 * @param userName is the user name to retrieve the UserDTO.
-	 * @return A response object with the UserDTO and empty error message on success, and data fiend empty and a list 
-	 * of error messages on failure.  
+	 * @return A response object with the UserDTO and empty error message on success, and data fiend empty and a list
+	 * of error messages on failure.
 	 */
 	@GetMapping("/{userName}")
 	public ResponseEntity<Response<UserDTO>> getUser(@PathVariable("userName") String userName){
-		
+
 		Response<UserDTO> response = new Response<>();
 		Optional<User> optUser = this.userService.findByUserName(userName);
-		
+
 		if(!optUser.isPresent()) {
 			log.error("It was not possible to find the specified user.");
 			response.addError(new ErrorDetail(msgSrc.getMessage("error.user.find")));
 			return ResponseEntity.badRequest().body(response);
 		}
-		
+
 		response.setData(userMapper.userToUserDto(optUser.get()));
 		return ResponseEntity.ok(response);
 	}
-	
+
 	/**
 	 * Delete an user by name.
-	 * 
+	 *
 	 */
 	@DeleteMapping("/{userName}")
 	public ResponseEntity<Response<String>> deleteUser(@PathVariable("userName") String userName){
@@ -76,15 +76,15 @@ public class UserController {
 		this.userService.deleteByUserName(userName);
  		return ResponseEntity.ok(response);
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * Saves a userDTO.
-	 * 
+	 *
 	 * @param userDTO is an UserDTO.
 	 * @param bindingResult is an object with the result of userDTO validation.
-	 * @return An Response object with the saved UserDTO and empty error message list on success, and an Response object 
-	 * with empty data and error messages on failure.  
+	 * @return An Response object with the saved UserDTO and empty error message list on success, and an Response object
+	 * with empty data and error messages on failure.
 	 */
 	@PostMapping
 	public ResponseEntity<Response<UserDTO>> saveUser(@Valid @RequestBody UserDTO userDTO, BindingResult bindingResult){
@@ -96,14 +96,14 @@ public class UserController {
 				bindingResult.getAllErrors().forEach(err -> response.addError(new ErrorDetail(err.getDefaultMessage())));
 				return ResponseEntity.badRequest().body(response);
 			}
-			
+
 			this.validateUser(userDTO, bindingResult);
 			if(bindingResult.hasErrors()) {
 				log.error("It was not possible to create the specified user. Validation Error.");
 				bindingResult.getAllErrors().forEach(err -> response.addError(new ErrorDetail(err.getDefaultMessage())));
 				return ResponseEntity.badRequest().body(response);
 			}
-			
+
 			User user = userMapper.userDtoToUser(userDTO);
 			Optional<User> optUser = this.userService.save(user);
 			if(!optUser.isPresent()) {
@@ -121,20 +121,20 @@ public class UserController {
 			return ResponseEntity.badRequest().body(response);
 		}
 	}
-		
+
 	/**
-	 * 
+	 *
 	 * Validates an UserDTO object accordingly the constraints.
-	 * 
+	 *
 	 * 1) Verify if the user already exists.
-	 *  
-	 * 
+	 *
+	 *
 	 * @param userDTO is the UserDto object that you wish to have validated.
 	 * @param result bindingResult is an object with the result of userDTO validation.
 	 */
 	private void validateUser(UserDTO userDTO, BindingResult result) {
-		userService.findByUserName(userDTO.getUserName()).ifPresent(u -> 
+		userService.findByUserName(userDTO.getUserName()).ifPresent(u ->
 			result.addError(new ObjectError("User", msgSrc.getMessage("error.user.name.unique"))));
 	}
-	
+
 }
