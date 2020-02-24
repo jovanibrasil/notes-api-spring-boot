@@ -49,6 +49,7 @@ public class AuthServiceImpl implements AuthService {
 		try {
 			log.info("Checking received token");
 			HttpHeaders headers = new HttpHeaders();
+			headers.set("Authorization", token);
 			HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
 			ResponseEntity<Response<TempUser>> responseEntity = this.restTemplate.exchange(checkTokenUri, HttpMethod.GET,
 					entity, new ParameterizedTypeReference<Response<TempUser>>() {});
