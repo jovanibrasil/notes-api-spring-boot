@@ -29,9 +29,9 @@ public class ColorPalletServiceImpl implements  ColorPalletService {
         String currentUserName = SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<ColorPallet> optColorPallet = colorPalletRepository.findByUserName(currentUserName);
         if(optColorPallet.isPresent()){
-            colorPallet = optColorPallet.get();
-            colorPallet.setColors(colorPallet.getColors());
-            colorPalletRepository.save(colorPallet);
+            ColorPallet savedColorPallet = optColorPallet.get();
+            savedColorPallet.setColors(colorPallet.getColors());
+            colorPalletRepository.save(savedColorPallet);
         }else{
             colorPallet.setUserName(currentUserName);
             colorPalletRepository.save(colorPallet);
