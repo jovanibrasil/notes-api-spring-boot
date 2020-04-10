@@ -1,4 +1,5 @@
-[![Build Status](http://jovanibrasil.com:8085/buildStatus/icon?job=notes-api)](http://13.58.51.172:8085/job/notes-api/)
+[![Build Status](https://travis-ci.org/jovanibrasil/notes-api.svg?branch=develop)](https://travis-ci.org/jovanibrasil/notes-api)
+![Codecov branch](https://img.shields.io/codecov/c/github/jovanibrasil/notes-api/develop)
 
 # API para um aplicativo de notas/lembretes
 
