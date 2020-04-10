@@ -11,7 +11,7 @@
 	<description>Notes API</description>
 
 	<scm>
-		<connection>scm:git:https://jovanibrasil@github.com/jovanibrasil/ParallelDeploymentTest.git</connection>
+		<connection>scm:git:https://jovanibrasil@github.com/jovanibrasil/notes-api.git</connection>
 	</scm>
 
 	<parent>
@@ -33,8 +33,6 @@
 				<activatedProperties>dev</activatedProperties>
 				<spring.profiles.active>dev</spring.profiles.active>
 				<maven.test.skip>true</maven.test.skip>
-				<enableVault>false</enableVault>
-				<vaultHost>127.0.0.1</vaultHost>
 			</properties>
 		</profile>
 		<profile>
@@ -43,8 +41,6 @@
 				<activatedProperties>stage</activatedProperties>
 				<spring.profiles.active>stage</spring.profiles.active>
 				<maven.test.skip>true</maven.test.skip>
-				<enableVault>true</enableVault>
-				<vaultHost>127.0.0.1</vaultHost>
 			</properties>
 		</profile>
 		<profile>
@@ -52,39 +48,27 @@
 			<properties>
 				<activatedProperties>prod</activatedProperties>
 				<spring.profiles.active>prod</spring.profiles.active>
-				<enableVault>true</enableVault>
-<!--				<vaultHost>127.0.0.1</vaultHost>-->
-				<vaultHost>vault-server</vaultHost>
 			</properties>
 		</profile>
 		<profile>
 			<id>test</id>
 			<properties>
 				<activatedProperties>test</activatedProperties>
-				<enableVault>false</enableVault>
 			</properties>
 		</profile>
 	</profiles>
 
 	<properties>
+		<activeProfile>dev</activeProfile>
 		<java.version>1.8</java.version>
-		<activeProfile>prod</activeProfile>
-		<spring-cloud.version>Greenwich.SR2</spring-cloud.version>
 		<mapstruct.version>1.3.0.Final</mapstruct.version>
 	</properties>
 
 	<dependencies>
-		<!-- Vault Starter -->
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-vault-config</artifactId>
-		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-		<!-- <dependency> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-devtools</artifactId> 
-			<scope>runtime</scope> </dependency> -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -144,18 +128,6 @@
 		</dependency>
 	</dependencies>
 
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-dependencies</artifactId>
-				<version>${spring-cloud.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
-
 	<build>
 		<finalName>${project.artifactId}##${buildNumber}</finalName>
 		<plugins>
@@ -213,6 +185,33 @@
 					</compilerArgs>
 				</configuration>
 			</plugin>
+			<plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <!-- attached to Maven test phase -->
+                    <execution>
+                        <id>report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+				<groupId>com.heroku.sdk</groupId>
+				<artifactId>heroku-maven-plugin</artifactId>
+				<version>2.0.11</version>
+				<configuration>
+					<appName>jb-notes-api</appName>
+				</configuration>
+			</plugin>	
 		</plugins>
 		<resources>
 			<resource>

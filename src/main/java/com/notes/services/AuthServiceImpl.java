@@ -1,10 +1,5 @@
 package com.notes.services;
 
-import com.notes.config.ServiceProperties;
-import com.notes.services.models.Response;
-import com.notes.services.models.TokenObj;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -19,6 +14,10 @@ import com.notes.dtos.JwtAuthenticationDto;
 import com.notes.enums.ApplicationType;
 import com.notes.exceptions.MicroServiceIntegrationException;
 import com.notes.security.TempUser;
+import com.notes.services.models.Response;
+import com.notes.services.models.TokenObj;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
@@ -29,12 +28,16 @@ public class AuthServiceImpl implements AuthService {
 
 	@Value("${urls.auth.create-token}")
 	private String createTokenUri;
-
-	private final ServiceProperties serviceProperties;
+	
+	@Value("${notes-api.username}")
+	private String serviceUsername;
+	
+	@Value("${notes-api.password}")
+	private String servicePassword;
+	
 	private final RestTemplate restTemplate;
-
-	public AuthServiceImpl(@Qualifier("ServiceProperties") ServiceProperties serviceProperties, RestTemplate restTemplate){
-		this.serviceProperties = serviceProperties;
+	
+	public AuthServiceImpl(RestTemplate restTemplate){
 		this.restTemplate = restTemplate;
 	}
 
@@ -73,8 +76,8 @@ public class AuthServiceImpl implements AuthService {
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			JwtAuthenticationDto authDTO = new JwtAuthenticationDto();
-			authDTO.setUserName(this.serviceProperties.getUsername());
-			authDTO.setPassword(this.serviceProperties.getPassword());
+			authDTO.setUserName(serviceUsername);
+			authDTO.setPassword(servicePassword);
 			authDTO.setApplication(ApplicationType.NOTES_APP);
 			HttpEntity<JwtAuthenticationDto> request = new HttpEntity<>(authDTO, headers);
 			ResponseEntity<Response<TokenObj>> responseEntity = this.restTemplate.exchange(createTokenUri,
