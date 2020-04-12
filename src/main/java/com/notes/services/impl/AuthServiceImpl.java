@@ -1,4 +1,4 @@
-package com.notes.services;
+package com.notes.services.impl;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -14,6 +14,7 @@ import com.notes.dtos.JwtAuthenticationDto;
 import com.notes.enums.ApplicationType;
 import com.notes.exceptions.MicroServiceIntegrationException;
 import com.notes.security.TempUser;
+import com.notes.services.AuthService;
 import com.notes.services.models.Response;
 import com.notes.services.models.TokenObj;
 

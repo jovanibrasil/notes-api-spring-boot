@@ -22,11 +22,4 @@ public abstract class NotebookMapperDecorator implements NotebookMapper {
         return notebook;
     }
 
-    @Override
-    public NotebookDTO notebookToNotebookDto(Notebook notebook) {
-        NotebookDTO notebookDto = this.notebookMapper.notebookToNotebookDto(notebook);
-        String currentUserName = SecurityContextHolder.getContext().getAuthentication().getName();
-        notebook.setUserName(currentUserName);
-        return notebookDto;
-    }
 }

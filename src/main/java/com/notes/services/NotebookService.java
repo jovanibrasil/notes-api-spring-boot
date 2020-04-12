@@ -2,12 +2,14 @@ package com.notes.services;
 
 import com.notes.models.Notebook;
 
-import java.util.List;
-import java.util.Optional;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface NotebookService {
-    List<Notebook> findAllByUserName(String userName);
-    Optional<Notebook> findById(String notebookId);
+    Page<Notebook> findAllByUserName(String userName, Pageable pageable);
+    Notebook findById(String notebookId);
     void deleteById(String notebookId);
-    Optional<Notebook> saveNotebook(Notebook notebook);
+    Notebook saveNotebook(Notebook notebook);
+	Notebook updateNotebook(Notebook notebook);
 }

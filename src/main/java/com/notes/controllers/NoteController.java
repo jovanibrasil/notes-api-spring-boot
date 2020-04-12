@@ -24,8 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.notes.dtos.NoteDTO;
 import com.notes.exceptions.ResourceNotFoundException;
-import com.notes.helpers.NoteHelper;
-import com.notes.helpers.ValidationResult;
 import com.notes.services.models.ErrorDetail;
 import com.notes.services.models.Response;
 import com.notes.models.Note;
@@ -37,13 +35,11 @@ import com.notes.models.Note;
 public class NoteController {
 
 	private NoteService noteService;
-	private NoteHelper noteHelper;
 	private CustomMessageSource msgSrc;
 	private final NoteMapper noteMapper;
 
-	public NoteController(NoteService noteService, NoteHelper noteHelper, CustomMessageSource msgSrc, NoteMapper noteMapper) {
+	public NoteController(NoteService noteService, CustomMessageSource msgSrc, NoteMapper noteMapper) {
 		this.noteService = noteService;
-		this.noteHelper = noteHelper;
 		this.msgSrc = msgSrc;
 		this.noteMapper = noteMapper;
 	}
@@ -95,13 +91,6 @@ public class NoteController {
 		Response<NoteDTO> response = new Response<NoteDTO>();
 
 		Note note = noteMapper.noteDtoToNote(noteDTO);
-		ValidationResult vr = noteHelper.validateNewNote(note);
-		if(vr.hasErrors()) {
-			log.error("Validation error {}",  vr.getErrors());
-			// Return bad request, invalid content.
-			vr.getErrors().forEach(e -> response.addError(new ErrorDetail(e)));
-			ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(response);  
-		}
 		// Save on database
 		note.setLastModifiedOn(LocalDateTime.now());
 		Optional<Note> optNote = this.noteService.saveNote(note);
@@ -129,12 +118,6 @@ public class NoteController {
 		Response<NoteDTO> response = new Response<NoteDTO>();
 
 		Note note = noteMapper.noteDtoToNote(noteDTO);
-		ValidationResult vr = noteHelper.validateExistentNote(note);
-		if(vr.hasErrors()) {
-			log.error("Validation error {}", vr.getErrors());
-			vr.getErrors().forEach(e -> response.addError(new ErrorDetail(e)));
-			ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);  
-		}
 		note.setLastModifiedOn(LocalDateTime.now());
 		Optional<Note> optNote = this.noteService.saveNote(note);
 		if(optNote.isPresent()) {

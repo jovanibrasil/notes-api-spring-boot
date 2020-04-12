@@ -1,7 +1,9 @@
-package com.notes.services;
+package com.notes.services.impl;
 
 import com.notes.models.ColorPallet;
 import com.notes.repositories.ColorPalletRepository;
+import com.notes.services.ColorPalletService;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;

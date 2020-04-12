@@ -11,4 +11,5 @@ public interface NoteService {
     Optional<Note> saveNote(Note note);
     Optional<Note> findNoteById(String noteId);
     List<Note> findNotesByNotebookId(String notebookId);
+	void deleteNotesByNotebookId(String notebookId);
 }

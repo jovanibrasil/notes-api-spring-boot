@@ -30,6 +30,15 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 	
 	private static final Logger log = LoggerFactory.getLogger(RestExceptionHandler.class);
 
+	//log.error("It was not possible delete the notebook {}.", notebookId);
+			//response.addError(new ErrorDetail(msgSrc.getMessage("error.notebook.delete")));
+			//return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+			
+//	log.error("It was not possible update the notebook {}.", notebookDTO.getId());
+//	response.addError(new ErrorDetail(msgSrc.getMessage("error.notebook.update")));
+//	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+
+	
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {

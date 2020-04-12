@@ -1,7 +1,9 @@
-package com.notes.services;
+package com.notes.services.impl;
 
 import com.notes.models.Note;
 import com.notes.repositories.NoteRepository;
+import com.notes.services.NoteService;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
@@ -34,6 +36,15 @@ public class NoteServiceImpl implements NoteService {
 	
 	public List<Note> findNotesByNotebookId(String notebookId){
 		return this.noteRepository.findAllByNotebookId(notebookId);
+	}
+
+	/**
+	 * Remove todas as notas de um notebook específico.
+	 * 
+	 */
+	@Override
+	public void deleteNotesByNotebookId(String notebookId) {
+		findNotesByNotebookId(notebookId).forEach(noteRepository::delete);
 	}
 	
 }

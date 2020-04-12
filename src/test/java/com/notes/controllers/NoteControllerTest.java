@@ -30,7 +30,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.notes.enums.ProfileTypeEnum;
-import com.notes.helpers.NoteHelper;
 import com.notes.helpers.ValidationResult;
 import com.notes.models.Note;
 import com.notes.security.TempUser;
@@ -58,9 +57,6 @@ public class NoteControllerTest {
 
 	@Autowired
 	private NoteMapper noteMapper;
-
-	@MockBean
-	private NoteHelper noteHelper;
 
 	@Before
 	public void setUp() {
@@ -173,7 +169,6 @@ public class NoteControllerTest {
 	@Test
 	public void testSaveNote() throws Exception {
 		BDDMockito.given(this.noteService.saveNote(Mockito.any())).willReturn(Optional.of(note1));
-		BDDMockito.given(this.noteHelper.validateNewNote(Mockito.any())).willReturn(new ValidationResult());
 		mvc.perform(MockMvcRequestBuilders.post("/notes")
 				.contentType(MediaType.APPLICATION_JSON)
 				.header("Authorization", "x.x.x.x")

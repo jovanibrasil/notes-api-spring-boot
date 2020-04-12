@@ -1,4 +1,4 @@
-package com.notes.services;
+package com.notes.services.impl;
 
 import java.util.Optional;
 
@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.notes.enums.ProfileTypeEnum;
 import com.notes.models.User;
 import com.notes.repositories.UserRepository;
+import com.notes.services.UserService;
 
 @RequiredArgsConstructor
 @Slf4j

@@ -11,12 +11,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.notes.models.Note;
 import com.notes.models.Notebook;
 
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @ActiveProfiles("test")
@@ -24,10 +25,8 @@ public class NotebookRepositoryTest {
 	
 	@Autowired
 	private NotebookRepository notebookRepository;
-	private Notebook notebook;
 	
-	@Autowired
-	private NoteRepository noteRepository;
+	private Notebook notebook;
 	
 	@Before
 	public void setUp() {

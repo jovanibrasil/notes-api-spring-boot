@@ -1,4 +1,4 @@
-package com.notes.services;
+package com.notes.services.impl;
 
 import static org.junit.Assert.assertEquals;
 
@@ -19,6 +19,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.notes.models.Note;
 import com.notes.repositories.NoteRepository;
+import com.notes.services.NoteService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
