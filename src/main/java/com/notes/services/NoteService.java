@@ -1,15 +1,15 @@
 package com.notes.services;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.notes.models.Note;
 
-import java.util.List;
-import java.util.Optional;
-
 public interface NoteService {
-    List<Note> findNotesByUserName(String userName);
-    void deleteNote(String noteId);
-    Optional<Note> saveNote(Note note);
-    Optional<Note> findNoteById(String noteId);
-    List<Note> findNotesByNotebookId(String notebookId);
-	void deleteNotesByNotebookId(String notebookId);
+    Page<Note> findNotesByUserName(Pageable pageable);
+    Page<Note> findNotesByNotebookId(String notebookId, Pageable pageable);
+	void deleteNote(String noteId);
+    Note saveNote(Note note);
+    Note findNoteById(String noteId);
+    void deleteNotesByNotebookId(String notebookId);
 }

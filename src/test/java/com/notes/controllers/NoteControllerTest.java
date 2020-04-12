@@ -1,27 +1,28 @@
 package com.notes.controllers;
 
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.security.Principal;
 import java.util.Arrays;
-import java.util.Optional;
 
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.notes.dtos.NoteDTO;
-import com.notes.mappers.NoteMapper;
-import com.notes.services.AuthService;
-import com.notes.services.NoteService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.BDDMockito;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -29,10 +30,15 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.notes.dtos.NoteDTO;
 import com.notes.enums.ProfileTypeEnum;
-import com.notes.helpers.ValidationResult;
+import com.notes.exceptions.NotFoundException;
+import com.notes.mappers.NoteMapper;
 import com.notes.models.Note;
 import com.notes.security.TempUser;
+import com.notes.services.AuthService;
+import com.notes.services.NoteService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -55,6 +61,8 @@ public class NoteControllerTest {
 	private Note note1, note2;
 	private NoteDTO noteDto1, noteDto2;
 
+	private Page<Note> notesPage;
+	
 	@Autowired
 	private NoteMapper noteMapper;
 
@@ -65,11 +73,12 @@ public class NoteControllerTest {
 		note2 = new Note("noteId2", "noteTitle", "noteText",
 				"notebookId2", "userName", "rgba(251, 243, 129, 0.74)");
 
-		noteDto1 = this.noteMapper.noteToNoteDto(note1);
-		noteDto1 = this.noteMapper.noteToNoteDto(note2);
+		noteDto1 = noteMapper.noteToNoteDto(note1);
+		noteDto1 = noteMapper.noteToNoteDto(note2);
 
-		BDDMockito.given(this.noteService.findNotesByUserName("userName")).willReturn(Arrays.asList(note1, note2));
-		BDDMockito.given(this.authClient.checkUserToken(Mockito.anyString())).willReturn(new TempUser("userName", ProfileTypeEnum.ROLE_ADMIN));
+		notesPage = new PageImpl<>(Arrays.asList(note1, note2));
+		
+		when(authClient.checkUserToken(Mockito.anyString())).thenReturn(new TempUser("userName", ProfileTypeEnum.ROLE_ADMIN));
 	}
 
 	/**
@@ -78,6 +87,7 @@ public class NoteControllerTest {
 	
 	@Test
 	public void testGetListNotes() throws Exception {
+		when(noteService.findNotesByUserName(any())).thenReturn(notesPage);
 		mvc.perform(MockMvcRequestBuilders.get("/notes")
 				.contentType(MediaType.APPLICATION_JSON)
 				.header("Authorization", "x.x.x.x"))
@@ -87,32 +97,29 @@ public class NoteControllerTest {
 	
 	@Test
 	public void testGetEmptyListNotes() throws Exception {
-		BDDMockito.given(this.noteService.findNotesByUserName("userName")).willReturn(Arrays.asList());
+		when(noteService.findNotesByUserName(any())).thenReturn(new PageImpl<>(Arrays.asList()));
 		mvc.perform(MockMvcRequestBuilders.get("/notes")
 				.contentType(MediaType.APPLICATION_JSON)
 				.header("Authorization", "x.x.x.x"))
 				.andExpect(status().isOk()).andExpect(jsonPath("$.errors").isEmpty())
-				.andExpect(jsonPath("$.data").isEmpty());
+				.andExpect(jsonPath("$.data.totalElements", equalTo(0)));
 	}
 	
 	@Test
 	public void testGetListNotesWithoutAuthHeader() throws Exception {
-		BDDMockito.given(this.noteService.findNotesByUserName("userName")).willReturn(Arrays.asList());
+		when(authClient.checkUserToken(Mockito.anyString()))
+			.thenReturn(null);
 		mvc.perform(MockMvcRequestBuilders.get("/notes")
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isUnauthorized());
-//				.andExpect(jsonPath("$.errors").isEmpty())
-//				.andExpect(jsonPath("$.data").isEmpty());
 	}
 	
 	@Test
 	public void testGetListNotesWithInvalidToken() throws Exception {
-		BDDMockito.given(this.authClient.checkUserToken(Mockito.anyString())).willReturn(null);
+		when(authClient.checkUserToken(Mockito.anyString())).thenReturn(null);
 		mvc.perform(MockMvcRequestBuilders.get("/notes")
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isUnauthorized());
-//				.andExpect(jsonPath("$.errors").isEmpty())
-//				.andExpect(jsonPath("$.data").isEmpty());
 	}
 	
 	/**
@@ -122,17 +129,16 @@ public class NoteControllerTest {
 	
 	@Test
 	public void testDeleteNote() throws Exception {	
-		BDDMockito.given(this.noteService.findNoteById("noteId")).willReturn(Optional.of(note1));
+		doNothing().when(noteService).deleteNote("noteId");
 		mvc.perform(MockMvcRequestBuilders.delete("/notes/noteId")
 				.contentType(MediaType.APPLICATION_JSON)
 				.header("Authorization", "x.x.x.x"))
-				.andExpect(status().isNoContent()).andExpect(jsonPath("$.errors").isEmpty())
-				.andExpect(jsonPath("$.data").isEmpty());
+				.andExpect(status().isNoContent());
 	}
 	
 	@Test
 	public void testDeleteNotExistentNote() throws Exception {	
-		BDDMockito.given(this.noteService.findNoteById("noteIdX")).willReturn(Optional.empty());
+		doThrow(NotFoundException.class).when(noteService).deleteNote(any());
 		mvc.perform(MockMvcRequestBuilders.delete("/notes/noteIdX")
 				.contentType(MediaType.APPLICATION_JSON)
 				.header("Authorization", "x.x.x.x"))
@@ -152,7 +158,7 @@ public class NoteControllerTest {
 	
 	@Test
 	public void testDeleteNoteWithInvalidToken() throws Exception {
-		BDDMockito.given(this.authClient.checkUserToken(Mockito.anyString())).willReturn(null);
+		when(authClient.checkUserToken(Mockito.anyString())).thenReturn(null);
 		mvc.perform(MockMvcRequestBuilders.delete("/notes")
 				.contentType(MediaType.APPLICATION_JSON)
 				.header("Authorization", "x.x.x.x"))
@@ -168,28 +174,30 @@ public class NoteControllerTest {
 	
 	@Test
 	public void testSaveNote() throws Exception {
-		BDDMockito.given(this.noteService.saveNote(Mockito.any())).willReturn(Optional.of(note1));
+		when(noteService.saveNote(Mockito.any()))
+			.thenReturn(note1);
 		mvc.perform(MockMvcRequestBuilders.post("/notes")
 				.contentType(MediaType.APPLICATION_JSON)
 				.header("Authorization", "x.x.x.x")
-				.content(asJsonString(this.noteDto1)))
+				.content(asJsonString(noteDto1)))
 				.andExpect(status().isCreated())
 				.andExpect(jsonPath("$.errors").isEmpty());
 	}
 	
 	@Test
 	public void testSaveNoteWithoutAuthHeader() throws Exception {
-		BDDMockito.given(this.noteService.findNoteById("noteIdY")).willReturn(Optional.empty());
+		when(authClient.checkUserToken(Mockito.anyString()))
+			.thenReturn(null);
 		mvc.perform(MockMvcRequestBuilders.post("/notes")
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(asJsonString(this.noteDto2)))
+				.content(asJsonString(noteDto2)))
 				.andExpect(status().isUnauthorized())
 				.andExpect(jsonPath("$.errors").isEmpty());
 	}
 	
 	@Test
 	public void testPostNoteWithInvalidToken() throws Exception {
-		BDDMockito.given(this.authClient.checkUserToken(Mockito.anyString())).willReturn(null);
+		when(authClient.checkUserToken(Mockito.anyString())).thenReturn(null);
 		mvc.perform(MockMvcRequestBuilders.post("/notes").contentType(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isUnauthorized())

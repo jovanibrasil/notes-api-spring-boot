@@ -1,5 +1,6 @@
 package com.notes.controllers;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import javax.validation.Valid;
@@ -117,7 +118,7 @@ public class UserController {
 			}
 			ColorPallet colorPallet = new ColorPallet();
 			colorPallet.setUserName(user.getUsername());
-			colorPallet.setColors(new String[]{});
+			colorPallet.setColors(new ArrayList<>());
 			palletService.saveColorPallet(colorPallet);
 			log.info("Creating user {}", user.getUsername());
 			userDTO = userMapper.userToUserDto(user);

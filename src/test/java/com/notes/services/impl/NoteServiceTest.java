@@ -1,22 +1,32 @@
 package com.notes.services.impl;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.notes.exceptions.NotFoundException;
 import com.notes.models.Note;
 import com.notes.repositories.NoteRepository;
 import com.notes.services.NoteService;
@@ -34,66 +44,72 @@ public class NoteServiceTest {
 	private NoteService noteService;
 	
 	private Note note1, note2;
+	private Pageable pageable = PageRequest.of(0, 5);
+	
+	private Page<Note> notesPage = new PageImpl<>(Arrays.asList(note1, note2));
+	private Page<Note> emptyNotesPage = new PageImpl<>(Arrays.asList());
 	
 	@Before
-	public void setUp() {
-		
+	public void setUp() {	
 		note1 = new Note("note1", "title1", "text1", "notebookId", "userName", "rgba(251, 243, 129, 0.74)");
 		note2 = new Note("note2", "title2", "text2", "notebookId", "userName", "rgba(251, 243, 129, 0.74)");
 		
-		BDDMockito.given(noteRepository.findByUserName("userName"))
-			.willReturn(Arrays.asList(note1, note2));
-		BDDMockito.given(noteRepository.save(note1))
-			.willReturn(note1);
-		BDDMockito.given(noteRepository.findById("note2"))
-			.willReturn(Optional.of(note2));
-		BDDMockito.given(noteRepository.findById("note3"))
-			.willReturn(Optional.empty());
-		BDDMockito.given(noteRepository.findAllByNotebookId("notebookid"))
-			.willReturn(Arrays.asList(note1, note2));
+		
+		Authentication authentication = mock(Authentication.class);
+		when(authentication.getName()).thenReturn("userName");
+		SecurityContext securityContext = mock(SecurityContext.class);
+		when(securityContext.getAuthentication()).thenReturn(authentication);
+		SecurityContextHolder.setContext(securityContext);
 		
 	}
 	
 	@Test
 	public void testFindNotesByUserName(){
-		List<Note> notes = noteService.findNotesByUserName("userName");
-		assertEquals(2, notes.size());
+		when(noteRepository.findByUserName("userName", pageable)).thenReturn(notesPage);
+		Page<Note> notes = noteService.findNotesByUserName(pageable);
+		assertEquals(2, notes.getContent().size());
 	}
 	
 	@Test
 	public void testFindNotesByUnknownUserName(){
-		List<Note> notes = noteService.findNotesByUserName("userNameX");
-		assertEquals(0, notes.size());
+		when(noteRepository.findByUserName("userName", pageable)).thenReturn(emptyNotesPage);
+		Page<Note> notes = noteService.findNotesByUserName(pageable);
+		assertEquals(0, notes.getContent().size());
 	}
 	
 	@Test
 	public void testFindNoteByValidId() {
-		Optional<Note> note = noteService.findNoteById(("note2"));
-		assertEquals(true, note.isPresent());
+		when(noteRepository.findById("note2")).thenReturn(Optional.of(note2));
+		Note note = noteService.findNoteById(("note2"));
+		assertNotNull(note);
 	}
 	
-	@Test
+	@Test(expected = NotFoundException.class)
 	public void testFindNoteByUnknownId() {
-		Optional<Note> note = noteService.findNoteById("note3");
-		assertEquals(false, note.isPresent());
+		when(noteRepository.findById("note3")).thenThrow(NotFoundException.class);
+		noteService.findNoteById("note3");
 	}
 	
 	@Test
 	public void testFindNotesByValidNotebookId(){
-		List<Note> notes = noteService.findNotesByNotebookId("notebookid");
-		assertEquals(2, notes.size());
+		when(noteRepository.findAllByNotebookId("notebookid", pageable)).thenReturn(notesPage);
+
+		Page<Note> notes = noteService.findNotesByNotebookId("notebookid", pageable);
+		assertEquals(2, notes.getContent().size());
 	}
 	
 	@Test
 	public void testFindNotesByInvalidNotebookId(){
-		List<Note> notes = noteService.findNotesByNotebookId("notebookidX");
-		assertEquals(0, notes.size());
+		when(noteRepository.findAllByNotebookId("notebookidX", pageable)).thenReturn(emptyNotesPage);
+		Page<Note> notes = noteService.findNotesByNotebookId("notebookidX", pageable);
+		assertEquals(0, notes.getContent().size());
 	}
 	
 	@Test
 	public void testSaveNote() {
-		Optional<Note> note = noteService.saveNote(note1);
-		assertEquals(true, note.isPresent());
+		when(noteRepository.save(note1)).thenReturn(note1);
+		Note note = noteService.saveNote(note1);
+		assertNotNull(note);
 	}
 	
 }

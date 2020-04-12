@@ -1,7 +1,5 @@
 package com.notes.controllers;
 
-import java.util.ArrayList;
-
 import javax.validation.Valid;
 
 import org.springframework.data.domain.Page;
@@ -73,9 +71,9 @@ public class NotebookController {
 	 * @return
 	 */
 	@GetMapping("/{notebookId}/notes")
-	public ResponseEntity<Response<ArrayList<Note>>> getNotesByNotebook(@PathVariable String notebookId){
-		Response<ArrayList<Note>> response = new Response<ArrayList<Note>>();
-		ArrayList<Note> notes = (ArrayList<Note>) this.noteService.findNotesByNotebookId(notebookId);
+	public ResponseEntity<Response<Page<Note>>> getNotesByNotebook(@PathVariable String notebookId, Pageable pageable){
+		Response<Page<Note>> response = new Response<>();
+		Page<Note> notes = this.noteService.findNotesByNotebookId(notebookId, pageable);
 		response.setData(notes);
 		return ResponseEntity.ok(response);
 	}

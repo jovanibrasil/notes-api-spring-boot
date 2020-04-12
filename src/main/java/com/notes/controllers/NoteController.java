@@ -1,14 +1,11 @@
 package com.notes.controllers;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+
 import javax.validation.Valid;
 
-import com.notes.exceptions.CustomMessageSource;
-import com.notes.mappers.NoteMapper;
-import com.notes.services.NoteService;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,26 +20,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.notes.dtos.NoteDTO;
-import com.notes.exceptions.ResourceNotFoundException;
-import com.notes.services.models.ErrorDetail;
-import com.notes.services.models.Response;
+import com.notes.mappers.NoteMapper;
 import com.notes.models.Note;
+import com.notes.services.NoteService;
+import com.notes.services.models.Response;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/notes")
 @Slf4j
+@RequiredArgsConstructor
 public class NoteController {
 
-	private NoteService noteService;
-	private CustomMessageSource msgSrc;
+	private final NoteService noteService;
 	private final NoteMapper noteMapper;
-
-	public NoteController(NoteService noteService, CustomMessageSource msgSrc, NoteMapper noteMapper) {
-		this.noteService = noteService;
-		this.msgSrc = msgSrc;
-		this.noteMapper = noteMapper;
-	}
 
 	/**
 	 * Returns a collection of notes of a particular user. 
@@ -50,11 +44,10 @@ public class NoteController {
 	 * @return
 	 */
 	@GetMapping
-	public ResponseEntity<Response<List<Note>>> getNotes() {
+	public ResponseEntity<Response<Page<Note>>> getNotes(Pageable pageable) {
 		log.info("Getting all notes.");
-		Response<List<Note>> response = new Response<List<Note>>();
-		String currentUserName = SecurityContextHolder.getContext().getAuthentication().getName();
-		List<Note> notes = this.noteService.findNotesByUserName(currentUserName);
+		Response<Page<Note>> response = new Response<>();
+		Page<Note> notes = this.noteService.findNotesByUserName(pageable);
 		response.setData(notes);
 		return ResponseEntity.ok(response);
 	}
@@ -66,17 +59,10 @@ public class NoteController {
 	 * @return
 	 */
 	@DeleteMapping("/{noteId}")
-	public ResponseEntity<Response<String>> deleteNote(@PathVariable String noteId){
+	public ResponseEntity<?> deleteNote(@PathVariable String noteId){
 		log.info("Delete note {}.", noteId);
-		Response<String> response = new Response<String>(); 
-		Optional<Note> optNote = this.noteService.findNoteById(noteId);
-		if(optNote.isPresent()) {
-			this.noteService.deleteNote(noteId);
-			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
-		}else {
-			log.error("It was not possible delete the note {}.", noteId);
-			throw new ResourceNotFoundException(msgSrc.getMessage("error.note.delete"));
-		}
+		this.noteService.deleteNote(noteId);
+		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	}
 	
 	/**
@@ -88,22 +74,19 @@ public class NoteController {
 	@PostMapping
 	public ResponseEntity<Response<NoteDTO>> saveNote(@Valid @RequestBody NoteDTO noteDTO) {
 		log.info("Saving note.");
-		Response<NoteDTO> response = new Response<NoteDTO>();
+		Response<NoteDTO> response = new Response<>();
 
 		Note note = noteMapper.noteDtoToNote(noteDTO);
 		// Save on database
 		note.setLastModifiedOn(LocalDateTime.now());
-		Optional<Note> optNote = this.noteService.saveNote(note);
-		if(optNote.isPresent()) {
-			// Return note with the valid id generated 
-			noteDTO.setId(optNote.get().getId());
-			noteDTO.setLastModifiedOn(optNote.get().getLastModifiedOn());
-			response.setData(noteDTO);
-			return ResponseEntity.status(HttpStatus.CREATED).body(response);
-		}else {
-			response.addError(new ErrorDetail(msgSrc.getMessage("error.note.create")));
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-		}
+		
+		note = this.noteService.saveNote(note);
+		
+		// Return note with the valid id generated 
+		noteDTO.setId(note.getId());
+		noteDTO.setLastModifiedOn(note.getLastModifiedOn());
+		response.setData(noteDTO);
+		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
 	
 	/**
@@ -115,25 +98,14 @@ public class NoteController {
 	@PutMapping
 	public ResponseEntity<Response<NoteDTO>> updateNote(@RequestBody @Valid NoteDTO noteDTO) {
 		log.info("Updating note.");
-		Response<NoteDTO> response = new Response<NoteDTO>();
-
+		Response<NoteDTO> response = new Response<>();
 		Note note = noteMapper.noteDtoToNote(noteDTO);
-		note.setLastModifiedOn(LocalDateTime.now());
-		Optional<Note> optNote = this.noteService.saveNote(note);
-		if(optNote.isPresent()) {
-			// Return note with the valid id generated 
-			note = optNote.get();
-			noteDTO.setId(note.getId());
-			noteDTO.setLastModifiedOn(note.getLastModifiedOn());
-			response.setData(noteDTO);
-			return ResponseEntity.ok(response);
-		}else {
-			log.error("It was not possible to update the note {}.", note.getId());
-			response.addError(new ErrorDetail(msgSrc.getMessage("error.note.update")));
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-		}
+		note = noteService.saveNote(note);
+		// Return note with the valid id generated 
+		noteDTO.setId(note.getId());
+		noteDTO.setLastModifiedOn(note.getLastModifiedOn());
+		response.setData(noteDTO);
+		return ResponseEntity.ok(response);
 	}
-
-
 		
 }

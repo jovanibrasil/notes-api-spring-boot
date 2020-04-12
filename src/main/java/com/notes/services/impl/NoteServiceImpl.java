@@ -1,14 +1,18 @@
 package com.notes.services.impl;
 
+import com.notes.exceptions.NotFoundException;
 import com.notes.models.Note;
 import com.notes.repositories.NoteRepository;
 import com.notes.services.NoteService;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -18,24 +22,31 @@ public class NoteServiceImpl implements NoteService {
 
 	private final NoteRepository noteRepository;
 
-	public List<Note> findNotesByUserName(String userName){
-		return this.noteRepository.findByUserName(userName);
+	public Page<Note> findNotesByUserName(Pageable pageable){
+		String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+		return noteRepository.findByUserName(userName, pageable);
 	}
 	
 	public void deleteNote(String noteId) {
-		this.noteRepository.deleteById(noteId);
+		Note note = findNoteById(noteId);  
+		this.noteRepository.delete(note);
 	}
 	
-	public Optional<Note> saveNote(Note note) {
-		return Optional.of(this.noteRepository.save(note));
+	public Note saveNote(Note note) {
+		note.setLastModifiedOn(LocalDateTime.now());
+		return this.noteRepository.save(note);
 	}
 	
-	public Optional<Note> findNoteById(String noteId) {
-		return this.noteRepository.findById(noteId);
+	public Note findNoteById(String noteId) {
+		Optional<Note> optNotebook = noteRepository.findById(noteId);
+		if(optNotebook.isPresent()) {
+			return optNotebook.get();
+		}
+		throw new NotFoundException("");
 	}
 	
-	public List<Note> findNotesByNotebookId(String notebookId){
-		return this.noteRepository.findAllByNotebookId(notebookId);
+	public Page<Note> findNotesByNotebookId(String notebookId, Pageable pageable){
+		return this.noteRepository.findAllByNotebookId(notebookId, pageable);
 	}
 
 	/**
@@ -44,7 +55,7 @@ public class NoteServiceImpl implements NoteService {
 	 */
 	@Override
 	public void deleteNotesByNotebookId(String notebookId) {
-		findNotesByNotebookId(notebookId).forEach(noteRepository::delete);
+		findNotesByNotebookId(notebookId, Pageable.unpaged()).forEach(noteRepository::delete);
 	}
 	
 }

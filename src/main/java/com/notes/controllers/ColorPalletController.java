@@ -1,17 +1,20 @@
 package com.notes.controllers;
 
+import java.util.List;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.notes.models.ColorPallet;
 import com.notes.services.ColorPalletService;
 import com.notes.services.models.Response;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import java.util.List;
+import lombok.RequiredArgsConstructor;
 
 @CrossOrigin(origins = "*")
 @RequiredArgsConstructor
@@ -24,13 +27,13 @@ public class ColorPalletController {
     @GetMapping
     public ResponseEntity<Response<List<String>>> getColorPallet(){
         ColorPallet colorPallet = colorPalletService.getColorPalletByCurrentUserName();
-        Response response = new Response<>();
+        Response<List<String>> response = new Response<>();
         response.setData(colorPallet.getColors());
         return ResponseEntity.ok(response);
     }
 
     @PostMapping
-    public ResponseEntity<Response<?>> saveColorPallet(@RequestBody String[] colors){
+    public ResponseEntity<Response<?>> saveColorPallet(@RequestBody List<String> colors){
         ColorPallet colorPallet = new ColorPallet();
         colorPallet.setColors(colors);
         colorPalletService.saveColorPallet(colorPallet);

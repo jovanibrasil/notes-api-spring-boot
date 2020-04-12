@@ -62,9 +62,9 @@ public class NoteRepositoryTest {
 	// delete note
 	@Test
 	public void deleteNote() {
-		String id = noteRepository.save(note).getId();
-		noteRepository.deleteById(id);
-		assertEquals(Optional.empty(), this.noteRepository.findById(id));
+		note = noteRepository.save(note);
+		noteRepository.delete(note);
+		assertEquals(Optional.empty(), this.noteRepository.findById(note.getId()));
 	}
 	
 	// update note

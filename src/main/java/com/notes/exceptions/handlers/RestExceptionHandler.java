@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import com.notes.exceptions.ResourceNotFoundException;
+import com.notes.exceptions.NotFoundException;
 import com.notes.exceptions.UnauthorizedUserException;
 import com.notes.services.models.ErrorDetail;
 import com.notes.services.models.Response;
@@ -30,15 +30,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 	
 	private static final Logger log = LoggerFactory.getLogger(RestExceptionHandler.class);
 
-	//log.error("It was not possible delete the notebook {}.", notebookId);
-			//response.addError(new ErrorDetail(msgSrc.getMessage("error.notebook.delete")));
-			//return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-			
-//	log.error("It was not possible update the notebook {}.", notebookDTO.getId());
-//	response.addError(new ErrorDetail(msgSrc.getMessage("error.notebook.update")));
-//	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-
-	
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
@@ -68,8 +59,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
 	}
 
-	@ExceptionHandler(ResourceNotFoundException.class)
-	public ResponseEntity<Response<?>> handleResourceNotFound(ResourceNotFoundException rnfException){
+	@ExceptionHandler(NotFoundException.class)
+	public ResponseEntity<Response<?>> handleResourceNotFound(NotFoundException rnfException){
 		log.info("handleResourceNotFound");
 		Response<String> response = new Response<>();
 		ErrorDetail errorDetail = new ErrorDetail.Builder()
