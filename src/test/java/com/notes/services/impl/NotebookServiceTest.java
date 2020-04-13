@@ -3,6 +3,7 @@ package com.notes.services.impl;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -42,8 +43,8 @@ public class NotebookServiceTest {
 	@Before
 	public void setUp() {
 		
-		notebook1 = new Notebook("notebook1", "name1", "userName1");
-		notebook2 = new Notebook("notebook2", "name2", "userName1");
+		notebook1 = new Notebook("notebook1", "name1", "userName1", LocalDateTime.now());
+		notebook2 = new Notebook("notebook2", "name2", "userName1", LocalDateTime.now());
 		
 		when(notebookRepository.findByUserName("userName1", pageable))
 			.thenReturn(new PageImpl<>(Arrays.asList(notebook1, notebook2)));

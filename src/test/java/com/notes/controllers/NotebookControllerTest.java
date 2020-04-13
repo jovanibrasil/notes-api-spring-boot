@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import org.junit.Before;
@@ -26,7 +27,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.notes.dtos.NotebookDTO;
 import com.notes.enums.ProfileTypeEnum;
+import com.notes.mappers.NotebookMapper;
 import com.notes.models.Notebook;
 import com.notes.security.TempUser;
 import com.notes.services.AuthService;
@@ -43,7 +46,8 @@ public class NotebookControllerTest {
 
 	@MockBean
 	private NotebookService notebookService;
-
+	@MockBean
+	private NotebookMapper notebookMapper;
 	@MockBean
 	private AuthService authClient;
 
@@ -51,11 +55,16 @@ public class NotebookControllerTest {
 	private Principal principal;
 
 	private Notebook notebook1, notebook2;
+	private NotebookDTO notebookDto1, notebookDto2;
 	
 	@Before
 	public void setUp() {
-		notebook1 = new Notebook("id1", "name1", "userName");
-		notebook2 = new Notebook("id2", "name2", "userName");
+		notebook1 = new Notebook("id1", "name1", "userName", null);
+		notebook2 = new Notebook("id2", "name2", "userName", null);
+	
+		notebookDto1 = new NotebookDTO(notebook1.getId(), notebook1.getTitle(), notebook1.getUserName(), notebook1.getLastModifiedOn());
+		notebookDto2 = new NotebookDTO(notebook2.getId(), notebook2.getTitle(), notebook2.getUserName(), notebook2.getLastModifiedOn());
+		
 		when(this.authClient.checkUserToken(Mockito.anyString()))
 			.thenReturn(new TempUser("userName", ProfileTypeEnum.ROLE_ADMIN));
 	}
@@ -150,10 +159,12 @@ public class NotebookControllerTest {
 	@Test
 	public void testSaveNotebook() throws Exception {
 		when(this.notebookService.saveNotebook(Mockito.any())).thenReturn(notebook1);
+		when(notebookMapper.notebookDtoToNotebook(notebookDto1)).thenReturn(notebook1);
+		when(notebookMapper.notebookToNotebookDto(notebook1)).thenReturn(notebookDto1);
 		mvc.perform(MockMvcRequestBuilders.post("/notebooks")
 				.contentType(MediaType.APPLICATION_JSON)
 				.header("Authorization", "x.x.x.x")
-				.content(asJsonString(new Notebook(notebook1.getId(), notebook1.getTitle(), notebook1.getUserName()))))			
+				.content(asJsonString(notebookDto1)))			
 				.andExpect(status().isCreated())
 				.andExpect(jsonPath("$.errors").isEmpty());
 	}
@@ -163,7 +174,7 @@ public class NotebookControllerTest {
 		when(this.notebookService.findById(notebook1.getId())).thenReturn(notebook1);
 		mvc.perform(MockMvcRequestBuilders.post("/notebooks")
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(asJsonString(new Notebook(notebook1.getId(), notebook1.getTitle(), notebook1.getUserName()))))
+				.content(asJsonString(new Notebook(notebook1.getId(), notebook1.getTitle(), notebook1.getUserName(), LocalDateTime.now()))))
 				.andExpect(status().isUnauthorized())
 				.andExpect(jsonPath("$.errors").isEmpty());
 	}

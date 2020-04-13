@@ -1,13 +1,11 @@
 package com.notes.services.impl;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.notes.exceptions.NotFoundException;
@@ -15,7 +13,6 @@ import com.notes.models.Notebook;
 import com.notes.repositories.NotebookRepository;
 import com.notes.services.NoteService;
 import com.notes.services.NotebookService;
-import com.notes.services.models.ErrorDetail;
 
 import lombok.RequiredArgsConstructor;
 
@@ -53,6 +50,7 @@ public class NotebookServiceImpl implements NotebookService {
 	 */
 	@Override
 	public Notebook saveNotebook(Notebook notebook) {
+		notebook.setLastModifiedOn(LocalDateTime.now());
 		return this.notebookRepository.save(notebook);
 	}
 

@@ -22,9 +22,4 @@ public abstract class NoteMapperDecorator implements NoteMapper {
         return note;
     }
 
-    @Override
-    public NoteDTO noteToNoteDto(Note note) {
-        NoteDTO noteDTO = this.noteMapper.noteToNoteDto(note);
-        return noteDTO;
-    }
 }
