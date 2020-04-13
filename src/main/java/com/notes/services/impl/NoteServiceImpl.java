@@ -22,21 +22,25 @@ public class NoteServiceImpl implements NoteService {
 
 	private final NoteRepository noteRepository;
 
+	@Override
 	public Page<Note> findNotesByUserName(Pageable pageable){
 		String userName = SecurityContextHolder.getContext().getAuthentication().getName();
 		return noteRepository.findByUserName(userName, pageable);
 	}
 	
+	@Override
 	public void deleteNote(String noteId) {
 		Note note = findNoteById(noteId);  
 		this.noteRepository.delete(note);
 	}
 	
+	@Override
 	public Note saveNote(Note note) {
 		note.setLastModifiedOn(LocalDateTime.now());
 		return this.noteRepository.save(note);
 	}
 	
+	@Override
 	public Note findNoteById(String noteId) {
 		Optional<Note> optNotebook = noteRepository.findById(noteId);
 		if(optNotebook.isPresent()) {
@@ -45,6 +49,7 @@ public class NoteServiceImpl implements NoteService {
 		throw new NotFoundException("");
 	}
 	
+	@Override
 	public Page<Note> findNotesByNotebookId(String notebookId, Pageable pageable){
 		return this.noteRepository.findAllByNotebookId(notebookId, pageable);
 	}

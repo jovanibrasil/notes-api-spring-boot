@@ -43,7 +43,7 @@ public class UserRepositoryTest {
 	public void testFindUserByName() {
 		System.out.println(this.user);
 		User savedUser = this.userRepository.save(this.user);
-		this.user = this.userRepository.findUserByName("jovani");
+		this.user = this.userRepository.findUserByName("jovani").get();
 		assertEquals(savedUser.getUserId(), this.user.getUserId());
 		assertEquals(savedUser.getUsername(), this.user.getUsername());
 	}

@@ -1,5 +1,7 @@
 package com.notes.repositories;
 
+import java.util.Optional;
+
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -12,6 +14,6 @@ public interface UserRepository extends MongoRepository<User, String> {
 
 	@Transactional(readOnly=true)
 	@Query("{ 'userName' : ?0 }")
-	User findUserByName(String userName);
+	Optional<User> findUserByName(String userName);
 	
 }
