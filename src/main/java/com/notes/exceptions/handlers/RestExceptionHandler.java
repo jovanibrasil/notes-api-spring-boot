@@ -17,7 +17,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import com.notes.exceptions.NotFoundException;
 import com.notes.exceptions.UnauthorizedUserException;
 import com.notes.services.models.ErrorDetail;
-import com.notes.services.models.Response;
 import com.notes.services.models.ValidationError;
 
 /**
@@ -33,52 +32,44 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
-		System.out.println("handleMethodArgumentNotValid");
+		log.info("handleMethodArgumentNotValid");
 		List<ValidationError> errors = ex.getBindingResult().getFieldErrors()
 				.stream().map(e -> new ValidationError(e.getDefaultMessage(), e.getField(), e.getRejectedValue()))
 				.collect(Collectors.toList());
-		ErrorDetail error = new ErrorDetail.Builder()
+		ErrorDetail errorDetail = new ErrorDetail.Builder()
 				.message("Invalid field values")
 				.code(status.value())
 				.status(status.getReasonPhrase())
 				.objectName(ex.getBindingResult().getObjectName())
 				.errors(errors).build();
-		Response<Object> response = new Response<Object>();
-		response.addError(error);
-		return ResponseEntity.badRequest().body(response);
+		return ResponseEntity.badRequest().body(errorDetail);
 	}
 
 	@ExceptionHandler(UnauthorizedUserException.class)
-	public ResponseEntity<Response<?>> UnauthorizedUserException(UnauthorizedUserException rnfException){
+	public ResponseEntity<?> UnauthorizedUserException(UnauthorizedUserException rnfException){
 		log.info("UnauthorizedUserException");
-		Response<String> response = new Response<String>();
 		ErrorDetail errorDetail = new ErrorDetail.Builder()
 				.message(rnfException.getMessage())
 				.build();
-		response.addError(errorDetail);
-		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorDetail);
 	}
 
 	@ExceptionHandler(NotFoundException.class)
-	public ResponseEntity<Response<?>> handleResourceNotFound(NotFoundException rnfException){
+	public ResponseEntity<?> handleResourceNotFound(NotFoundException rnfException){
 		log.info("handleResourceNotFound");
-		Response<String> response = new Response<>();
 		ErrorDetail errorDetail = new ErrorDetail.Builder()
 				.message(rnfException.getMessage())
 				.build();
-		response.addError(errorDetail);
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorDetail);
 	}
 
 	@ExceptionHandler(value = {Exception.class, RuntimeException.class})
-	public ResponseEntity<Object> exception(Exception ex) {
+	public ResponseEntity<?> exception(Exception ex) {
 		log.info("The server cannot process the received request. {}", ex.getStackTrace());
-		Response<String> response = new Response<>();
 		ErrorDetail errorDetail = new ErrorDetail.Builder()
 				.message("The server cannot process the request.")
 				.build();
-		response.addError(errorDetail);
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDetail);
 	}
 
 }

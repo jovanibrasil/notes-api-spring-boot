@@ -23,7 +23,6 @@ import com.notes.models.Note;
 import com.notes.models.Notebook;
 import com.notes.services.NoteService;
 import com.notes.services.NotebookService;
-import com.notes.services.models.Response;
 
 import lombok.RequiredArgsConstructor;
 
@@ -43,13 +42,11 @@ public class NotebookController {
 	 * @return
 	 */
 	@GetMapping
-	public ResponseEntity<Response<Page<NotebookDTO>>> getAllNotebooks(Pageable pageable) {
-		Response<Page<NotebookDTO>> response = new Response<>();
+	public ResponseEntity<Page<NotebookDTO>> getAllNotebooks(Pageable pageable) {
 		String currentUserName = SecurityContextHolder.getContext().getAuthentication().getName();
 		Page<Notebook> notebooks = notebookService.findAllByUserName(currentUserName, pageable);
 		Page<NotebookDTO> res = notebooks.map(notebookMapper::notebookToNotebookDto);
-		response.setData(res);
-		return ResponseEntity.ok(response);
+		return ResponseEntity.ok(res);
 	}
 
 	/**
@@ -71,11 +68,9 @@ public class NotebookController {
 	 * @return
 	 */
 	@GetMapping("/{notebookId}/notes")
-	public ResponseEntity<Response<Page<Note>>> getNotesByNotebook(@PathVariable String notebookId, Pageable pageable){
-		Response<Page<Note>> response = new Response<>();
+	public ResponseEntity<Page<Note>> getNotesByNotebook(@PathVariable String notebookId, Pageable pageable){
 		Page<Note> notes = this.noteService.findNotesByNotebookId(notebookId, pageable);
-		response.setData(notes);
-		return ResponseEntity.ok(response);
+		return ResponseEntity.ok(notes);
 	}
 
 	/**
@@ -85,13 +80,11 @@ public class NotebookController {
 	 * @return
 	 */
 	@PostMapping
-	public ResponseEntity<Response<NotebookDTO>> createNotebook(@RequestBody @Valid NotebookDTO notebookDTO) {
-		Response<NotebookDTO> response = new Response<NotebookDTO>();
-		
+	public ResponseEntity<NotebookDTO> createNotebook(@RequestBody @Valid NotebookDTO notebookDTO) {
 		Notebook notebook = notebookMapper.notebookDtoToNotebook(notebookDTO);
 		notebook = notebookService.saveNotebook(notebook);
-		response.setData(notebookMapper.notebookToNotebookDto(notebook));
-		return ResponseEntity.status(HttpStatus.CREATED).body(response);
+		NotebookDTO notebookDto = notebookMapper.notebookToNotebookDto(notebook);
+		return ResponseEntity.status(HttpStatus.CREATED).body(notebookDto);
 	}
 	
 	/**
@@ -101,12 +94,11 @@ public class NotebookController {
 	 * @return
 	 */
 	@PutMapping
-	public ResponseEntity<Response<NotebookDTO>> updateNotebook(@RequestBody @Valid NotebookDTO notebookDTO) {
-		Response<NotebookDTO> response = new Response<NotebookDTO>();
+	public ResponseEntity<NotebookDTO> updateNotebook(@RequestBody @Valid NotebookDTO notebookDTO) {
 		Notebook notebook = notebookMapper.notebookDtoToNotebook(notebookDTO);
 		notebook = notebookService.updateNotebook(notebook);
-		response.setData(notebookMapper.notebookToNotebookDto(notebook));
-		return ResponseEntity.ok(response);		
+		notebookDTO = notebookMapper.notebookToNotebookDto(notebook);
+		return ResponseEntity.ok(notebookDTO);		
 	}
 
 }

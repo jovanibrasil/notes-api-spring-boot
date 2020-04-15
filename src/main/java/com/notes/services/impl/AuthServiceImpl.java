@@ -15,7 +15,6 @@ import com.notes.enums.ApplicationType;
 import com.notes.exceptions.MicroServiceIntegrationException;
 import com.notes.security.TempUser;
 import com.notes.services.AuthService;
-import com.notes.services.models.Response;
 import com.notes.services.models.TokenObj;
 
 import lombok.extern.slf4j.Slf4j;
@@ -55,10 +54,10 @@ public class AuthServiceImpl implements AuthService {
 			HttpHeaders headers = new HttpHeaders();
 			headers.set("Authorization", token);
 			HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
-			ResponseEntity<Response<TempUser>> responseEntity = this.restTemplate.exchange(checkTokenUri, HttpMethod.GET,
-					entity, new ParameterizedTypeReference<Response<TempUser>>() {});
+			ResponseEntity<TempUser> responseEntity = this.restTemplate.exchange(checkTokenUri, HttpMethod.GET,
+					entity, new ParameterizedTypeReference<TempUser>() {});
 			log.info("Token successfully verified");
-			return responseEntity.getBody().getData();
+			return responseEntity.getBody();
 		} catch (Exception e) {
 			log.info("It was not possible to validate the token: {}. {}", token, e.getMessage());
 			throw new MicroServiceIntegrationException("It was not possible to validate the token. ", e);
@@ -81,12 +80,12 @@ public class AuthServiceImpl implements AuthService {
 			authDTO.setPassword(servicePassword);
 			authDTO.setApplication(ApplicationType.NOTES_APP);
 			HttpEntity<JwtAuthenticationDto> request = new HttpEntity<>(authDTO, headers);
-			ResponseEntity<Response<TokenObj>> responseEntity = this.restTemplate.exchange(createTokenUri,
-					HttpMethod.POST, request, new ParameterizedTypeReference<Response<TokenObj>>() {
+			ResponseEntity<TokenObj> responseEntity = this.restTemplate.exchange(createTokenUri,
+					HttpMethod.POST, request, new ParameterizedTypeReference<TokenObj>() {
 					});
 			
 			log.info("Response code: {}", responseEntity.getStatusCode());
-			return responseEntity.getBody().getData().getToken();
+			return responseEntity.getBody().getToken();
 		} catch (Exception e) {
 			log.info("It was not possible to get the service auth token.");
 			throw new MicroServiceIntegrationException("It was not possible to get the service auth token. " + e.getMessage(), e);

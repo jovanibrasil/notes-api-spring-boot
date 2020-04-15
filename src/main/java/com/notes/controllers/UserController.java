@@ -17,7 +17,6 @@ import com.notes.dtos.UserDTO;
 import com.notes.mappers.UserMapper;
 import com.notes.models.User;
 import com.notes.services.UserService;
-import com.notes.services.models.Response;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,11 +39,9 @@ public class UserController {
 	 * of error messages on failure.
 	 */
 	@GetMapping("/{userName}")
-	public ResponseEntity<Response<UserDTO>> getUser(@PathVariable("userName") String userName){
-		Response<UserDTO> response = new Response<>();
+	public ResponseEntity<UserDTO> getUser(@PathVariable("userName") String userName){
 		User user = this.userService.findByUserName(userName);
-		response.setData(userMapper.userToUserDto(user));
-		return ResponseEntity.ok(response);
+		return ResponseEntity.ok(userMapper.userToUserDto(user));
 	}
 
 	/**
@@ -67,14 +64,12 @@ public class UserController {
 	 * with empty data and error messages on failure.
 	 */
 	@PostMapping
-	public ResponseEntity<Response<UserDTO>> saveUser(@Valid @RequestBody UserDTO userDTO){
-		Response<UserDTO> response = new Response<>();
+	public ResponseEntity<UserDTO> saveUser(@Valid @RequestBody UserDTO userDTO){
 		log.info("Creating user {}", userDTO.getUserName());
 		User user = userMapper.userDtoToUser(userDTO);
 		user = this.userService.save(user);
 		userDTO = userMapper.userToUserDto(user);
-		response.setData(userDTO);
-		return ResponseEntity.status(HttpStatus.CREATED).body(response);
+		return ResponseEntity.status(HttpStatus.CREATED).body(userDTO);
 		
 	}
 

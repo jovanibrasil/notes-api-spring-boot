@@ -22,7 +22,6 @@ import com.notes.dtos.NoteDTO;
 import com.notes.mappers.NoteMapper;
 import com.notes.models.Note;
 import com.notes.services.NoteService;
-import com.notes.services.models.Response;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,12 +42,10 @@ public class NoteController {
 	 * @return
 	 */
 	@GetMapping
-	public ResponseEntity<Response<Page<Note>>> getNotes(Pageable pageable) {
+	public ResponseEntity<Page<Note>> getNotes(Pageable pageable) {
 		log.info("Getting all notes.");
-		Response<Page<Note>> response = new Response<>();
 		Page<Note> notes = this.noteService.findNotesByUserName(pageable);
-		response.setData(notes);
-		return ResponseEntity.ok(response);
+		return ResponseEntity.ok(notes);
 	}
 	
 	/**
@@ -71,10 +68,8 @@ public class NoteController {
 	 * @return
 	 */
 	@PostMapping
-	public ResponseEntity<Response<NoteDTO>> saveNote(@Valid @RequestBody NoteDTO noteDTO) {
+	public ResponseEntity<NoteDTO> saveNote(@Valid @RequestBody NoteDTO noteDTO) {
 		log.info("Saving note.");
-		Response<NoteDTO> response = new Response<>();
-
 		Note note = noteMapper.noteDtoToNote(noteDTO);
 		// Save on database
 		note.setLastModifiedOn(LocalDateTime.now());
@@ -84,8 +79,7 @@ public class NoteController {
 		// Return note with the valid id generated 
 		noteDTO.setId(note.getId());
 		noteDTO.setLastModifiedOn(note.getLastModifiedOn());
-		response.setData(noteDTO);
-		return ResponseEntity.status(HttpStatus.CREATED).body(response);
+		return ResponseEntity.status(HttpStatus.CREATED).body(noteDTO);
 	}
 	
 	/**
@@ -95,16 +89,14 @@ public class NoteController {
 	 * @return
 	 */
 	@PutMapping
-	public ResponseEntity<Response<NoteDTO>> updateNote(@RequestBody @Valid NoteDTO noteDTO) {
+	public ResponseEntity<NoteDTO> updateNote(@RequestBody @Valid NoteDTO noteDTO) {
 		log.info("Updating note.");
-		Response<NoteDTO> response = new Response<>();
 		Note note = noteMapper.noteDtoToNote(noteDTO);
 		note = noteService.saveNote(note);
 		// Return note with the valid id generated 
 		noteDTO.setId(note.getId());
 		noteDTO.setLastModifiedOn(note.getLastModifiedOn());
-		response.setData(noteDTO);
-		return ResponseEntity.ok(response);
+		return ResponseEntity.ok(noteDTO);
 	}
 		
 }

@@ -55,7 +55,7 @@ public class NotebookControllerTest {
 	private Principal principal;
 
 	private Notebook notebook1, notebook2;
-	private NotebookDTO notebookDto1, notebookDto2;
+	private NotebookDTO notebookDto1;
 	
 	@Before
 	public void setUp() {
@@ -63,7 +63,6 @@ public class NotebookControllerTest {
 		notebook2 = new Notebook("id2", "name2", "userName", null);
 	
 		notebookDto1 = new NotebookDTO(notebook1.getId(), notebook1.getTitle(), notebook1.getUserName(), notebook1.getLastModifiedOn());
-		notebookDto2 = new NotebookDTO(notebook2.getId(), notebook2.getTitle(), notebook2.getUserName(), notebook2.getLastModifiedOn());
 		
 		when(this.authClient.checkUserToken(Mockito.anyString()))
 			.thenReturn(new TempUser("userName", ProfileTypeEnum.ROLE_ADMIN));
@@ -81,8 +80,7 @@ public class NotebookControllerTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.header("Authorization", "x.x.x.x"))
 				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.errors").isEmpty())
-				.andExpect(jsonPath("$.data").isNotEmpty());
+				.andExpect(jsonPath("$").isNotEmpty());
 	}
 	
 	@Test
@@ -93,8 +91,7 @@ public class NotebookControllerTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.header("Authorization", "x.x.x.x"))
 				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.errors").isEmpty())
-				.andExpect(jsonPath("$.data").isNotEmpty());
+				.andExpect(jsonPath("$").isNotEmpty());
 	}
 	
 	@Test
@@ -103,8 +100,7 @@ public class NotebookControllerTest {
 		mvc.perform(MockMvcRequestBuilders.get("/notebooks")
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isUnauthorized())
-				.andExpect(jsonPath("$.errors").isEmpty())
-				.andExpect(jsonPath("$.data").isEmpty());
+				.andExpect(jsonPath("$").isEmpty());
 	}
 	
 	@Test
@@ -113,8 +109,7 @@ public class NotebookControllerTest {
 		mvc.perform(MockMvcRequestBuilders.get("/notebooks")
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isUnauthorized())
-				.andExpect(jsonPath("$.errors").isEmpty())
-				.andExpect(jsonPath("$.data").isEmpty());
+				.andExpect(jsonPath("$").isEmpty());
 	}
 	
 	/**
@@ -136,8 +131,7 @@ public class NotebookControllerTest {
 		mvc.perform(MockMvcRequestBuilders.delete("/notebooks/idX")
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isUnauthorized())
-				.andExpect(jsonPath("$.errors").isEmpty())
-				.andExpect(jsonPath("$.data").isEmpty());
+				.andExpect(jsonPath("$").isEmpty());
 	}
 	
 	@Test
@@ -147,8 +141,7 @@ public class NotebookControllerTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.header("Authorization", "x.x.x.x"))
 				.andExpect(status().isUnauthorized())
-				.andExpect(jsonPath("$.errors").isEmpty())
-				.andExpect(jsonPath("$.data").isEmpty());
+				.andExpect(jsonPath("$").isEmpty());
 	}
 	
 	/**
@@ -166,7 +159,7 @@ public class NotebookControllerTest {
 				.header("Authorization", "x.x.x.x")
 				.content(asJsonString(notebookDto1)))			
 				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$.errors").isEmpty());
+				.andExpect(jsonPath("$").isNotEmpty());
 	}
 	
 	@Test
@@ -176,7 +169,7 @@ public class NotebookControllerTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(asJsonString(new Notebook(notebook1.getId(), notebook1.getTitle(), notebook1.getUserName(), LocalDateTime.now()))))
 				.andExpect(status().isUnauthorized())
-				.andExpect(jsonPath("$.errors").isEmpty());
+				.andExpect(jsonPath("$").isEmpty());
 	}
 	
 	@Test
@@ -185,8 +178,7 @@ public class NotebookControllerTest {
 		mvc.perform(MockMvcRequestBuilders.post("/notebooks").contentType(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isUnauthorized())
-				.andExpect(jsonPath("$.errors").isEmpty())
-				.andExpect(jsonPath("$.data").isEmpty());
+				.andExpect(jsonPath("$").isEmpty());
 	}
 	
 	public static String asJsonString(final Object obj) {

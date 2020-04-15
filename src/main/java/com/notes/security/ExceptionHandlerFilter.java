@@ -13,7 +13,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.notes.exceptions.UnauthorizedUserException;
-import com.notes.services.models.Response;
 
 @Slf4j
 public class ExceptionHandlerFilter extends OncePerRequestFilter {
@@ -25,10 +24,9 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
 			filterChain.doFilter(request, response);
 		} catch (UnauthorizedUserException e) {
 			log.info("UnauthorizedUserException was thrown. {}", e.getMessage());
-			Response<String> res = new Response<String>();
 			ObjectMapper mapper = new ObjectMapper();
 			PrintWriter out = response.getWriter();
-			out.print(mapper.writeValueAsString(res));
+			out.print(mapper.writeValueAsString(""));
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 		} catch (Exception e) {
 			log.info("Exception. {}", e.getMessage());
