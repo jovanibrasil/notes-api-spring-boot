@@ -1,8 +1,10 @@
 package com.notes.controllers;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -159,7 +161,8 @@ public class NotebookControllerTest {
 				.header("Authorization", "x.x.x.x")
 				.content(asJsonString(notebookDto1)))			
 				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$").isNotEmpty());
+				.andExpect(header().string("Location", 
+						containsString("/notebooks/"+notebook1.getId())));
 	}
 	
 	@Test

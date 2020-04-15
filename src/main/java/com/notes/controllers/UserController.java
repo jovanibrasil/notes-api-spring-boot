@@ -1,8 +1,9 @@
 package com.notes.controllers;
 
+import java.net.URI;
+
 import javax.validation.Valid;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.notes.dtos.UserDTO;
 import com.notes.mappers.UserMapper;
@@ -21,10 +23,10 @@ import com.notes.services.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-@CrossOrigin(origins = "*")
-@RestController
-@RequestMapping("/users")
 @Slf4j
+@RestController
+@CrossOrigin(origins = "*")
+@RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {
 
@@ -32,11 +34,10 @@ public class UserController {
 	private final UserMapper userMapper;
 
 	/**
-	 * Retrieve a UserDTO by a given user name.
+	 * Busca um usuário pelo nome.
 	 *
-	 * @param userName is the user name to retrieve the UserDTO.
-	 * @return A response object with the UserDTO and empty error message on success, and data fiend empty and a list
-	 * of error messages on failure.
+	 * @param userName é o nome do usuário que está se buscando.
+	 * @return 
 	 */
 	@GetMapping("/{userName}")
 	public ResponseEntity<UserDTO> getUser(@PathVariable("userName") String userName){
@@ -45,7 +46,7 @@ public class UserController {
 	}
 
 	/**
-	 * Delete an user by name.
+	 * Remove um usuário por nome.
 	 *
 	 */
 	@DeleteMapping("/{userName}")
@@ -56,21 +57,21 @@ public class UserController {
 
 	/**
 	 *
-	 * Saves a userDTO.
+	 * Salva um usuário.
 	 *
-	 * @param userDTO is an UserDTO.
-	 * @param bindingResult is an object with the result of userDTO validation.
-	 * @return An Response object with the saved UserDTO and empty error message list on success, and an Response object
-	 * with empty data and error messages on failure.
+	 * @param userDTO.
+	 * @return 
 	 */
 	@PostMapping
 	public ResponseEntity<UserDTO> saveUser(@Valid @RequestBody UserDTO userDTO){
 		log.info("Creating user {}", userDTO.getUserName());
 		User user = userMapper.userDtoToUser(userDTO);
 		user = this.userService.save(user);
-		userDTO = userMapper.userToUserDto(user);
-		return ResponseEntity.status(HttpStatus.CREATED).body(userDTO);
-		
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+				.path("/{userName}")
+				.buildAndExpand(user.getUsername())
+				.toUri();
+		return ResponseEntity.created(uri).build();
 	}
 
 }

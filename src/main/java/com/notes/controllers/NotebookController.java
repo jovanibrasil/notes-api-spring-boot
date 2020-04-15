@@ -1,10 +1,11 @@
 package com.notes.controllers;
 
+import java.net.URI;
+
 import javax.validation.Valid;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.notes.dtos.NotebookDTO;
 import com.notes.mappers.NotebookMapper;
@@ -37,7 +39,7 @@ public class NotebookController {
 	private final NotebookMapper notebookMapper;
 
 	/**
-	 * Returns a collection of notebooks of a particular user.
+	 * Retorna uma coleção de notebooks do usuário logado. 
 	 *
 	 * @return
 	 */
@@ -50,21 +52,21 @@ public class NotebookController {
 	}
 
 	/**
-	 * Deletes a notebook by a particular id.
+	 * Remove um notebook com o Id especificado.
 	 * 
-	 * @param notebookId
+	 * @param notebookId é a identificação do notebook a ser removido.
 	 * @return
 	 */
 	@DeleteMapping("/{notebookId}")
 	public ResponseEntity<?> deleteNotebook(@PathVariable String notebookId) {
-			this.notebookService.deleteById(notebookId);
-			return ResponseEntity.noContent().build();
+		this.notebookService.deleteById(notebookId);
+		return ResponseEntity.noContent().build();
 	}
 	
 	/**
-	 * Returns a list notes of a specified notebook.
+	 * Retorna uma lista de notas de um notebook especificado.
 	 * 
-	 * @param notebookId
+	 * @param notebookId é a identificação do notebook que se quer as notas.
 	 * @return
 	 */
 	@GetMapping("/{notebookId}/notes")
@@ -74,21 +76,24 @@ public class NotebookController {
 	}
 
 	/**
-	 * Saves a new notebook.
+	 * Salva um notebook.
 	 * 
 	 * @param notebookDTO
 	 * @return
 	 */
 	@PostMapping
-	public ResponseEntity<NotebookDTO> createNotebook(@RequestBody @Valid NotebookDTO notebookDTO) {
+	public ResponseEntity<?> createNotebook(@RequestBody @Valid NotebookDTO notebookDTO) {
 		Notebook notebook = notebookMapper.notebookDtoToNotebook(notebookDTO);
 		notebook = notebookService.saveNotebook(notebook);
-		NotebookDTO notebookDto = notebookMapper.notebookToNotebookDto(notebook);
-		return ResponseEntity.status(HttpStatus.CREATED).body(notebookDto);
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+				.path("/{notebookId}")
+				.buildAndExpand(notebook.getId())
+				.toUri();
+		return ResponseEntity.created(uri).build();
 	}
 	
 	/**
-	 * Updated an existent notebook.
+	 * Faz update de um notebook existente.
 	 * 
 	 * @param notebookDTO
 	 * @return

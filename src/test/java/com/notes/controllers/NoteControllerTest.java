@@ -1,11 +1,13 @@
 package com.notes.controllers;
 
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -180,7 +182,8 @@ public class NoteControllerTest {
 				.header("Authorization", "x.x.x.x")
 				.content(asJsonString(noteDto1)))
 				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$").isNotEmpty());
+				.andExpect(header().string("Location", 
+						containsString("/notes/"+note1.getId())));
 	}
 	
 	@Test

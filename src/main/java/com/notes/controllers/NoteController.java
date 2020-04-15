@@ -1,6 +1,6 @@
 package com.notes.controllers;
 
-import java.time.LocalDateTime;
+import java.net.URI;
 
 import javax.validation.Valid;
 
@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.notes.dtos.NoteDTO;
 import com.notes.mappers.NoteMapper;
@@ -26,18 +27,18 @@ import com.notes.services.NoteService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-@CrossOrigin(origins = "*")
-@RestController
-@RequestMapping("/notes")
 @Slf4j
+@RestController
+@CrossOrigin(origins = "*")
+@RequestMapping("/notes")
 @RequiredArgsConstructor
 public class NoteController {
 
 	private final NoteService noteService;
 	private final NoteMapper noteMapper;
 
-	/**
-	 * Returns a collection of notes of a particular user. 
+	/** 
+	 * Retorna uma coleção de notas do usuário corrente.
 	 *
 	 * @return
 	 */
@@ -49,20 +50,20 @@ public class NoteController {
 	}
 	
 	/**
-	 * Deletes a note by a particular id.
+	 * Remove uma nota de Id especificado.
 	 * 
-	 * @param noteId is the note id, that is the identification field
+	 * @param noteId é o Id da nota ser removida
 	 * @return
 	 */
 	@DeleteMapping("/{noteId}")
 	public ResponseEntity<?> deleteNote(@PathVariable String noteId){
-		log.info("Delete note {}.", noteId);
+		log.info("Deleting note {}.", noteId);
 		this.noteService.deleteNote(noteId);
 		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	}
 	
 	/**
-	 * Saves a new note.
+	 * Salva uma nota.
 	 * 
 	 * @param noteDTO
 	 * @return
@@ -70,32 +71,32 @@ public class NoteController {
 	@PostMapping
 	public ResponseEntity<NoteDTO> saveNote(@Valid @RequestBody NoteDTO noteDTO) {
 		log.info("Saving note.");
+		
 		Note note = noteMapper.noteDtoToNote(noteDTO);
-		// Save on database
-		note.setLastModifiedOn(LocalDateTime.now());
-		
 		note = this.noteService.saveNote(note);
-		
-		// Return note with the valid id generated 
-		noteDTO.setId(note.getId());
-		noteDTO.setLastModifiedOn(note.getLastModifiedOn());
-		return ResponseEntity.status(HttpStatus.CREATED).body(noteDTO);
+		 
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+				.path("/{noteId}")
+				.buildAndExpand(note.getId())
+				.toUri();
+		return ResponseEntity.created(uri).build();
 	}
 	
 	/**
-	 * Updates an already existent note.
+	 * Atualiza uma nota já existente.
 	 * 
 	 * @param noteDTO
 	 * @return
 	 */
 	@PutMapping
 	public ResponseEntity<NoteDTO> updateNote(@RequestBody @Valid NoteDTO noteDTO) {
-		log.info("Updating note.");
+		log.info("Updating note id: {}", noteDTO.getId());
+		
 		Note note = noteMapper.noteDtoToNote(noteDTO);
 		note = noteService.saveNote(note);
-		// Return note with the valid id generated 
 		noteDTO.setId(note.getId());
 		noteDTO.setLastModifiedOn(note.getLastModifiedOn());
+		
 		return ResponseEntity.ok(noteDTO);
 	}
 		
