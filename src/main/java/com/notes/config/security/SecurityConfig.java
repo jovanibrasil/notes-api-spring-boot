@@ -1,4 +1,4 @@
-package com.notes.security;
+package com.notes.config.security;
 
 import com.notes.services.AuthService;
 import org.springframework.context.annotation.Bean;

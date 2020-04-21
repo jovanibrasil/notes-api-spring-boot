@@ -10,10 +10,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import com.notes.config.security.TempUser;
 import com.notes.dtos.JwtAuthenticationDto;
 import com.notes.enums.ApplicationType;
 import com.notes.exceptions.MicroServiceIntegrationException;
-import com.notes.security.TempUser;
 import com.notes.services.AuthService;
 import com.notes.services.models.TokenObj;
 

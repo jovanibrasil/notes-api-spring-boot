@@ -1,4 +1,4 @@
-package com.notes.security;
+package com.notes.config.security;
 
 import java.io.IOException;
 import java.io.PrintWriter;

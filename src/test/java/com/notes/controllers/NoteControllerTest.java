@@ -33,12 +33,12 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.notes.config.security.TempUser;
 import com.notes.dtos.NoteDTO;
 import com.notes.enums.ProfileTypeEnum;
 import com.notes.exceptions.NotFoundException;
 import com.notes.mappers.NoteMapper;
 import com.notes.models.Note;
-import com.notes.security.TempUser;
 import com.notes.services.AuthService;
 import com.notes.services.NoteService;
 

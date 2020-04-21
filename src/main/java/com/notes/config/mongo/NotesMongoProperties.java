@@ -1,4 +1,4 @@
-package com.notes.config;
+package com.notes.config.mongo;
 
 import lombok.Getter;
 import lombok.Setter;
