@@ -45,9 +45,11 @@ public class NotebookController {
 	 */
 	@GetMapping
 	public ResponseEntity<Page<NotebookDTO>> getAllNotebooks(Pageable pageable) {
+		
 		String currentUserName = SecurityContextHolder.getContext().getAuthentication().getName();
 		Page<Notebook> notebooks = notebookService.findAllByUserName(currentUserName, pageable);
 		Page<NotebookDTO> res = notebooks.map(notebookMapper::notebookToNotebookDto);
+		
 		return ResponseEntity.ok(res);
 	}
 
