@@ -1,15 +1,16 @@
-package com.notes.dtos;
+package com.notes.model.dto;
 
 import javax.validation.constraints.NotNull;
 
-import com.notes.enums.ApplicationType;
+import com.notes.model.enums.ApplicationType;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter @Setter
 @NoArgsConstructor
-public class JwtAuthenticationDto {
+public class JwtAuthenticationDTO {
 
 	@NotNull
 	private String userName;
@@ -17,7 +18,7 @@ public class JwtAuthenticationDto {
 	private String password;
 	private ApplicationType application;
 
-	public JwtAuthenticationDto(String userName, String password) {
+	public JwtAuthenticationDTO(String userName, String password) {
 		this.userName = userName;
 		this.password = password;
 	}

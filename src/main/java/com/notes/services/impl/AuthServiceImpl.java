@@ -10,17 +10,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import com.notes.config.security.TempUser;
-import com.notes.dtos.JwtAuthenticationDto;
-import com.notes.enums.ApplicationType;
+import com.notes.configurations.security.TempUser;
 import com.notes.exceptions.MicroServiceIntegrationException;
+import com.notes.model.dto.JwtAuthenticationDTO;
+import com.notes.model.dto.TokenDTO;
+import com.notes.model.enums.ApplicationType;
 import com.notes.services.AuthService;
-import com.notes.services.models.TokenObj;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
 	@Value("${urls.auth.check-token}")
@@ -37,10 +39,6 @@ public class AuthServiceImpl implements AuthService {
 	
 	private final RestTemplate restTemplate;
 	
-	public AuthServiceImpl(RestTemplate restTemplate){
-		this.restTemplate = restTemplate;
-	}
-
 	/**
 	 * Checks if a received token is valid. This validation check are done by the remote
 	 * authentication service.
@@ -50,13 +48,11 @@ public class AuthServiceImpl implements AuthService {
 	 */
 	public TempUser checkUserToken(String token) {
 		try {
-			log.info("Checking received token");
 			HttpHeaders headers = new HttpHeaders();
 			headers.set("Authorization", token);
 			HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
 			ResponseEntity<TempUser> responseEntity = this.restTemplate.exchange(checkTokenUri, HttpMethod.GET,
 					entity, new ParameterizedTypeReference<TempUser>() {});
-			log.info("Token successfully verified");
 			return responseEntity.getBody();
 		} catch (Exception e) {
 			log.info("It was not possible to validate the token: {}. {}", token, e.getMessage());
@@ -75,14 +71,13 @@ public class AuthServiceImpl implements AuthService {
 			log.info("Getting service auth token ...");
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
-			JwtAuthenticationDto authDTO = new JwtAuthenticationDto();
+			JwtAuthenticationDTO authDTO = new JwtAuthenticationDTO();
 			authDTO.setUserName(serviceUsername);
 			authDTO.setPassword(servicePassword);
 			authDTO.setApplication(ApplicationType.NOTES_APP);
-			HttpEntity<JwtAuthenticationDto> request = new HttpEntity<>(authDTO, headers);
-			ResponseEntity<TokenObj> responseEntity = this.restTemplate.exchange(createTokenUri,
-					HttpMethod.POST, request, new ParameterizedTypeReference<TokenObj>() {
-					});
+			HttpEntity<JwtAuthenticationDTO> request = new HttpEntity<>(authDTO, headers);
+			ResponseEntity<TokenDTO> responseEntity = this.restTemplate.exchange(createTokenUri,
+					HttpMethod.POST, request, new ParameterizedTypeReference<TokenDTO>() {});
 			
 			log.info("Response code: {}", responseEntity.getStatusCode());
 			return responseEntity.getBody().getToken();

@@ -1,4 +1,4 @@
-package com.notes.services.models;
+package com.notes.exceptions;
 
 /**
  * 
@@ -16,6 +16,18 @@ public class ValidationError {
 		this.message = message;
 		this.field = field;
 		this.parameter = parameter;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public String getField() {
+		return field;
+	}
+
+	public Object getParameter() {
+		return parameter;
 	}
 
 }

@@ -2,7 +2,6 @@ package com.notes.services.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -27,7 +26,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.notes.exceptions.NotFoundException;
-import com.notes.models.Note;
+import com.notes.model.Note;
 import com.notes.repositories.NoteRepository;
 import com.notes.services.NoteService;
 

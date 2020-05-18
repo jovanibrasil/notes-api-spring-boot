@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.notes.exceptions.ErrorDetail;
 import com.notes.exceptions.NotFoundException;
 import com.notes.exceptions.UnauthorizedUserException;
-import com.notes.services.models.ErrorDetail;
-import com.notes.services.models.ValidationError;
+import com.notes.exceptions.ValidationError;
 
 /**
  * 
@@ -46,7 +46,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 	}
 
 	@ExceptionHandler(UnauthorizedUserException.class)
-	public ResponseEntity<?> UnauthorizedUserException(UnauthorizedUserException rnfException){
+	public ResponseEntity<?> unauthorizedUserException(UnauthorizedUserException rnfException){
 		log.info("UnauthorizedUserException");
 		ErrorDetail errorDetail = new ErrorDetail.Builder()
 				.message(rnfException.getMessage())
@@ -65,7 +65,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler(value = {Exception.class, RuntimeException.class})
 	public ResponseEntity<?> exception(Exception ex) {
-		log.info("The server cannot process the received request. {}", ex.getStackTrace());
+		log.info("The server cannot process the received request. {}", ex.getStackTrace().toString());
 		ErrorDetail errorDetail = new ErrorDetail.Builder()
 				.message("The server cannot process the request.")
 				.build();

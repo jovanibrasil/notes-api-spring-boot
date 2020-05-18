@@ -1,6 +1,6 @@
 package com.notes.services;
 
-import com.notes.models.User;
+import com.notes.model.User;
 
 public interface UserService {
     User findByUserName(String userName);

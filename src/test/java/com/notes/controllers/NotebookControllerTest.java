@@ -29,11 +29,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.notes.config.security.TempUser;
-import com.notes.dtos.NotebookDTO;
-import com.notes.enums.ProfileTypeEnum;
+import com.notes.configurations.security.TempUser;
 import com.notes.mappers.NotebookMapper;
-import com.notes.models.Notebook;
+import com.notes.model.Notebook;
+import com.notes.model.dto.NotebookDTO;
+import com.notes.model.enums.ProfileTypeEnum;
 import com.notes.services.AuthService;
 import com.notes.services.NotebookService;
 
@@ -64,7 +64,7 @@ public class NotebookControllerTest {
 		notebook1 = new Notebook("id1", "name1", "userName", null);
 		notebook2 = new Notebook("id2", "name2", "userName", null);
 	
-		notebookDto1 = new NotebookDTO(notebook1.getId(), notebook1.getTitle(), notebook1.getUserName(), notebook1.getLastModifiedOn());
+		notebookDto1 = new NotebookDTO(notebook1.getId(), notebook1.getTitle(), notebook1.getUserName());
 		
 		when(this.authClient.checkUserToken(Mockito.anyString()))
 			.thenReturn(new TempUser("userName", ProfileTypeEnum.ROLE_ADMIN));
@@ -76,7 +76,7 @@ public class NotebookControllerTest {
 	
 	@Test
 	public void testGetListNotebooks() throws Exception {
-		when(this.notebookService.findAllByUserName(any(), any()))
+		when(this.notebookService.findAllByUserName(any()))
 		.thenReturn(new PageImpl<>(Arrays.asList(notebook1, notebook2)));
 		mvc.perform(MockMvcRequestBuilders.get("/notebooks")
 				.contentType(MediaType.APPLICATION_JSON)
@@ -87,7 +87,7 @@ public class NotebookControllerTest {
 	
 	@Test
 	public void testGetEmptyListNotebooks() throws Exception {
-		when(this.notebookService.findAllByUserName(any(), any()))
+		when(this.notebookService.findAllByUserName(any()))
 			.thenReturn(new PageImpl<>(Arrays.asList()));
 		mvc.perform(MockMvcRequestBuilders.get("/notebooks")
 				.contentType(MediaType.APPLICATION_JSON)

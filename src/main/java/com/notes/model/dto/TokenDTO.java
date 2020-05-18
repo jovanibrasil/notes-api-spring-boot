@@ -1,12 +1,12 @@
-package com.notes.services.models;
+package com.notes.model.dto;
 
-public class TokenObj {
+public class TokenDTO {
 
 	private String token;
 
-	public TokenObj() {}
+	public TokenDTO() {}
 	
-	public TokenObj(String token) {
+	public TokenDTO(String token) {
 		this.token = token;
 	}
 	

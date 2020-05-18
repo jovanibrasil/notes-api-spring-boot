@@ -1,6 +1,6 @@
 package com.notes.services;
 
-import com.notes.models.ColorPallet;
+import com.notes.model.ColorPallet;
 
 public interface ColorPalletService {
     ColorPallet getColorPalletByCurrentUserName();

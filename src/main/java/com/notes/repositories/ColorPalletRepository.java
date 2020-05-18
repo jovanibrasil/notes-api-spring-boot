@@ -1,8 +1,9 @@
 package com.notes.repositories;
 
-import com.notes.models.ColorPallet;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
+
+import com.notes.model.ColorPallet;
 
 import java.util.Optional;
 

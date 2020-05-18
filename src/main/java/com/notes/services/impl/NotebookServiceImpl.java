@@ -1,15 +1,15 @@
 package com.notes.services.impl;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.notes.exceptions.NotFoundException;
-import com.notes.models.Notebook;
+import com.notes.model.Notebook;
 import com.notes.repositories.NotebookRepository;
 import com.notes.services.NoteService;
 import com.notes.services.NotebookService;
@@ -25,50 +25,53 @@ public class NotebookServiceImpl implements NotebookService {
 	private final NoteService noteService;
 	
 	/**
-	 * Busca todos os notebooks de um determinado usuário.
+	 * Returns a collection of notebooks for the current authenticated user.
 	 * 
 	 */
 	@Override
-	public Page<Notebook> findAllByUserName(String userName, Pageable pageable){
+	public Page<Notebook> findAllByUserName(Pageable pageable){
+		String userName = SecurityContextHolder.getContext().getAuthentication().getName();
 		return notebookRepository.findByUserName(userName, pageable);
 	}
 	
 	/**
-	 * Remove um notebook e suas respectivas notas.
-	 * 
+	 * Removes a notebook with the specified id.
 	 */
 	@Override
 	public void deleteById(String notebookId) {
-		findById(notebookId); // verifica se onotebook existe		
-		noteService.deleteNotesByNotebookId(notebookId);
-		notebookRepository.deleteById(notebookId);		
+		this.notebookRepository.findById(notebookId).ifPresentOrElse(
+			notebook -> {
+				noteService.deleteNotesByNotebookId(notebookId);
+				notebookRepository.deleteById(notebookId);	
+			},
+			() -> { throw new NotFoundException("error.notebook.find"); }
+		);
 	}
 
 	/**
-	 * Persiste um notebook no banco de dados.
+	 * Saves a notebook.
 	 * 
 	 */
 	@Override
 	public Notebook saveNotebook(Notebook notebook) {
+		String userName = SecurityContextHolder.getContext().getAuthentication().getName();
 		notebook.setLastModifiedOn(LocalDateTime.now());
+		notebook.setUserName(userName);
 		return this.notebookRepository.save(notebook);
 	}
 
 	/**
-	 * Busca um notebook por por ID especificado.
+	 * Returns a notebook with specified id.
 	 * 
 	 */
 	@Override
 	public Notebook findById(String notebookId) {
-		Optional<Notebook> optNotebook = this.notebookRepository.findById(notebookId);
-		if(optNotebook.isPresent()) {
-			return optNotebook.get();
-		}
-		throw new NotFoundException("error.notebook.find");
+		return this.notebookRepository.findById(notebookId)
+				.orElseThrow(() -> new NotFoundException("error.notebook.find"));
 	}
 
 	/**
-	 * Atualiza um notebook existente, ou cria um novo caso não exista.
+	 * Updates a notebook if it does exist, otherwise it will be created
 	 * 
 	 */
 	@Override

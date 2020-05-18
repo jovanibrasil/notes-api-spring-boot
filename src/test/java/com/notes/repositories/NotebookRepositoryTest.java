@@ -1,7 +1,9 @@
 package com.notes.repositories;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Optional;
 
@@ -15,7 +17,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.notes.models.Notebook;
+import com.notes.model.Notebook;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @RunWith(SpringRunner.class)
@@ -43,14 +45,14 @@ public class NotebookRepositoryTest {
 	@Test
 	public void testSaveNotebook() {
 		Notebook savedNotebook = notebookRepository.save(notebook);
-		assertNotEquals(null, savedNotebook.getId());
+		assertNotNull(savedNotebook.getId());
 	}
 	
 	@Test
 	public void testFindNotebook() {
 		notebookRepository.save(notebook);
 		Optional<Notebook> savedNotebook = notebookRepository.findById(notebook.getId());
-		assertEquals(true, savedNotebook.isPresent());
+		assertTrue(savedNotebook.isPresent());
 	}
 	
 	@Test
@@ -58,8 +60,17 @@ public class NotebookRepositoryTest {
 		notebook = notebookRepository.save(notebook);
 		notebookRepository.delete(notebook);
 		Optional<Notebook> deletedNotebook = notebookRepository.findById(notebook.getId());
-		assertEquals(false, deletedNotebook.isPresent());
+		assertFalse(deletedNotebook.isPresent());
 	}
+	
+	@Test
+	public void testDeleteNotebookById() {
+		notebook = notebookRepository.save(notebook);
+		notebookRepository.deleteById(notebook.getId());
+		Optional<Notebook> deletedNotebook = notebookRepository.findById(notebook.getId());
+		assertFalse(deletedNotebook.isPresent());
+	}
+	
 	
 	@Test
 	public void testFindNotesByNotebookId() {

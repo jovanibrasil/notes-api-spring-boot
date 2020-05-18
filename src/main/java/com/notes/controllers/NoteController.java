@@ -15,12 +15,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.notes.dtos.NoteDTO;
 import com.notes.mappers.NoteMapper;
-import com.notes.models.Note;
+import com.notes.model.Note;
+import com.notes.model.dto.NoteDTO;
 import com.notes.services.NoteService;
 
 import lombok.RequiredArgsConstructor;
@@ -35,44 +36,24 @@ public class NoteController {
 	private final NoteService noteService;
 	private final NoteMapper noteMapper;
 
-	/** 
-	 * Retorna uma coleção de notas do usuário corrente.
-	 *
-	 * @return
-	 */
+	@ResponseStatus(HttpStatus.OK)
 	@GetMapping
-	public ResponseEntity<Page<Note>> getNotes(Pageable pageable) {
+	public Page<Note> getNotes(Pageable pageable) {
 		log.info("Getting all notes.");
-		Page<Note> notes = this.noteService.findNotesByUserName(pageable);
-		return ResponseEntity.ok(notes);
+		return noteService.findNotesByUserName(pageable);
 	}
 	
-	/**
-	 * Remove uma nota de Id especificado.
-	 * 
-	 * @param noteId é o Id da nota ser removida
-	 * @return
-	 */
+	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@DeleteMapping("/{noteId}")
-	public ResponseEntity<?> deleteNote(@PathVariable String noteId){
+	public void deleteNote(@PathVariable String noteId){
 		log.info("Deleting note {}.", noteId);
-		this.noteService.deleteNote(noteId);
-		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+		noteService.deleteNote(noteId);
 	}
 	
-	/**
-	 * Salva uma nota.
-	 * 
-	 * @param noteDTO
-	 * @return
-	 */
 	@PostMapping
-	public ResponseEntity<NoteDTO> saveNote(@Valid @RequestBody NoteDTO noteDTO) {
+	public ResponseEntity<?> saveNote(@Valid @RequestBody NoteDTO noteDTO) {
 		log.info("Saving note.");
-		
-		Note note = noteMapper.noteDtoToNote(noteDTO);
-		note = this.noteService.saveNote(note);
-		 
+		Note note = noteService.saveNote(noteMapper.noteDtoToNote(noteDTO));
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
 				.path("/{noteId}")
 				.buildAndExpand(note.getId())
@@ -80,22 +61,14 @@ public class NoteController {
 		return ResponseEntity.created(uri).build();
 	}
 	
-	/**
-	 * Atualiza uma nota já existente.
-	 * 
-	 * @param noteDTO
-	 * @return
-	 */
-	@PutMapping
-	public ResponseEntity<NoteDTO> updateNote(@RequestBody @Valid NoteDTO noteDTO) {
-		log.info("Updating note id: {}", noteDTO.getId());
-		
+	@ResponseStatus(HttpStatus.OK)
+	@PutMapping("/{noteid}")
+	public NoteDTO updateNote(@RequestBody @Valid NoteDTO noteDTO, String noteId) {
+		log.info("Updating note id: {}", noteId);
 		Note note = noteMapper.noteDtoToNote(noteDTO);
+		note.setId(noteId);
 		note = noteService.saveNote(note);
-		noteDTO.setId(note.getId());
-		noteDTO.setLastModifiedOn(note.getLastModifiedOn());
-		
-		return ResponseEntity.ok(noteDTO);
+		return noteMapper.noteToNoteDto(note);
 	}
 		
 }

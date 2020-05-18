@@ -1,9 +1,10 @@
 package com.notes.mappers;
 
-import com.notes.dtos.NoteDTO;
-import com.notes.models.Note;
 import org.mapstruct.DecoratedWith;
 import org.mapstruct.Mapper;
+
+import com.notes.model.Note;
+import com.notes.model.dto.NoteDTO;
 
 @Mapper
 @DecoratedWith(NoteMapperDecorator.class)

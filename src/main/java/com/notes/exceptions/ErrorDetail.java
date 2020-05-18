@@ -1,4 +1,4 @@
-package com.notes.services.models;
+package com.notes.exceptions;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.notes.config.security;
+package com.notes.configurations.security;
 
 import java.io.IOException;
 
@@ -16,7 +16,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.notes.exceptions.UnauthorizedUserException;
-import com.notes.models.User;
+import com.notes.model.User;
 
 /**
  * 
@@ -37,13 +37,11 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-			throws ServletException, IOException, UnauthorizedUserException {
+			throws ServletException, IOException {
 		String token = request.getHeader(AUTH_HEADER);
 		try {
 			if(token != null) {
-				log.info("Checking received token ...");
 				TempUser tempUser = authClient.checkUserToken(token);
-				log.info("Token checked!");
 				if (tempUser == null) {
 					log.info("The token is invalid.");
 					throw new UnauthorizedUserException("Unauthorized user.");	

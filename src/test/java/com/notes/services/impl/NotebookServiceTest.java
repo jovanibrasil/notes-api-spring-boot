@@ -21,7 +21,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.notes.exceptions.NotFoundException;
-import com.notes.models.Notebook;
+import com.notes.model.Notebook;
 import com.notes.repositories.NotebookRepository;
 import com.notes.services.NotebookService;
 

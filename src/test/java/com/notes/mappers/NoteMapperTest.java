@@ -11,8 +11,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.notes.dtos.NoteDTO;
-import com.notes.models.Note;
+import com.notes.model.Note;
+import com.notes.model.dto.NoteDTO;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest

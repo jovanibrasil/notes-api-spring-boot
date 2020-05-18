@@ -1,6 +1,6 @@
 package com.notes.services;
 
-import com.notes.config.security.TempUser;
+import com.notes.configurations.security.TempUser;
 
 public interface AuthService {
     TempUser checkUserToken(String token);

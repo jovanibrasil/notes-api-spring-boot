@@ -1,4 +1,4 @@
-package com.notes.models;
+package com.notes.model;
 
 import java.time.LocalDateTime;
 

@@ -1,10 +1,11 @@
-package com.notes.dtos;
+package com.notes.model.dto;
 
 import lombok.*;
 
 import java.time.LocalDateTime;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Null;
 import javax.validation.constraints.Size;
 
 @Getter @Setter
@@ -12,6 +13,7 @@ import javax.validation.constraints.Size;
 @ToString
 public class NoteDTO {
 
+	@Null
 	private String id;
 	@NotBlank(message = "{error.note.title.notblank}")
 	@Size(min=1, max=20, message="{error.note.title.size}")
@@ -22,6 +24,7 @@ public class NoteDTO {
 	private String notebookId;
 	@NotBlank(message = "{error.note.backgroundcolor.notblank}")
 	private String backgroundColor; // Example: rgba(251, 243, 129, 0.74)
+	@Null
 	private LocalDateTime lastModifiedOn;
 
 }

@@ -1,4 +1,4 @@
-package com.notes.dtos;
+package com.notes.model.dto;
 
 import javax.validation.constraints.NotBlank;
 

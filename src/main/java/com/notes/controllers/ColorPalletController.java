@@ -8,24 +8,25 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.notes.models.ColorPallet;
+import com.notes.model.ColorPallet;
 import com.notes.services.ColorPalletService;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/colorpallet")
+@RequestMapping("/colorpallets")
 public class ColorPalletController {
 
     private final ColorPalletService colorPalletService;
 
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping
-    public ResponseEntity<List<String>> getColorPallet(){
-        ColorPallet colorPallet = colorPalletService.getColorPalletByCurrentUserName();
-        return ResponseEntity.ok(colorPallet.getColors());
+    public List<String> getColorPallet(){
+        return colorPalletService.getColorPalletByCurrentUserName().getColors();
     }
 
     @PostMapping

@@ -1,16 +1,21 @@
-package com.notes.config.security;
+package com.notes.model.dto;
 
-import com.notes.enums.ProfileTypeEnum;
+import javax.validation.constraints.Null;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
-public class TempUser {
+@ToString
+public class NotebookDTO {
 
+	@Null
+	private String id;
 	private String name;
-	private ProfileTypeEnum role;
+	private String userName;
 
 }

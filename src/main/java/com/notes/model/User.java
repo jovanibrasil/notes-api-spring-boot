@@ -1,4 +1,4 @@
-package com.notes.models;
+package com.notes.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,7 +14,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.notes.enums.ProfileTypeEnum;
+import com.notes.model.enums.ProfileTypeEnum;
 
 @Getter @Setter
 @NoArgsConstructor
@@ -39,7 +39,7 @@ public class User implements UserDetails {
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return new ArrayList<GrantedAuthority>(Arrays.asList(this.profileType));
+		return new ArrayList<>(Arrays.asList(this.profileType));
 	}
 
 	@Override
@@ -49,22 +49,22 @@ public class User implements UserDetails {
 
 	@Override
 	public boolean isAccountNonExpired() {
-		return false;
+		return true;
 	}
 
 	@Override
 	public boolean isAccountNonLocked() {
-		return false;
+		return true;
 	}
 
 	@Override
 	public boolean isCredentialsNonExpired() {
-		return false;
+		return true;
 	}
 
 	@Override
 	public boolean isEnabled() {
-		return false;
+		return true;
 	}
 
 }

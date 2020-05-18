@@ -1,4 +1,4 @@
-package com.notes.config.mongo;
+package com.notes.configurations.mongo;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

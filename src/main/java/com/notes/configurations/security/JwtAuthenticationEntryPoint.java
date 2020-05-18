@@ -1,4 +1,4 @@
-package com.notes.config.security;
+package com.notes.configurations.security;
 
 import java.io.IOException;
 

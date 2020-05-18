@@ -1,9 +1,10 @@
 package com.notes.mappers;
 
-import com.notes.dtos.NotebookDTO;
-import com.notes.models.Notebook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
+
+import com.notes.model.Notebook;
+import com.notes.model.dto.NotebookDTO;
 
 public abstract class NotebookMapperDecorator implements NotebookMapper {
 
