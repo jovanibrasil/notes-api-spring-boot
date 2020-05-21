@@ -4,8 +4,8 @@ import org.mapstruct.DecoratedWith;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import com.notes.controllers.dto.NotebookDTO;
 import com.notes.model.Notebook;
-import com.notes.model.dto.NotebookDTO;
 
 @Mapper
 @DecoratedWith(NotebookMapperDecorator.class)

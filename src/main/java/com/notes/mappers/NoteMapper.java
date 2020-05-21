@@ -3,8 +3,8 @@ package com.notes.mappers;
 import org.mapstruct.DecoratedWith;
 import org.mapstruct.Mapper;
 
+import com.notes.controllers.dto.NoteDTO;
 import com.notes.model.Note;
-import com.notes.model.dto.NoteDTO;
 
 @Mapper
 @DecoratedWith(NoteMapperDecorator.class)

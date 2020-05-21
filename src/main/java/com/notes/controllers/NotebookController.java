@@ -19,10 +19,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.notes.controllers.dto.NotebookDTO;
 import com.notes.mappers.NotebookMapper;
 import com.notes.model.Note;
 import com.notes.model.Notebook;
-import com.notes.model.dto.NotebookDTO;
 import com.notes.services.NoteService;
 import com.notes.services.NotebookService;
 

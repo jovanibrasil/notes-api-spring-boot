@@ -2,8 +2,8 @@ package com.notes.mappers;
 
 import org.mapstruct.Mapper;
 
+import com.notes.controllers.dto.UserDTO;
 import com.notes.model.User;
-import com.notes.model.dto.UserDTO;
 
 @Mapper
 public interface UserMapper {

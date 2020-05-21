@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.notes.controllers.dto.UserDTO;
 import com.notes.mappers.UserMapper;
 import com.notes.model.User;
-import com.notes.model.dto.UserDTO;
 import com.notes.services.UserService;
 
 import lombok.RequiredArgsConstructor;

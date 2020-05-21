@@ -19,9 +19,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.notes.controllers.dto.NoteDTO;
 import com.notes.mappers.NoteMapper;
 import com.notes.model.Note;
-import com.notes.model.dto.NoteDTO;
 import com.notes.services.NoteService;
 
 import lombok.RequiredArgsConstructor;

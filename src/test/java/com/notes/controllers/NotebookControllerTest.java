@@ -30,9 +30,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.notes.configurations.security.TempUser;
+import com.notes.controllers.dto.NotebookDTO;
 import com.notes.mappers.NotebookMapper;
 import com.notes.model.Notebook;
-import com.notes.model.dto.NotebookDTO;
 import com.notes.model.enums.ProfileTypeEnum;
 import com.notes.services.AuthService;
 import com.notes.services.NotebookService;

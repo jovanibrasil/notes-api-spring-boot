@@ -1,4 +1,4 @@
-package com.notes.model.dto;
+package com.notes.controllers.dto;
 
 public class TokenDTO {
 

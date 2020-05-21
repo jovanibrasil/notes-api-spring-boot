@@ -1,4 +1,4 @@
-package com.notes.model.dto;
+package com.notes.controllers.dto;
 
 import javax.validation.constraints.Null;
 

@@ -3,8 +3,8 @@ package com.notes.mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import com.notes.controllers.dto.NoteDTO;
 import com.notes.model.Note;
-import com.notes.model.dto.NoteDTO;
 
 public abstract class NoteMapperDecorator implements NoteMapper {
 

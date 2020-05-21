@@ -11,9 +11,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import com.notes.configurations.security.TempUser;
+import com.notes.controllers.dto.JwtAuthenticationDTO;
+import com.notes.controllers.dto.TokenDTO;
 import com.notes.exceptions.MicroServiceIntegrationException;
-import com.notes.model.dto.JwtAuthenticationDTO;
-import com.notes.model.dto.TokenDTO;
 import com.notes.model.enums.ApplicationType;
 import com.notes.services.AuthService;
 
