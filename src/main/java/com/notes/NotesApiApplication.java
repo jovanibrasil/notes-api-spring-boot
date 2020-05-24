@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 
 
 @SpringBootApplication
-@EnableMongoRepositories({"com.notes.repositories"})
+@EnableMongoRepositories({"com.notes.repository"})
 public class NotesApiApplication extends SpringBootServletInitializer {
 
 	public static void main(String[] args) {
