@@ -3,12 +3,12 @@ package com.notes.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import com.notes.model.Notebook;
+import com.notes.controller.dto.NotebookDTO;
 
 public interface NotebookService {
-    Page<Notebook> findAllByUserName(Pageable pageable);
-    Notebook findById(String notebookId);
+    Page<NotebookDTO> findAllByUserName(Pageable pageable);
+    NotebookDTO findById(String notebookId);
     void deleteById(String notebookId);
-    Notebook saveNotebook(Notebook notebook);
-	Notebook updateNotebook(Notebook notebook);
+    NotebookDTO saveNotebook(NotebookDTO notebookDTO);
+	NotebookDTO updateNotebook(NotebookDTO notebookDTO);
 }

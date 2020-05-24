@@ -3,6 +3,7 @@ package com.notes.service.impl;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.notes.exception.ExceptionMessages;
 import com.notes.exception.NotFoundException;
 import com.notes.model.ColorPallet;
 import com.notes.repository.ColorPalletRepository;
@@ -25,7 +26,8 @@ public class ColorPalletServiceImpl implements ColorPalletService {
     @Override
     public ColorPallet getColorPalletByCurrentUserName() {
         String currentUserName = SecurityContextHolder.getContext().getAuthentication().getName();
-        return colorPalletRepository.findByUserName(currentUserName).orElseThrow(() -> new NotFoundException(""));
+        return colorPalletRepository.findByUserName(currentUserName)
+        		.orElseThrow(() -> new NotFoundException(ExceptionMessages.PALLET_NOT_FOUND));
     }
 
     /**

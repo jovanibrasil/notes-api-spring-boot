@@ -8,7 +8,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.notes.controller.dto.NoteDTO;
+import com.notes.exception.ExceptionMessages;
 import com.notes.exception.NotFoundException;
+import com.notes.mapper.NoteMapper;
 import com.notes.model.Note;
 import com.notes.repository.NoteRepository;
 import com.notes.service.NoteService;
@@ -21,15 +24,17 @@ import lombok.RequiredArgsConstructor;
 public class NoteServiceImpl implements NoteService {
 
 	private final NoteRepository noteRepository;
+	private final NoteMapper noteMapper;
 
 	/**
 	 * Returns the notes for the current authenticated user. 
 	 * 
 	 */
 	@Override
-	public Page<Note> findNotesByUserName(Pageable pageable){
+	public Page<NoteDTO> findNotesByUserName(Pageable pageable){
 		String userName = SecurityContextHolder.getContext().getAuthentication().getName();
-		return noteRepository.findByUserName(userName, pageable);
+		return noteRepository.findByUserName(userName, pageable)
+				.map(noteMapper::noteToNoteDto);
 	}
 	
 	/**
@@ -38,7 +43,9 @@ public class NoteServiceImpl implements NoteService {
 	 */
 	@Override
 	public void deleteNote(String noteId) {
-		this.noteRepository.delete(findNoteById(noteId));
+		noteRepository.findById(noteId)
+		.ifPresentOrElse(noteRepository::delete, 
+				() -> new NotFoundException(ExceptionMessages.NOTE_NOT_FOUND));
 	}
 	
 	/**
@@ -46,9 +53,10 @@ public class NoteServiceImpl implements NoteService {
 	 * 
 	 */
 	@Override
-	public Note saveNote(Note note) {
+	public NoteDTO saveNote(NoteDTO noteDTO) {
+		Note note = noteMapper.noteDtoToNote(noteDTO);
 		note.setLastModifiedOn(LocalDateTime.now());
-		return this.noteRepository.save(note);
+		return noteMapper.noteToNoteDto(noteRepository.save(note));
 	}
 	
 	/**
@@ -56,8 +64,10 @@ public class NoteServiceImpl implements NoteService {
 	 * 
 	 */
 	@Override
-	public Note findNoteById(String noteId) {
-		return noteRepository.findById(noteId).orElseThrow(() -> new NotFoundException(""));
+	public NoteDTO findNoteById(String noteId) {
+		return noteRepository.findById(noteId)
+				.map(noteMapper::noteToNoteDto)
+				.orElseThrow(() -> new NotFoundException(""));
 	}
 	
 	/**
@@ -65,8 +75,9 @@ public class NoteServiceImpl implements NoteService {
 	 * 
 	 */
 	@Override
-	public Page<Note> findNotesByNotebookId(String notebookId, Pageable pageable){
-		return this.noteRepository.findAllByNotebookId(notebookId, pageable);
+	public Page<NoteDTO> findNotesByNotebookId(String notebookId, Pageable pageable){
+		return this.noteRepository.findAllByNotebookId(notebookId, pageable)
+				.map(noteMapper::noteToNoteDto);
 	}
 
 	/**
@@ -75,7 +86,8 @@ public class NoteServiceImpl implements NoteService {
 	 */
 	@Override
 	public void deleteNotesByNotebookId(String notebookId) {
-		findNotesByNotebookId(notebookId, Pageable.unpaged()).forEach(noteRepository::delete);
+		noteRepository.findAllByNotebookId(notebookId, Pageable.unpaged())
+			.forEach(noteRepository::delete);
 	}
 	
 }

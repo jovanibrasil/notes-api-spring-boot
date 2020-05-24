@@ -31,7 +31,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.notes.configuration.security.TempUser;
 import com.notes.controller.dto.NotebookDTO;
-import com.notes.mapper.NotebookMapper;
 import com.notes.model.Notebook;
 import com.notes.model.enums.ProfileTypeEnum;
 import com.notes.service.AuthService;
@@ -49,22 +48,20 @@ public class NotebookControllerTest {
 	@MockBean
 	private NotebookService notebookService;
 	@MockBean
-	private NotebookMapper notebookMapper;
-	@MockBean
 	private AuthService authClient;
 
 	@Mock
 	private Principal principal;
 
-	private Notebook notebook1, notebook2;
+	private NotebookDTO notebook1, notebook2;
 	private NotebookDTO notebookDto1;
 	
 	@Before
 	public void setUp() {
-		notebook1 = new Notebook(null, "name1", "userName", null);
-		notebook2 = new Notebook(null, "name2", "userName", null);
+		notebook1 = new NotebookDTO(null, "name1", "userName");
+		notebook2 = new NotebookDTO(null, "name2", "userName");
 	
-		notebookDto1 = new NotebookDTO(notebook1.getId(), notebook1.getTitle(), notebook1.getUserName());
+		notebookDto1 = new NotebookDTO(notebook1.getId(), notebook1.getName(), notebook1.getUserName());
 		
 		when(this.authClient.checkUserToken(Mockito.anyString()))
 			.thenReturn(new TempUser("userName", ProfileTypeEnum.ROLE_ADMIN));
@@ -154,8 +151,6 @@ public class NotebookControllerTest {
 	@Test
 	public void testSaveNotebook() throws Exception {
 		when(notebookService.saveNotebook(any())).thenReturn(notebook1);
-		when(notebookMapper.notebookDtoToNotebook(any())).thenReturn(notebook1);
-		when(notebookMapper.notebookToNotebookDto(notebook1)).thenReturn(notebookDto1);
 		mvc.perform(MockMvcRequestBuilders.post("/notebooks")
 				.contentType(MediaType.APPLICATION_JSON)
 				.header("Authorization", "x.x.x.x")
@@ -170,7 +165,7 @@ public class NotebookControllerTest {
 		when(this.notebookService.findById(notebook1.getId())).thenReturn(notebook1);
 		mvc.perform(MockMvcRequestBuilders.post("/notebooks")
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(asJsonString(new Notebook(notebook1.getId(), notebook1.getTitle(), notebook1.getUserName(), LocalDateTime.now()))))
+				.content(asJsonString(new Notebook(notebook1.getId(), notebook1.getName(), notebook1.getUserName(), LocalDateTime.now()))))
 				.andExpect(status().isUnauthorized())
 				.andExpect(jsonPath("$").isEmpty());
 	}

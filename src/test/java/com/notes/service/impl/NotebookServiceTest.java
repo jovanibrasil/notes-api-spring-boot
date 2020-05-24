@@ -24,7 +24,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.notes.controller.dto.NotebookDTO;
 import com.notes.exception.NotFoundException;
+import com.notes.mapper.NotebookMapper;
 import com.notes.model.Notebook;
 import com.notes.repository.NotebookRepository;
 import com.notes.service.NotebookService;
@@ -37,11 +39,14 @@ public class NotebookServiceTest {
 
 	@MockBean
 	private NotebookRepository notebookRepository;
+	@MockBean
+	private NotebookMapper notebookMapper;
 	
 	@Autowired
 	private NotebookService notebookService;
 	
 	private Notebook notebook1, notebook2;
+	private NotebookDTO notebookDto1;
 	private Pageable pageable = PageRequest.of(0, 5);
 	
 	@Before
@@ -49,6 +54,8 @@ public class NotebookServiceTest {
 		
 		notebook1 = new Notebook("notebook1", "name1", "userName1", LocalDateTime.now());
 		notebook2 = new Notebook("notebook2", "name2", "userName1", LocalDateTime.now());
+		
+		notebookDto1 = new NotebookDTO();
 		
 		when(notebookRepository.findByUserName("userName1", pageable))
 			.thenReturn(new PageImpl<>(Arrays.asList(notebook1, notebook2)));
@@ -65,8 +72,9 @@ public class NotebookServiceTest {
 	@Test
 	public void testFindNotebookByValidId() {
 		when(notebookRepository.findById("notebook1")).thenReturn(Optional.of(notebook1));
-		Notebook notebook = notebookService.findById(("notebook1"));
-		assertNotNull(notebook);
+		when(notebookMapper.notebookToNotebookDto(notebook1)).thenReturn(notebookDto1);
+		NotebookDTO notebookDTO = notebookService.findById(("notebook1"));
+		assertNotNull(notebookDTO);
 	}
 	
 	@Test(expected = NotFoundException.class)
@@ -77,15 +85,16 @@ public class NotebookServiceTest {
 	
 	@Test
 	public void testSaveNotebook() {
+		when(notebookMapper.notebookDtoToNotebook(notebookDto1)).thenReturn(notebook1);
+		when(notebookMapper.notebookToNotebookDto(notebook1)).thenReturn(notebookDto1);
 		when(notebookRepository.save(notebook1)).thenReturn(notebook1);	
-		Notebook notebook = notebookService.saveNotebook(notebook1);
-		assertNotNull(notebook);
+		NotebookDTO notebookDTO = notebookService.saveNotebook(notebookDto1);
+		assertNotNull(notebookDTO);
 	}
 	
 	@Test
 	public void testDeleteNotebook() {
 		when(notebookRepository.findById("notebook1")).thenReturn(Optional.of(notebook1));
-		
 		notebookService.deleteById(notebook1.getId());
 	}
 	

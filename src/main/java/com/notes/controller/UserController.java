@@ -17,8 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.notes.controller.dto.UserDTO;
-import com.notes.mapper.UserMapper;
-import com.notes.model.User;
 import com.notes.service.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -31,13 +29,11 @@ import lombok.extern.slf4j.Slf4j;
 public class UserController {
 
 	private final UserService userService;
-	private final UserMapper userMapper;
 
 	@ResponseStatus(HttpStatus.OK)
 	@GetMapping("/{userName}")
 	public UserDTO getUser(@PathVariable("userName") String userName){
-		User user = this.userService.findByUserName(userName);
-		return userMapper.userToUserDto(user);
+		return this.userService.findByUserName(userName);
 	}
 
 	@ResponseStatus(HttpStatus.NO_CONTENT)
@@ -49,10 +45,10 @@ public class UserController {
 	@PostMapping
 	public ResponseEntity<?> saveUser(@Valid @RequestBody UserDTO userDTO){
 		log.info("Creating user {}", userDTO.getUserName());
-		User user = this.userService.save(userMapper.userDtoToUser(userDTO));
+		userDTO = this.userService.save(userDTO);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
 				.path("/{userName}")
-				.buildAndExpand(user.getUsername())
+				.buildAndExpand(userDTO.getUserName())
 				.toUri();
 		return ResponseEntity.created(uri).build();
 	}

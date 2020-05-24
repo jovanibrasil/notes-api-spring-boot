@@ -1,9 +1,9 @@
 package com.notes.service;
 
-import com.notes.model.User;
+import com.notes.controller.dto.UserDTO;
 
 public interface UserService {
-    User findByUserName(String userName);
-    User save(User user);
+    UserDTO findByUserName(String userName);
+    UserDTO save(UserDTO userDTO);
     void deleteByUserName(String userName);
 }

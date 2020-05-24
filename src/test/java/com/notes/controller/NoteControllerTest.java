@@ -36,8 +36,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.notes.configuration.security.TempUser;
 import com.notes.controller.dto.NoteDTO;
 import com.notes.exception.NotFoundException;
-import com.notes.mapper.NoteMapper;
-import com.notes.model.Note;
 import com.notes.model.enums.ProfileTypeEnum;
 import com.notes.service.AuthService;
 import com.notes.service.NoteService;
@@ -60,29 +58,18 @@ public class NoteControllerTest {
 	@Mock
 	private Principal principal;
 
-	private Note note1, note2;
-	private NoteDTO noteDto1;
+	private NoteDTO note1, note2;
 
-	private Page<Note> notesPage;
+	private Page<NoteDTO> notesPage;
 	
-	@MockBean
-	private NoteMapper noteMapper;
-
 	@Before
 	public void setUp() {
-		note1 = new Note(null, "noteTitle", "noteText",
-				"notebookId1", "userName", "rgba(251, 243, 129, 0.74)");
-		note2 = new Note(null, "noteTitle", "noteText",
-				"notebookId2", "userName", "rgba(251, 243, 129, 0.74)");
+		note1 = new NoteDTO(null, "noteTitle", "noteText",
+				"notebookId1", "rgba(251, 243, 129, 0.74)", null);
+		note2 = new NoteDTO(null, "noteTitle", "noteText",
+				"notebookId2", "rgba(251, 243, 129, 0.74)", null);
 
-		noteDto1 = new NoteDTO();
-		noteDto1.setBackgroundColor(note1.getBackgroundColor());
-		noteDto1.setNotebookId(note1.getNotebookId());
-		noteDto1.setText(note1.getText());
-		noteDto1.setTitle(note1.getTitle());
-		
-		notesPage = new PageImpl<>(Arrays.asList(note1, note2));
-		
+		notesPage = new PageImpl<>(Arrays.asList(note1, note2));		
 		when(authClient.checkUserToken(Mockito.anyString())).thenReturn(new TempUser("userName", ProfileTypeEnum.ROLE_ADMIN));
 	}
 
@@ -178,13 +165,12 @@ public class NoteControllerTest {
 	
 	@Test
 	public void testSaveNote() throws Exception {
-		when(noteMapper.noteDtoToNote(any())).thenReturn(note1);
 		when(noteService.saveNote(any())).thenReturn(note1);
 		
 		mvc.perform(MockMvcRequestBuilders.post("/notes")
 				.contentType(MediaType.APPLICATION_JSON)
 				.header("Authorization", "x.x.x.x")
-				.content(asJsonString(noteDto1)))
+				.content(asJsonString(note1)))
 				.andExpect(status().isCreated())
 				.andExpect(header().string("Location", 
 						containsString("/notes/")));
@@ -196,7 +182,7 @@ public class NoteControllerTest {
 			.thenReturn(null);
 		mvc.perform(MockMvcRequestBuilders.post("/notes")
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(asJsonString(noteDto1)))
+				.content(asJsonString(note2)))
 				.andExpect(status().isUnauthorized())
 				.andExpect(jsonPath("$").isEmpty());
 	}

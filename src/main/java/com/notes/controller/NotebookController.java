@@ -19,10 +19,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.notes.controller.dto.NoteDTO;
 import com.notes.controller.dto.NotebookDTO;
-import com.notes.mapper.NotebookMapper;
-import com.notes.model.Note;
-import com.notes.model.Notebook;
 import com.notes.service.NoteService;
 import com.notes.service.NotebookService;
 
@@ -37,9 +35,7 @@ public class NotebookController {
 
 	private final NotebookService notebookService;
 	private final NoteService noteService;
-	private final NotebookMapper notebookMapper;
-
-	
+		
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@DeleteMapping("/{notebookId}")
 	public void deleteNotebook(@PathVariable String notebookId) {
@@ -50,23 +46,22 @@ public class NotebookController {
 	@ResponseStatus(HttpStatus.OK)
 	@GetMapping
 	public Page<NotebookDTO> getAllNotebooks(Pageable pageable) {
-		return notebookService.findAllByUserName(pageable)
-			.map(notebookMapper::notebookToNotebookDto);
+		return notebookService.findAllByUserName(pageable);
 	}
 	
 	@ResponseStatus(HttpStatus.OK)
 	@GetMapping("/{notebookId}/notes")
-	public Page<Note> getNotesByNotebook(@PathVariable String notebookId, Pageable pageable){
+	public Page<NoteDTO> getNotesByNotebook(@PathVariable String notebookId, Pageable pageable){
 		return noteService.findNotesByNotebookId(notebookId, pageable);
 	}
 
 	@PostMapping
 	public ResponseEntity<?> createNotebook(@RequestBody @Valid NotebookDTO notebookDTO) {
 		log.info("Creating new notebook.");
-		Notebook notebook = notebookService.saveNotebook(notebookMapper.notebookDtoToNotebook(notebookDTO));
+		notebookDTO = notebookService.saveNotebook(notebookDTO);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
 			.path("/{notebookId}")
-			.buildAndExpand(notebook.getId())
+			.buildAndExpand(notebookDTO.getId())
 			.toUri();
 		return ResponseEntity.created(uri).build();
 	}
@@ -75,10 +70,8 @@ public class NotebookController {
 	@PutMapping("/{notebookId}")
 	public NotebookDTO updateNotebook(@RequestBody @Valid NotebookDTO notebookDTO, @PathVariable String notebookId) {
 		log.info("Updating notebook id: {}", notebookId);
-		Notebook notebook = notebookMapper.notebookDtoToNotebook(notebookDTO);
-		notebook.setId(notebookId);
-		notebook = notebookService.updateNotebook(notebook);
-		return notebookMapper.notebookToNotebookDto(notebook);		
+		notebookDTO.setId(notebookId);
+		return notebookService.updateNotebook(notebookDTO);		
 	}
 
 }
