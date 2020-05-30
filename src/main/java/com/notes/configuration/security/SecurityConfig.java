@@ -51,9 +51,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // set session police stateless
 			.and()
 			.authorizeRequests()
+			.antMatchers("/actuator/**").permitAll()
 			.antMatchers("/notebooks", "/notebooks/**", "/colorpallet/**", "/notes", "/notes/**").hasAnyRole("ADMIN", "USER")
 			.antMatchers("/users").hasRole("SERVICE");
-			http.headers().cacheControl();
+		    http.headers().cacheControl();
 		
 	}
 

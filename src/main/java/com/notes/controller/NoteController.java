@@ -22,6 +22,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.notes.controller.dto.NoteDTO;
 import com.notes.service.NoteService;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -33,19 +36,16 @@ public class NoteController {
 
 	private final NoteService noteService;
 
+	@ApiOperation(value = "Busca notes de um usuário.")
+	@ApiResponses({@ApiResponse(code = 200, message = "Notes encontrados.", response = NoteDTO.class, responseContainer = "Page")})
 	@ResponseStatus(HttpStatus.OK)
 	@GetMapping
 	public Page<NoteDTO> getNotes(Pageable pageable) {
 		return noteService.findNotesByUserName(pageable);
 	}
-	
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@DeleteMapping("/{noteId}")
-	public void deleteNote(@PathVariable String noteId){
-		log.info("Deleting note {}.", noteId);
-		noteService.deleteNote(noteId);
-	}
-	
+		
+	@ApiOperation("Cria uma nota.")
+	@ApiResponses({@ApiResponse(code = 200, message = "Nota criada com sucesso.", response = Void.class)})
 	@PostMapping
 	public ResponseEntity<?> saveNote(@Valid @RequestBody NoteDTO noteDTO) {
 		log.info("Saving note.");
@@ -57,12 +57,27 @@ public class NoteController {
 		return ResponseEntity.created(uri).build();
 	}
 	
+	@ApiOperation("Atualiza note.")
+	@ApiResponses({
+		@ApiResponse(code = 200, message = "Note atualizado com sucesso.", response = NoteDTO.class),
+		@ApiResponse(code = 404, message = "Note não encontrado.")})
 	@ResponseStatus(HttpStatus.OK)
 	@PutMapping("/{noteid}")
 	public NoteDTO updateNote(@RequestBody @Valid NoteDTO noteDTO, String noteId) {
 		log.info("Updating note id: {}", noteId);
 		noteDTO.setId(noteId);
 		return noteService.saveNote(noteDTO);
+	}
+	
+	@ApiOperation(value = "Remove um note.")
+	@ApiResponses({
+		@ApiResponse(code = 204, message = "Note removida."),
+		@ApiResponse(code = 404, message = "Note não encontrada.")})
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@DeleteMapping("/{noteId}")
+	public void deleteNote(@PathVariable String noteId){
+		log.info("Deleting note {}.", noteId);
+		noteService.deleteNote(noteId);
 	}
 		
 }

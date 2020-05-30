@@ -98,8 +98,7 @@ public class NotebookControllerTest {
 		when(this.authClient.checkUserToken(Mockito.anyString())).thenReturn(null);
 		mvc.perform(MockMvcRequestBuilders.get("/notebooks")
 				.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isUnauthorized())
-				.andExpect(jsonPath("$").isEmpty());
+				.andExpect(status().isUnauthorized());
 	}
 	
 	@Test
@@ -107,8 +106,7 @@ public class NotebookControllerTest {
 		when(this.authClient.checkUserToken(Mockito.anyString())).thenReturn(null);
 		mvc.perform(MockMvcRequestBuilders.get("/notebooks")
 				.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isUnauthorized())
-				.andExpect(jsonPath("$").isEmpty());
+				.andExpect(status().isUnauthorized());
 	}
 	
 	/**
@@ -129,8 +127,7 @@ public class NotebookControllerTest {
 	public void testDeleteNotebookWithoutAuthHeader() throws Exception {	
 		mvc.perform(MockMvcRequestBuilders.delete("/notebooks/idX")
 				.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isUnauthorized())
-				.andExpect(jsonPath("$").isEmpty());
+				.andExpect(status().isUnauthorized());
 	}
 	
 	@Test
@@ -139,8 +136,7 @@ public class NotebookControllerTest {
 		mvc.perform(MockMvcRequestBuilders.delete("/notebooks")
 				.contentType(MediaType.APPLICATION_JSON)
 				.header("Authorization", "x.x.x.x"))
-				.andExpect(status().isUnauthorized())
-				.andExpect(jsonPath("$").isEmpty());
+				.andExpect(status().isUnauthorized());
 	}
 	
 	/**
@@ -166,8 +162,7 @@ public class NotebookControllerTest {
 		mvc.perform(MockMvcRequestBuilders.post("/notebooks")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(asJsonString(new Notebook(notebook1.getId(), notebook1.getName(), notebook1.getUserName(), LocalDateTime.now()))))
-				.andExpect(status().isUnauthorized())
-				.andExpect(jsonPath("$").isEmpty());
+				.andExpect(status().isUnauthorized());
 	}
 	
 	@Test
@@ -175,8 +170,7 @@ public class NotebookControllerTest {
 		when(this.authClient.checkUserToken(Mockito.anyString())).thenReturn(null);
 		mvc.perform(MockMvcRequestBuilders.post("/notebooks").contentType(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isUnauthorized())
-				.andExpect(jsonPath("$").isEmpty());
+				.andExpect(status().isUnauthorized());
 	}
 	
 	public static String asJsonString(final Object obj) {

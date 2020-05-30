@@ -52,9 +52,6 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 						null, userDetails.getAuthorities());
 				auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 				SecurityContextHolder.getContext().setAuthentication(auth);
-			}else {
-				log.info("Token not found. Throw exception.");
-				throw new UnauthorizedUserException("Unauthorized user.");
 			}
 		} catch (Exception e) {
 			log.info("It was not possible to validate the user. {}", e.getMessage());

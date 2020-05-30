@@ -28,9 +28,7 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
 			PrintWriter out = response.getWriter();
 			out.print(mapper.writeValueAsString(""));
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-		} catch (Exception e) {
-			log.info("Exception. {}", e.getMessage());
-		}
+		} 
 	}
 
 }

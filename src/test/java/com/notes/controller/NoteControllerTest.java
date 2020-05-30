@@ -103,8 +103,7 @@ public class NoteControllerTest {
 			.thenReturn(null);
 		mvc.perform(MockMvcRequestBuilders.get("/notes")
 				.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isUnauthorized())
-				.andExpect(jsonPath("$").isEmpty());;
+				.andExpect(status().isUnauthorized());
 	}
 	
 	@Test
@@ -112,8 +111,7 @@ public class NoteControllerTest {
 		when(authClient.checkUserToken(Mockito.anyString())).thenReturn(null);
 		mvc.perform(MockMvcRequestBuilders.get("/notes")
 				.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isUnauthorized())
-				.andExpect(jsonPath("$").isEmpty());
+				.andExpect(status().isUnauthorized());
 	}
 	
 	/**
@@ -144,8 +142,7 @@ public class NoteControllerTest {
 	public void testDeleteNoteWithoutAuthHeader() throws Exception {	
 		mvc.perform(MockMvcRequestBuilders.delete("/notes/noteIdY")
 				.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isUnauthorized())
-				.andExpect(jsonPath("$").isEmpty());
+				.andExpect(status().isUnauthorized());
 	}
 	
 	@Test
@@ -183,8 +180,7 @@ public class NoteControllerTest {
 		mvc.perform(MockMvcRequestBuilders.post("/notes")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(asJsonString(note2)))
-				.andExpect(status().isUnauthorized())
-				.andExpect(jsonPath("$").isEmpty());
+				.andExpect(status().isUnauthorized());
 	}
 	
 	@Test
@@ -192,8 +188,7 @@ public class NoteControllerTest {
 		when(authClient.checkUserToken(Mockito.anyString())).thenReturn(null);
 		mvc.perform(MockMvcRequestBuilders.post("/notes").contentType(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isUnauthorized())
-				.andExpect(jsonPath("$").isEmpty());
+				.andExpect(status().isUnauthorized());
 	}
 	
 	public static String asJsonString(final Object obj) {

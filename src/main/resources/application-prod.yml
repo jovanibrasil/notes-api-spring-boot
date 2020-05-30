@@ -1,0 +1,11 @@
+notes-api:
+  password: ${NOTES_API_PASSWORD}
+  username: ${NOTES_API_USERNAME}
+notes-db:
+  url: ${NOTES_DB_URL}
+server:
+  port: 8080
+urls:
+  auth:
+    check-token: ${AUTH_API_URL}/api/token/check
+    create-token: ${AUTH_API_URL}/api/token/create

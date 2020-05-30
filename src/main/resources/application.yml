@@ -1,0 +1,23 @@
+server:
+  servlet:
+    context-path: /api
+spring:
+  application:
+    name: notes-api
+  data:
+    web:
+      pageable:
+        max-page-size: 40
+  jmx:
+    enabled: false
+  profiles:
+    active: '@activatedProperties@'
+  boot:
+    admin:
+      client:
+        url: http://localhost:8090  
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'

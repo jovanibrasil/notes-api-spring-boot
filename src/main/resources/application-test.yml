@@ -1,0 +1,7 @@
+notes-api:
+  password: 123456
+  username: NOTES_API
+urls:
+  auth:
+    check-token: http://127.0.0.1:8083/api/token/check
+    create-token: http://127.0.0.1:8083/api/token/create

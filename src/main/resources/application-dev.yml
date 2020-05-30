@@ -1,0 +1,17 @@
+notes-api:
+  password: 123456
+  username: NOTES
+server:
+  port: 8082
+spring:
+  data:
+    mongodb:
+      database: notesdb
+      host: 127.0.0.1
+      password: admin
+      port: 27017
+      username: admin
+urls:
+  auth:
+    check-token: http://127.0.0.1:8083/api/token/check
+    create-token: http://127.0.0.1:8083/api/token/create

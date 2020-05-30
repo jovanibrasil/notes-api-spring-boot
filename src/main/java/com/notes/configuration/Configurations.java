@@ -8,7 +8,7 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.client.RestTemplate;
 
 @Configuration
-public class GeneralConfigs {
+public class Configurations {
 
 	@Bean
 	public LocalValidatorFactoryBean validator(MessageSource messageSource) {
