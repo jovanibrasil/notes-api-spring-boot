@@ -13,5 +13,5 @@ spring:
       username: admin
 urls:
   auth:
-    check-token: http://127.0.0.1:8083/api/token/check
-    create-token: http://127.0.0.1:8083/api/token/create
+    check-token: http://127.0.0.1:8083/token/check
+    create-token: http://127.0.0.1:8083/token
