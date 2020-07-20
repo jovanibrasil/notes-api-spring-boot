@@ -62,8 +62,8 @@ public class NoteController {
 		@ApiResponse(code = 200, message = "Note atualizado com sucesso.", response = NoteDTO.class),
 		@ApiResponse(code = 404, message = "Note não encontrado.")})
 	@ResponseStatus(HttpStatus.OK)
-	@PutMapping("/{noteid}")
-	public NoteDTO updateNote(@RequestBody @Valid NoteDTO noteDTO, String noteId) {
+	@PutMapping("/{noteId}")
+	public NoteDTO updateNote(@RequestBody @Valid NoteDTO noteDTO, @PathVariable String noteId) {
 		log.info("Updating note id: {}", noteId);
 		noteDTO.setId(noteId);
 		return noteService.saveNote(noteDTO);
