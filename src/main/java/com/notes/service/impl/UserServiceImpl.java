@@ -9,11 +9,11 @@ import com.notes.controller.dto.UserDTO;
 import com.notes.exception.ExceptionMessages;
 import com.notes.exception.NotFoundException;
 import com.notes.mapper.UserMapper;
-import com.notes.model.ColorPallet;
+import com.notes.model.ColorPallete;
 import com.notes.model.User;
 import com.notes.model.enums.ProfileTypeEnum;
 import com.notes.repository.UserRepository;
-import com.notes.service.ColorPalletService;
+import com.notes.service.ColorPalleteService;
 import com.notes.service.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -26,7 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 public class UserServiceImpl implements UserService {
 
 	private final UserRepository userRepository;
-	private final ColorPalletService palletService;
+	private final ColorPalleteService palletService;
 	private final UserMapper userMapper;
 
 	/**
@@ -56,10 +56,10 @@ public class UserServiceImpl implements UserService {
 		user.setProfileType(ProfileTypeEnum.ROLE_USER);
 		user = userRepository.save(user);
 		
-		ColorPallet colorPallet = new ColorPallet();
-		colorPallet.setUserName(user.getUsername());
-		colorPallet.setColors(new ArrayList<>());
-		palletService.saveColorPallet(colorPallet);
+		ColorPallete colorPallete = new ColorPallete();
+		colorPallete.setUserName(user.getUsername());
+		colorPallete.setColors(new ArrayList<>());
+		palletService.saveColorPallete(colorPallete);
 		
 		return userMapper.userToUserDto(user);
 	}
