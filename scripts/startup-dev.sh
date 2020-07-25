@@ -1,4 +1,4 @@
-while (! nc -z $1  $2) & (! nc -z $3 $4);
+while (! nc -z mongo-database 27017);
         do
           echo sleeping;
           sleep 1;

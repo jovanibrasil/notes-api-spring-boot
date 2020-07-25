@@ -13,8 +13,8 @@ spring:
     admin:
       client:
         url: http://localhost:8090  
-management:
-  endpoints:
-    web:
-      exposure:
-        include: '*'
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        include: '*'

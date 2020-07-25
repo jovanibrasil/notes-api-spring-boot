@@ -1,56 +1,38 @@
 version: "3.3"
 services:
-  notes-database: # Mongo database
+  notes-database:
     image: mongo-database
     container_name: mongo-database
     ports:
       - 27017:27017 
       - 28017:28017
-    network_mode: host
     environment:
+      - MONGO_INITDB_DATABASE=notesdb 
       - CATALINA_OPTS=-Xmx206M -Xms128M -XX:MaxPermSize=50M
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=root
     deploy:
       resources:
         limits:
           memory: 256M
-  auth-api: # Authentication API (Spring)
-    image: auth-api
-    container_name: auth-api
+    # All scripts in docker-entrypoint-initdb.d/ are automatically executed 
+    # during container startup when the database folder is empty.
+    volumes:
+      - ./scripts/mongo-scripts:/docker-entrypoint-initdb.d/
+      - mongo-database-data:/data/db
+  auth-mock:
+    build:
+      context: ./json-server-mock
+      dockerfile: Dockerfile
+    command: node index.js
+    environment:
+      - PORT=8083
     ports:
       - 8083:8083
-    network_mode: host
-    environment:
-      - "DBSERVICEPORT=3306"
-      - "DBSERVICENAME=127.0.0.1"
-      - "PORT=8083"
-      - "SPRING_PROFILES_ACTIVE=${PROFILE}"
-      - "VAULT_TOKEN=s8ynaMrJvQPVq2BEPRxgceHcG"
-      - CATALINA_OPTS=-Xmx206M -Xms128M -XX:MaxPermSize=50M
-    deploy:
-      resources:
-        limits:
-          memory: 384M
-  mysql-database:
-    image: mysql-database
-    container_name: mysql-database
-    ports:
-      - 3306:3306
-    network_mode: host
-    environment:
-      - CATALINA_OPTS=-Xmx206M -Xms128M -XX:MaxPermSize=50M
-    deploy:
-      resources:
-        limits:
-          memory: 256M
-  email-api:
-    image: email-api
-    container_name: email-api
-    ports:
-      - 8084:8084
-    network_mode: host
-    environment:
-      - CATALINA_OPTS=-Xmx106M -Xms64M -XX:MaxPermSize=50M
-    deploy:
-      resources:
-        limits:
-          memory: 256M
+networks:
+  default:
+    external:
+      name: net
+volumes:
+  mongo-database-data:
+    external: false

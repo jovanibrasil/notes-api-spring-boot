@@ -1,5 +1,7 @@
 /target/
 !.mvn/wrapper/maven-wrapper.jar
+.vscode/
+.attach_pid*
 
 ### STS ###
 .apt_generated

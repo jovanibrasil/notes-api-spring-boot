@@ -1,17 +1,17 @@
 notes-api:
-  password: 123456
-  username: NOTES
+  password: ${NOTES_API_PASSWORD:123456}
+  username: ${NOTES_API_USERNAME:NOTES}
 server:
   port: 8082
 spring:
   data:
     mongodb:
-      database: notesdb
-      host: 127.0.0.1
-      password: admin
-      port: 27017
-      username: admin
+      database: ${MONGO_DB:notesdb}
+      host: ${MONGO_HOST:127.0.0.1}
+      password: ${MONGO_PASSWORD:admin}
+      port: ${MONGO_PORT:27017}
+      username: ${MONGO_USER_NAME:admin}
 urls:
   auth:
-    check-token: http://127.0.0.1:8083/token/check
-    create-token: http://127.0.0.1:8083/token
+    check-token: ${AUTH_API_URL"/token/check":http://127.0.0.1:8083/token/check}
+    create-token: ${AUTH_API_URL"/token":http://127.0.0.1:8083/token}
