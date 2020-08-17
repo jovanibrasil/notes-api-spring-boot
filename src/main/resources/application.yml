@@ -12,9 +12,18 @@ spring:
   boot:
     admin:
       client:
-        url: http://localhost:8090  
-#management:
-#  endpoints:
-#    web:
-#      exposure:
-#        include: '*'
+        url: http://localhost:8090
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://eureka-server:8761/eureka/ 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+    
+urls:
+  auth:
+    check-token: ${AUTH_API_URL:http://notes-api_auth-mock_1:8083}/token/check
+    create-token: ${AUTH_API_URL:http://notes-api_auth-mock_1:8083}/token

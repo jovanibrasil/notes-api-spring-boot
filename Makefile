@@ -1,3 +1,7 @@
+PKG_VERSION_PATH := "./src/main/resources/buildNumber.properties"
+LAST_VERSION := $(shell (grep buildNumber= | cut -d= -f2) < $(PKG_VERSION_PATH))
+$(eval VERSION=$(shell echo $$(($(LAST_VERSION)+1))))
+
 run-tests:
 	mvn clean test -Ptest
 stop:
@@ -6,12 +10,11 @@ clean: stop
 	- docker rm notes-api
 build: clean
 	mvn clean package -DskipTests
-	FILE_NAME=notes-api\#\#$(shell find target/*.war -type f | grep -Eo '[0-9]+)
-	docker build --build-arg FILE_NAME --build-arg ENVIRONMENT=dev -t notes-api .
+	docker build --build-arg VERSION=$(VERSION) --build-arg ENVIRONMENT=dev -t notes-api .
 	chmod -R ugo+rw target/
 run: clean
-	docker run -d -p 8082:8080 -m 256m --memory-swap 256m --env-file ./.env  \
-		 --name=notes-api --network net notes-api
+	docker run -m 256m --memory-swap 512m --env-file ./.env  \
+		 -e JAVA_OPTS='-XX:+UseSerialGC -Xss512k -XX:MaxRAM=72m' --name=notes-api --network net notes-api
 start: stop
 	docker start notes-api
 bash:

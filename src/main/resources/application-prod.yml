@@ -5,7 +5,3 @@ notes-db:
   url: ${NOTES_DB_URL}
 server:
   port: 8080
-urls:
-  auth:
-    check-token: ${AUTH_API_URL}/token/check
-    create-token: ${AUTH_API_URL}/token
