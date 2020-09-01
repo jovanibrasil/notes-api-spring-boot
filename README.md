@@ -3,6 +3,4 @@
 
 # API para um aplicativo de notas/lembretes
 
-Esta API permite operações básicas para uma aplicação de lembretes/notes.
-
-Para rodar o projeto você deve primeiro subir o MongoDB. Para tanto basta ir ao diretório /mongo no projeto e executar o comando make start. Então basta executa o comando mvn -pl web spring-boot:run na raíz do projeto e a aplicação deve iniciar. Uma vez rodando é possível acessar a documentação Swagger em http://localhost:8082/api/swagger-ui.html.
+Esta API permite operações básicas para uma aplicação de lembretes/notas. Foi utilizada para implementação Java 11, Spring Boot, MongoDB, Docker, Junit, Mockito, entre outras tecnologias.
