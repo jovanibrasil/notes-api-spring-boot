@@ -1,34 +1,31 @@
-FROM tomcat
+FROM tomcat:9.0.37-jdk11-openjdk
 LABEL maintainer="jovanibrasil@gmail.com"
 USER root
 
 RUN apt-get -y update && apt-get -y install netcat
-#COPY dist/ /app
-ARG NOTES_MONGO_URL
 ARG ENVIRONMENT
-ARG VAULT_TOKEN
-ARG DBSERVICENAME
-ARG DBSERVICEPORT
-ARG AUTHSERVICENAME
-ARG AUTHSERVICEPORT
+ARG AUTH_API_URL
+ARG NOTES_API_PASSWORD
+ARG NOTES_API_USERNAME
+ARG NOTES_DB_URL
+ARG VERSION
 
-ENV NOTES_MONGO_URL=$NOTES_MONGO_URL
 ENV ENVIRONMENT=$ENVIRONMENT
-ENV FILE_NAME=$FILE_NAME
-ENV VAULT_TOKEN=$VAULT_TOKEN
-ENV DBSERVICENAME=$DBSERVICENAME
-ENV DBSERVICEPORT=$DBSERVICEPORT
-ENV AUTHSERVICENAME=$AUTHSERVICENAME
-ENV AUTHSERVICEPORT=$AUTHSERVICEPORT
+ENV AUTH_API_URL=$AUTH_API_URL
+ENV NOTES_API_PASSWORD=$NOTES_API_PASSWORD
+ENV NOTES_API_USERNAME=$NOTES_API_USERNAME
+ENV NOTES_DB_URL=$NOTES_DB_URL
 
-COPY ./target/${FILE_NAME} /usr/local/tomcat/webapps/${FILE_NAME}
+COPY ./target/notes-api##${VERSION}.war /usr/local/tomcat/webapps/ROOT##${VERSION}.war
+COPY ./target/notes-api##${VERSION} /usr/local/tomcat/webapps/ROOT##${VERSION}
+
 COPY ./scripts ./scripts
-RUN if [ "$ENVIRONMENT" = "stage" ]; \
+RUN if [ "$ENVIRONMENT" = "dev" ]; \
 	then cp ./scripts/startup-dev.sh /startup.sh; \
 	else cp ./scripts/startup-prod.sh /startup.sh;\
 	fi
 RUN rm ./scripts -rf
-EXPOSE 8082
+EXPOSE 8080
 
 RUN ["chmod", "+x", "/startup.sh"]
 CMD ["sh", "-c", "/startup.sh $DBSERVICENAME $DBSERVICEPORT $AUTHSERVICENAME $AUTHSERVICEPORT"]
